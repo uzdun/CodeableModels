@@ -47,13 +47,13 @@ submitting pull requests to us.
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see
-the [tags on this repository](https://github.com/your/project/tags).
+the [tags on this repository](https://github.com/uzdun/CodeableModels/tags).
 
 ## Authors
 
-* **Uwe Zdun** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Uwe Zdun** - *Initial work* - [https://github.com/uzdun/](https://github.com/uzdun/)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who
+See also the list of [contributors](https://github.com/uzdun/CodeableModels/contributors) who
 participated in this project.
 
 ## License
