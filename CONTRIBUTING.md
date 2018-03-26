@@ -4,7 +4,8 @@ For contributing to Codeable Models, please discuss the change you wish to make 
 email, or any other method with the owners of this repository. As the project matures, we
 will provide more detailed guidelines for contributing.
 
-Please note we have a code of conduct, please follow it in all your interactions with the project.
+Please note we have a code of conduct, please follow it in all your interactions with 
+the project.
 
 ## Pull Request Process
 
