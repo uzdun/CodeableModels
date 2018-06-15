@@ -63,6 +63,8 @@ public class CClassImpl extends CClassifierImpl implements CClass, CObject, CSte
         if (getMetaclass() != null) {
             ((CMetaclassImpl) getMetaclass()).removeClassInstance(this);
             setMetaclass(null);
+        } else {
+            throw new CException("trying to delete class '" + this.getName() + "' that has been deleted before");
         }
     }
 
