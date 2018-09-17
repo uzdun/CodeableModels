@@ -1,2 +1,4 @@
-.idea/
-out/
+**/.pytest_cache
+**/.vscode
+**/__pycache__
+*.noseids

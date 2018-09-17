@@ -17,27 +17,28 @@ clear from the interfaces.
 
 ### Prerequisites / Installing
 
-The project - by purpose - only uses plain old Java objects. So there are no requirements
-to get the project up and running, other than placing it in your classpath.
+The project - by purpose - only uses plain Python. So there are no requirements
+to get the project up and running.
 
-JUnit is required in the classpath for executing the test cases.
+Nosetest is required for executing the test cases. Find installation instructions under:
+[Nosetest](https://nose.readthedocs.io/en/latest/) 
 
 ## Running the tests
 
-```
-codedableModels/tests/AllTests.java
-```
-
-contains the test suite. Run it as a JUnit test suite. All other files in the tests
-directory contain individual JUnit tests.
+Execute `nosetests` either in the main directory of the project or in `./tests`. The test files contained in 
+this directory comprise the test suite. 
 
 ## Deployment
 
-No specific instructions so far; simply build
+No specific instructions so far; simply import from the `codeableModels` module like:
+
+```
+from codeableModels import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
+``` 
 
 ## Built With
 
-* [JUnit](https://junit.org) - The test framework used
+* [Nosetest](https://nose.readthedocs.io/en/latest/) - The test framework used
 
 ## Contributing
 
