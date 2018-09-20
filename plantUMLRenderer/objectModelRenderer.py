@@ -24,10 +24,14 @@ class ObjectModelRenderer(ModelRenderer):
         if isCClass(object):
             object = object.classObject
 
+        sterotypeString = ""
+        if object._classObjectClass != None:
+            sterotypeString = self.renderStereotypes(object._classObjectClass, object._classObjectClass.stereotypeInstances)
+
         clName = object.classifier.name
         if clName == None:
             clName = ""
-        return '"' + self.padAndBreakName(objName + " : " + clName) + '"'
+        return '"' + self.padAndBreakName(sterotypeString) + self.padAndBreakName(objName + " : " + clName) + '"'
 
     def renderObjectSpecification(self, context, obj):
         context.addLine("class " + self.renderObjectNameWithClassifier(obj) + " as " + self.getNodeID(context, obj) + self.renderAttributeValues(context, obj))
@@ -58,38 +62,6 @@ class ObjectModelRenderer(ModelRenderer):
             value = '"' + value + '"'
         return name + " = " + value
 
-    def renderStereotypes(self, stereotypedElementInstance, stereotypes):
-        result = "«"
-        taggedValuesString = "\\n{"
-        taggedValueAdded = False
-
-        firstStereotype = True
-        for stereotype in stereotypes:
-            if firstStereotype:
-                firstStereotype = False
-            else:
-                result += ", "
-
-            stereotypeClassPath = [stereotype] + list(stereotype.allSuperclasses)
-
-            for stereotypeClass in stereotypeClassPath:
-                for taggedValue in stereotypeClass.attributes:
-                    value = stereotypedElementInstance.getTaggedValue(taggedValue.name, stereotypeClass)
-                    if value != None:
-                        if taggedValueAdded:
-                            taggedValuesString += ", "
-                        taggedValueAdded = True
-                        taggedValuesString += self.renderAttributeValue(taggedValue, taggedValue.name, value)
-
-            result += self.breakName(stereotype.name)
-
-        if taggedValueAdded:
-            taggedValuesString += "}"
-        else:
-            taggedValuesString = ""
-        result += "» " + self.breakName(taggedValuesString)
-        return result
-
     def renderLink(self, context, link):
         association = link.association 
 
@@ -99,11 +71,7 @@ class ObjectModelRenderer(ModelRenderer):
         elif association.composition:
             arrow = " *-- "
 
-        sterotypeString = ""
-        stereotypeInstances = link.stereotypeInstances
-        if len(stereotypeInstances) > 0:
-            sterotypeString = self.renderStereotypes(link, stereotypeInstances)
-            sterotypeString += "\\n"
+        sterotypeString = self.renderStereotypes(link, link.stereotypeInstances)
 
         label = ""
         if association.name != None and len(association.name) != 0:

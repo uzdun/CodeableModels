@@ -67,10 +67,10 @@ class CBundle(CBundlable):
             else:
                 raise CException(f"'None' cannot be an element of bundle")
             isCNamedElement(e)
-            if e in self._elements:
-                raise CException(f"'{e.name!s}' is already an element of bundle '{self.name!s}'")
-            self._elements.append(e)
-            e._bundles.append(self)
+            if not e in self._elements:
+                # if it is already in the bundle, do not add it twice
+                self._elements.append(e)
+                e._bundles.append(self)
 
     def getElements(self, **kwargs):
         type = None

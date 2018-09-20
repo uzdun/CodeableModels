@@ -1,7 +1,7 @@
 import os
 import shutil
 from subprocess import call
-from codeableModels.internal.commons import setKeywordArgs, isCObject
+from codeableModels.internal.commons import setKeywordArgs, isCObject, isCClass
 from enum import Enum 
 from codeableModels import CNamedElement
 
@@ -13,7 +13,7 @@ class RenderingContext(object):
         self.indentCacheString = ""
         self.unnamedObjects = {}
         self.unnamedID = 0
-
+        
     def getUnnamedCElementID(self, element):
         if isCObject(element) and element._classObjectClass != None:
             # use the class object's class rather than the class object to identify them uniquely
@@ -88,6 +88,45 @@ class ModelRenderer(object):
     def renderEndGraph(self, context):
         context.addLine("@enduml")
 
+    def renderStereotypesString(self, stereotypesString):
+        return "«" + self.breakName(stereotypesString) +  "»\\n"
+
+    def renderStereotypes(self, stereotypedElementInstance, stereotypes):
+        if len(stereotypes) == 0:
+            return ""
+
+        result = "«"
+        taggedValuesString = "\\n{"
+        taggedValueAdded = False
+
+        firstStereotype = True
+        for stereotype in stereotypes:
+            if firstStereotype:
+                firstStereotype = False
+            else:
+                result += ", "
+
+            stereotypeClassPath = [stereotype] + list(stereotype.allSuperclasses)
+
+            for stereotypeClass in stereotypeClassPath:
+                for taggedValue in stereotypeClass.attributes:
+                    value = stereotypedElementInstance.getTaggedValue(taggedValue.name, stereotypeClass)
+                    if value != None:
+                        if taggedValueAdded:
+                            taggedValuesString += ", "
+                        taggedValueAdded = True
+                        taggedValuesString += self.renderAttributeValue(taggedValue, taggedValue.name, value)
+
+            result += self.breakName(stereotype.name)
+
+        if taggedValueAdded:
+            taggedValuesString += "}"
+        else:
+            taggedValuesString = ""
+        result += "» " + self.breakName(taggedValuesString)
+        result += "\\n"
+        return result 
+
     def padAndBreakName(self, name, namePadding = None):
         if namePadding == None:
             namePadding = self.namePadding
@@ -122,13 +161,16 @@ class ModelRenderer(object):
         else:
             # else this must be a string
             name = element
-        name = name.replace(' ', '_')
-        name = name.replace('#', '_')
-        name = name.replace('-', '_')
+        name = name.replace(' ', '_1_')
+        name = name.replace('#', '_2_')
+        name = name.replace('-', '_3_')
+        name = name.replace('/', '_4_')
+        name = name.replace('+', '_5_')
+        name = name.replace('?', '_6_')
+        name = name.replace(',', '_7_')
+        name = name.replace('.', '_8_')
+        name = name.replace('\\', '_9_')
         return name
-
-    def renderName(self, element):
-        return '"' + self.padAndBreakName(element.name) + '"'
 
     def renderToFiles(self, fileNameBase, source):
         fileNameBaseWithDir = f"{self.directory!s}/{fileNameBase!s}"
