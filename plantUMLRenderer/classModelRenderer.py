@@ -1,10 +1,5 @@
-# import os
-# import shutil
-# from subprocess import call
 from codeableModels import CException, CMetaclass
 from codeableModels.internal.commons import isCEnum, isCClassifier, setKeywordArgs, isCStereotype, isCMetaclass
-# from enum import Enum 
-# from codeableModels import CNamedElement
 from modelRenderer import RenderingContext, ModelRenderer
 
 class ClassifierRenderingContext(RenderingContext):
@@ -17,8 +12,7 @@ class ClassifierRenderingContext(RenderingContext):
         self.excludedAssociations = []
         self.renderExtendedRelations = True
         self.excludedExtendedClasses = []
-        self.associationMetaclass = CMetaclass("Association")
-        self.associationMetaclassRendered = False
+
 
 class ClassModelRenderer(ModelRenderer):
     def renderClassifierSpecification(self, context, cl):
@@ -79,7 +73,6 @@ class ClassModelRenderer(ModelRenderer):
         elif association.composition:
             arrow = " *-- "
 
-
         # as we cannot point directly to the association extended in a metamodel, we put a note 
         # on the association saying which stereotypes extend it
         extendedByString = ""
@@ -106,21 +99,6 @@ class ClassModelRenderer(ModelRenderer):
             headLabel = " \" " + association.sourceMultiplicity + " \" "
         tailLabel =  " \" " + association.multiplicity + " \" "
 
-        # as we cannot point directly to the association extended in a metamodel, we put a note 
-        # on the association saying which stereotypes extend it
-        # noteOnLink = ""
-        # firstNoteOneLink = True
-        # for stereotype in association.stereotypes:
-        #     if stereotype in classList:
-        #         if firstNoteOneLink:
-        #             noteOnLink = noteOnLink + "\nnote on link:"
-        #             firstNoteOneLink = False
-        #         else:
-        #             noteOnLink = noteOnLink + ", \\n"
-        #         noteOnLink = noteOnLink + f"Extended by '{stereotype.name!s}'"
-        # if noteOnLink != "":
-        #     noteOnLink = noteOnLink + "\n"
-
         context.addLine(self.getNodeID(context, association.source) + headLabel +
                 arrow + tailLabel + self.getNodeID(context, association.target) + label )
         
@@ -135,20 +113,6 @@ class ClassModelRenderer(ModelRenderer):
                     context.addLine(self.getNodeID(context, stereotype) + " --> " +
                         self.getNodeID(context, extended) + ': "' + 
                         self.renderStereotypesString("extended") + '"')
-            # else: # this must be an association
-            #     if not context.associationMetaclassRendered:
-            #         self.renderClassifierSpecification(context, context.associationMetaclass)
-            #         context.associationMetaclassRendered = True
-            #     context.addLine(self.getNodeID(context, stereotype) + " --> " +
-            #             self.getNodeID(context, context.associationMetaclass) + ': "' + 
-            #             self.renderStereotypesString("extended") + '"')
-            #     context.addLine(self.getNodeID(context, extended.source) + " ..> " +
-            #             self.getNodeID(context, context.associationMetaclass)+ ': "' + 
-            #             self.renderStereotypesString("has") + '"')
-            #     if extended.source != extended.target:
-            #         context.addLine(self.getNodeID(context, extended.target) + " ..> " +
-            #                 self.getNodeID(context, context.associationMetaclass)+ ': "' + 
-            #             self.renderStereotypesString("has") + '"')
 
     def renderInheritanceRelations(self, context, classList):
         if context.renderInheritance == False:
