@@ -10,24 +10,26 @@ and class models from lists of the form `[<view-1>, <config-option-1>, ... <view
 The views are CBundles of model elements:
 
 ```
-from plantUMLGenerator import PlantUMLGenerator
-from domainMetaModel import domainMetaModel
-from guidanceMetaModel import guidanceMetaModelHierarchy, guidanceMetaModelDetails
-from webAPIDomainModel import webAPIDomainModelViews
-from webAPIQuality import webAPIQualityViews
-from webAPIStructure import webAPIStructureViews
+from plantUMLRenderer import PlantUMLGenerator
+from metamodels.componentMetamodel import componentMetamodelViews
+from microserviceModels.ecommerceMicroservices import ecommerceMicroservicesViews
+from microserviceModels.ecommerceMicroservicesDetailed import ecommerceMicroservicesDetailedViews
+from microserviceModels.ecommerceMicroservicesEventSourcing import ecommerceMicroservicesEventSourcingViews
+from microserviceModels.ecommerceMicroservicesSharedDB import ecommerceMicroservicesSharedDBViews
 
 generator = PlantUMLGenerator()
+generator.generateObjectModels("microserviceModels", ecommerceMicroservicesViews)
+generator.generateClassModels("componentMetamodel", componentMetamodelViews)
+```
 
-generator.generateObjectModels("webAPIStructure", webAPIStructureViews)
-generator.generateObjectModels("webAPIQuality", webAPIQualityViews)
+For instance, in this case `ecommerceMicroservicesViews` is defined as follows with `mobileApp` being a
+class connected to all other classes that should be rendered: 
 
-generator.generateClassModels("webAPIDomainModel", webAPIDomainModelViews)
-generator.generateClassModels("guidanceMetaModel", [
-    domainMetaModel, {},
-    guidanceMetaModelHierarchy, {"renderAssociations": False},
-    guidanceMetaModelDetails, {}
-])
+```
+ecommerceMicroservices = CBundle("ecommerceMicroservices", elements = mobileApp.classObject.getConnectedElements())
+
+ecommerceMicroservicesViews = [
+    ecommerceMicroservices, {}]
 ```
 
 ### Prerequisites / Installing
@@ -45,6 +47,7 @@ self.directory = "../_generated"
 self.plantUmlJarPath = "../../libs/plantuml.jar"
 ```
 
+The directory containing `codeableModels` and `plantUMLRenderer` must be on the PYTHONPATH.
 
 ## Running the tests
 
