@@ -5,7 +5,7 @@ from codeableModels import CException
 from codeableModels.internal.commons import isCEnum, isCClassifier, setKeywordArgs, isCClass, isCObject
 # from enum import Enum 
 # from codeableModels import CNamedElement
-from modelRenderer import RenderingContext, ModelRenderer
+from plantUMLRenderer.modelRenderer import RenderingContext, ModelRenderer
 
 class ObjectRenderingContext(RenderingContext):
     def __init__(self):
@@ -31,7 +31,7 @@ class ObjectModelRenderer(ModelRenderer):
         clName = object.classifier.name
         if clName == None:
             clName = ""
-        return '"' + self.padAndBreakName(sterotypeString) + self.padAndBreakName(objName + " : " + clName) + '"'
+        return '"' + sterotypeString + self.padAndBreakName(objName + " : " + clName) + '"'
 
     def renderObjectSpecification(self, context, obj):
         context.addLine("class " + self.renderObjectNameWithClassifier(obj) + " as " + self.getNodeID(context, obj) + self.renderAttributeValues(context, obj))

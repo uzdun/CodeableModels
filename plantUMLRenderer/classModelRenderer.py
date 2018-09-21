@@ -1,6 +1,6 @@
 from codeableModels import CException, CMetaclass
 from codeableModels.internal.commons import isCEnum, isCClassifier, setKeywordArgs, isCStereotype, isCMetaclass
-from modelRenderer import RenderingContext, ModelRenderer
+from plantUMLRenderer.modelRenderer import RenderingContext, ModelRenderer
 
 class ClassifierRenderingContext(RenderingContext):
     def __init__(self):
@@ -12,7 +12,6 @@ class ClassifierRenderingContext(RenderingContext):
         self.excludedAssociations = []
         self.renderExtendedRelations = True
         self.excludedExtendedClasses = []
-
 
 class ClassModelRenderer(ModelRenderer):
     def renderClassifierSpecification(self, context, cl):
