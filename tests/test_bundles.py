@@ -1,8 +1,3 @@
-import sys
-sys.path.append("..")
-
-import re
-
 import nose
 from nose.tools import ok_, eq_
 from testCommons import neq_, exceptionExpected_

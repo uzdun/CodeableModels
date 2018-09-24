@@ -36,7 +36,8 @@ ecommerceMicroservicesViews = [
 
 [PlantUML](http://plantuml.com/download)'s jar file and  
 [Codeable Models](https://github.com/uzdun/CodeableModels/) 
-are required and the sys path in the files must be correctly set. 
+are required and the PYTHONPATH must be correctly set to contain 
+Codeable Models.
 
 The PlantUMLGenerator has two instance variables that can be used to configure where to find
 the plantuml.jar file and to which directory the generated output should be written. The

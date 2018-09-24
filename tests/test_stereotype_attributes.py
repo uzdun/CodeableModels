@@ -1,11 +1,7 @@
-import sys
-sys.path.append("..")
-
 import nose
 from nose.tools import ok_, eq_
 from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
-
 import re
 
 from codeableModels import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
