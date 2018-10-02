@@ -181,6 +181,6 @@ class ModelRenderer(object):
         file.write(source)
         file.close()
         if self.renderPNG:
-            call(f"java -jar {self.plantUmlJarPath!s} {fileNameTxt!s}")
+            call(["java", "-jar", f"{self.plantUmlJarPath!s}", f"{fileNameTxt!s}"])
         if self.renderSVG:
-            call(f"java -jar {self.plantUmlJarPath!s} {fileNameTxt!s} -tsvg")
+            call(["java", "-jar", f"{self.plantUmlJarPath!s}", f"{fileNameTxt!s}", "-tsvg"])

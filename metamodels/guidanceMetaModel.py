@@ -17,7 +17,7 @@ knownUse = CMetaclass("Known Use", superclasses = modelElement,
 solutionsKnownUsesRelation = designSolution.association(knownUse, "has: *->*")
 
 decision = CMetaclass("Decision", superclasses = designSolution, attributes = {"recommendation": str})
-categoryDecisionsRelation = category.association(decision, "1<>-*")
+categoryDecisionsRelation = category.association(decision, "[category] 1 <>- [decisions] *")
 
 force = CMetaclass("Force", superclasses = modelElement)
 decisionForceRelation = decision.association(force, "has decision driver: *->*")
