@@ -28,6 +28,9 @@ Nosetest is required for executing the test cases. Find installation instruction
 Execute `nosetests` either in the main directory of the project or in `./tests`. The test files contained in 
 this directory comprise the test suite. 
 
+On Unix, please be aware that nosetests does not consider executable files. If running the tests fails, make 
+sure that the scripts in `tests` are not executable, e.g., run: `chmod -x $(find . -name '*.py')` in `tests`.
+
 ## Deployment
 
 No specific instructions so far; simply import from the `codeableModels` module like:
