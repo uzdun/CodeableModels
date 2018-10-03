@@ -161,6 +161,12 @@ class ModelRenderer(object):
         else:
             # else this must be a string
             name = element
+            
+        # we add a "_" before the name to make sure the name is not a plantuml keyword
+        name = name = f"_{name!s}"
+
+        # put a placeholder in the name for special characters we want to support 
+        # in names, but plantuml does not
         name = name.replace(' ', '_1_')
         name = name.replace('#', '_2_')
         name = name.replace('-', '_3_')
