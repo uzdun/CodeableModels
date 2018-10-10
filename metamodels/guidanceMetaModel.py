@@ -14,14 +14,13 @@ pattern = CMetaclass("Pattern", superclasses = practice)
 
 knownUse = CMetaclass("Known Use", superclasses = modelElement,
         attributes = {"reference": str})
-solutionsKnownUsesRelation = designSolution.association(knownUse, "has: *->*")
+solutionsKnownUsesRelation = designSolution.association(knownUse, "used in: [solutions] * -> [knownUses] *")
 
 decision = CMetaclass("Decision", superclasses = designSolution, attributes = {"recommendation": str})
 categoryDecisionsRelation = category.association(decision, "[category] 1 <>- [decisions] *")
 
 force = CMetaclass("Force", superclasses = modelElement)
-decisionForceRelation = decision.association(force, "has decision driver: *->*")
-forceImpactRelation = force.association(designSolution, "has impact on: *->*")
+forceImpactRelation = designSolution.association(force, "has force: [solutions] * -> [forces] *")
 
 forceImpactType = CStereotype("Force Impact Type", extended = forceImpactRelation)
 veryPositive = CStereotype("++", superclasses = forceImpactType)
