@@ -60,7 +60,7 @@ class ObjectModelRenderer(ModelRenderer):
         type = attribute.type
         if type == str or isCEnum(type) or isCClassifier(type):
             value = '"' + value + '"'
-        return name + " = " + value
+        return name + ' = ' + str(value)
 
     def renderLink(self, context, link):
         association = link.association 

@@ -142,6 +142,10 @@ class ModelRenderer(object):
                 if name[i-1] == ':':
                     # we don't want to end the line with a ':', break on next occasion
                     continue
+                if i+1 < len(name) and name[i+1] == '=':
+                    # we don't want to break if the next line starts with '=' as this leads to some 
+                    # undocumented font size increase in plant uml, break on next occasion
+                    continue
                 count = 0
                 result = result + namePadding + name[currentFirstIndex:i] + namePadding + "\\n"
                 currentFirstIndex = i + 1
