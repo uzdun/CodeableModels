@@ -26,38 +26,44 @@ class TestClassAttributes():
                 "isBoolean": True, 
                 "intVal": 1,
                 "floatVal": 1.1,
-                "string": "abc"})
-        eq_(len(cl.attributes), 4)
-        eq_(len(cl.attributeNames), 4)
+                "string": "abc",
+                "list": ["a", "b"]})
+        eq_(len(cl.attributes), 5)
+        eq_(len(cl.attributeNames), 5)
 
-        ok_(set(["isBoolean", "intVal", "floatVal", "string"]).issubset(cl.attributeNames))
+        ok_(set(["isBoolean", "intVal", "floatVal", "string", "list"]).issubset(cl.attributeNames))
 
         a1 = cl.getAttribute("isBoolean")
         a2 = cl.getAttribute("intVal") 
         a3 = cl.getAttribute("floatVal")
         a4 = cl.getAttribute("string")
-        ok_(set([a1, a2, a3, a4]).issubset(cl.attributes))
+        a5 = cl.getAttribute("list")
+        ok_(set([a1, a2, a3, a4, a5]).issubset(cl.attributes))
         eq_(None, cl.getAttribute("X"))
 
         eq_(a1.type, bool)
         eq_(a2.type, int)
         eq_(a3.type, float)
         eq_(a4.type, str)
+        eq_(a5.type, list)
 
         d1 = a1.default
         d2 = a2.default
         d3 = a3.default
         d4 = a4.default
+        d5 = a5.default
 
         ok_(isinstance(d1, bool))
         ok_(isinstance(d2, int))
         ok_(isinstance(d3, float))
         ok_(isinstance(d4, str))
+        ok_(isinstance(d5, list))
 
         eq_(d1, True)
         eq_(d2, 1)
         eq_(d3, 1.1)
         eq_(d4, "abc")
+        eq_(d5, ["a", "b"])
 
     def testAttributeGetNameAndClassifier(self):
         cl = CClass(self.mcl, "C", attributes = {"isBoolean": True})
@@ -69,12 +75,13 @@ class TestClassAttributes():
         eq_(a.classifier, None)
 
     def testPrimitiveAttributesNoDefault(self):
-        self.cl.attributes = {"a": bool, "b": int, "c": str, "d": float}
+        self.cl.attributes = {"a": bool, "b": int, "c": str, "d": float, "e": list}
         a1 = self.cl.getAttribute("a")
         a2 = self.cl.getAttribute("b") 
         a3 = self.cl.getAttribute("c")
         a4 = self.cl.getAttribute("d")
-        ok_(set([a1, a2, a3, a4]).issubset(self.cl.attributes))
+        a5 = self.cl.getAttribute("e")
+        ok_(set([a1, a2, a3, a4, a5]).issubset(self.cl.attributes))
         eq_(a1.default, None)
         eq_(a1.type, bool)
         eq_(a2.default, None)
@@ -83,6 +90,8 @@ class TestClassAttributes():
         eq_(a3.type, str)
         eq_(a4.default, None)
         eq_(a4.type, float)
+        eq_(a5.default, None)
+        eq_(a5.type, list)
 
     def testGetAttributeNotFound(self):
         eq_(self.cl.getAttribute("x"), None)
@@ -211,7 +220,6 @@ class TestClassAttributes():
             exceptionExpected_()
         except CException as e: 
             ok_(re.match("^(unknown attribute type: '<class ).*(CEnum'>')$", e.value))
-
 
     def testSetAttributeDefaultValue(self):
         enumObj = CEnum("ABCEnum", values = ["A", "B", "C"])

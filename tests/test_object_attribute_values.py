@@ -15,13 +15,15 @@ class TestObjectAttributeValues():
                 "isBoolean": True, 
                 "intVal": 1,
                 "floatVal": 1.1,
-                "string": "abc"})
+                "string": "abc",
+                "list": ["a", "b"]})
         o = CObject(cl, "o")
 
         eq_(o.getValue("isBoolean"), True)
         eq_(o.getValue("intVal"), 1)
         eq_(o.getValue("floatVal"), 1.1)
         eq_(o.getValue("string"), "abc")
+        eq_(o.getValue("list"), ["a", "b"])
 
         o.setValue("isBoolean", False)
         o.setValue("intVal", 2)
@@ -32,6 +34,11 @@ class TestObjectAttributeValues():
         eq_(o.getValue("intVal"), 2)
         eq_(o.getValue("floatVal"), 2.1)
         eq_(o.getValue("string"), "y")
+
+        o.setValue("list", [])
+        eq_(o.getValue("list"), [])
+        o.setValue("list", [1, 2, 3])
+        eq_(o.getValue("list"), [1, 2, 3])
 
     def testAttributeOfValueUnknown(self):
         o = CObject(self.cl, "o")
@@ -109,10 +116,11 @@ class TestObjectAttributeValues():
                 "i": int,
                 "f": float,
                 "s": str,
+                "l": list,
                 "o": attrType,
                 "e": enumType})
         o = CObject(cl, "o")
-        for n in ["b", "i", "f", "s", "o", "e"]:
+        for n in ["b", "i", "f", "s", "l", "o", "e"]:
             eq_(o.getValue(n), None)
 
     def testEnumTypeAttributeValues(self):
@@ -184,6 +192,15 @@ class TestObjectAttributeValues():
 
     def testAttributeValueTypeCheckStr(self):
         self.cl.attributes = {"t": str}
+        o = CObject(self.cl, "o")
+        try:
+            o.setValue("t", True)
+            exceptionExpected_()
+        except CException as e: 
+            eq_(f"value type for attribute 't' does not match attribute type", e.value)
+
+    def testAttributeValueTypeCheckList(self):
+        self.cl.attributes = {"t": list}
         o = CObject(self.cl, "o")
         try:
             o.setValue("t", True)
@@ -336,7 +353,6 @@ class TestObjectAttributeValues():
         except CException as e: 
             eq_(e.value, "attribute 'isBoolean' unknown for 'C2'")
 
-
     def testAttributeValuesInheritance(self):
         t1 = CClass(self.mcl, "T1")
         t2 = CClass(self.mcl, "T2")
@@ -425,7 +441,6 @@ class TestObjectAttributeValues():
             eq_(e.value, "attribute 'i1' unknown for ''")
         eq_(o.getValue("i2", c), 12)
         eq_(o.getValue("i3", sc), 13)
-
 
     def testAttributeValuesSameNameInheritance(self):
         t1 = CClass(self.mcl, "T1")

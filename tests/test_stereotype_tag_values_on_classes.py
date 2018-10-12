@@ -17,7 +17,8 @@ class TestStereotypeTagValuesOnClasses():
                 "isBoolean": True, 
                 "intVal": 1,
                 "floatVal": 1.1,
-                "string": "abc"})
+                "string": "abc",
+                "list": ["a", "b"]})
         self.mcl.stereotypes = s
         cl = CClass(self.mcl, "C", stereotypeInstances = s)
 
@@ -25,6 +26,7 @@ class TestStereotypeTagValuesOnClasses():
         eq_(cl.getTaggedValue("intVal"), 1)
         eq_(cl.getTaggedValue("floatVal"), 1.1)
         eq_(cl.getTaggedValue("string"), "abc")
+        eq_(cl.getTaggedValue("list"), ["a", "b"])
 
         cl.setTaggedValue("isBoolean", False)
         cl.setTaggedValue("intVal", 2)
@@ -35,6 +37,11 @@ class TestStereotypeTagValuesOnClasses():
         eq_(cl.getTaggedValue("intVal"), 2)
         eq_(cl.getTaggedValue("floatVal"), 2.1)
         eq_(cl.getTaggedValue("string"), "y")
+
+        cl.setTaggedValue("list", [])
+        eq_(cl.getTaggedValue("list"), [])
+        cl.setTaggedValue("list", [1, 2, 3])
+        eq_(cl.getTaggedValue("list"), [1, 2, 3])
 
     def testAttributeOfTaggedValueUnknown(self):
         try:
@@ -99,11 +106,12 @@ class TestStereotypeTagValuesOnClasses():
                 "i": int,
                 "f": float,
                 "s": str,
+                "l": list,
                 "C": attrType,
                 "e": enumType})
         mcl = CMetaclass("M", stereotypes = st)
         cl = CClass(mcl, "C", stereotypeInstances = st)
-        for n in ["b", "i", "f", "s", "C", "e"]:
+        for n in ["b", "i", "f", "s", "l", "C", "e"]:
             eq_(cl.getTaggedValue(n), None)
 
     def testEnumTypeAttributeValues(self):
@@ -174,6 +182,15 @@ class TestStereotypeTagValuesOnClasses():
 
     def testAttributeValueTypeCheckStr(self):
         self.st.attributes = {"t": str}
+        cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
+        try:
+            cl.setTaggedValue("t", True)
+            exceptionExpected_()
+        except CException as e: 
+            eq_(f"value type for attribute 't' does not match attribute type", e.value)
+
+    def testAttributeValueTypeCheckList(self):
+        self.st.attributes = {"t": list}
         cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
         try:
             cl.setTaggedValue("t", True)

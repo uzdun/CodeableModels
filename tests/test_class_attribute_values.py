@@ -14,13 +14,15 @@ class TestClassAttributeValues():
                 "isBoolean": True, 
                 "intVal": 1,
                 "floatVal": 1.1,
-                "string": "abc"})
+                "string": "abc",
+                "list": ["a", "b"]})
         cl = CClass(mcl, "C")
 
         eq_(cl.getValue("isBoolean"), True)
         eq_(cl.getValue("intVal"), 1)
         eq_(cl.getValue("floatVal"), 1.1)
         eq_(cl.getValue("string"), "abc")
+        eq_(cl.getValue("list"), ["a", "b"])
 
         cl.setValue("isBoolean", False)
         cl.setValue("intVal", 2)
@@ -31,6 +33,11 @@ class TestClassAttributeValues():
         eq_(cl.getValue("intVal"), 2)
         eq_(cl.getValue("floatVal"), 2.1)
         eq_(cl.getValue("string"), "y")
+
+        cl.setValue("list", [])
+        eq_(cl.getValue("list"), [])
+        cl.setValue("list", [1, 2, 3])
+        eq_(cl.getValue("list"), [1, 2, 3])
 
     def testAttributeOfValueUnknown(self):
         cl = CClass(self.mcl, "C")
@@ -108,10 +115,11 @@ class TestClassAttributeValues():
                 "i": int,
                 "f": float,
                 "s": str,
+                "l": list,
                 "C": attrType,
                 "e": enumType})
         cl = CClass(mcl, "C")
-        for n in ["b", "i", "f", "s", "C", "e"]:
+        for n in ["b", "i", "f", "s", "l", "C", "e"]:
             eq_(cl.getValue(n), None)
 
     def testEnumTypeAttributeValues(self):
@@ -183,6 +191,15 @@ class TestClassAttributeValues():
 
     def testAttributeValueTypeCheckStr(self):
         self.mcl.attributes = {"t": str}
+        cl = CClass(self.mcl, "C")
+        try:
+            cl.setValue("t", True)
+            exceptionExpected_()
+        except CException as e: 
+            eq_(f"value type for attribute 't' does not match attribute type", e.value)
+
+    def testAttributeValueTypeCheckList(self):
+        self.mcl.attributes = {"t": list}
         cl = CClass(self.mcl, "C")
         try:
             cl.setValue("t", True)

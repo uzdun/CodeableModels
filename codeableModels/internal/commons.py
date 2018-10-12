@@ -16,6 +16,8 @@ def getAttributeType(attr):
         return int
     elif isinstance(attr, float):
         return float
+    elif isinstance(attr, list):
+        return list
     elif isCObject(attr):
         checkNamedElementIsNotDeleted(attr)
         return attr.classifier
@@ -24,7 +26,7 @@ def getAttributeType(attr):
 def isKnownAttributeType(type):
     if isCNamedElement(type):
         return False
-    return (type == str or type == bool or type == int or type == float)
+    return (type == str or type == bool or type == int or type == float or type == list)
 
 def isCEnum(elt):
     from codeableModels.cenum import CEnum

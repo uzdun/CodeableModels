@@ -29,7 +29,8 @@ class TestStereotypeTagValuesOnLinks():
                 "isBoolean": True, 
                 "intVal": 1,
                 "floatVal": 1.1,
-                "string": "abc"})
+                "string": "abc",
+                "list": ["a", "b"]})
         self.a.stereotypes = s
         self.l.stereotypeInstances = s
 
@@ -37,6 +38,7 @@ class TestStereotypeTagValuesOnLinks():
         eq_(self.l.getTaggedValue("intVal"), 1)
         eq_(self.l.getTaggedValue("floatVal"), 1.1)
         eq_(self.l.getTaggedValue("string"), "abc")
+        eq_(self.l.getTaggedValue("list"), ["a", "b"])
 
         self.l.setTaggedValue("isBoolean", False)
         self.l.setTaggedValue("intVal", 2)
@@ -47,6 +49,11 @@ class TestStereotypeTagValuesOnLinks():
         eq_(self.l.getTaggedValue("intVal"), 2)
         eq_(self.l.getTaggedValue("floatVal"), 2.1)
         eq_(self.l.getTaggedValue("string"), "y")
+
+        self.l.setTaggedValue("list", [])
+        eq_(self.l.getTaggedValue("list"), [])
+        self.l.setTaggedValue("list", [1, 2, 3])
+        eq_(self.l.getTaggedValue("list"), [1, 2, 3])
 
     def testAttributeOfTaggedValueUnknown(self):
         try:
@@ -104,11 +111,12 @@ class TestStereotypeTagValuesOnLinks():
                 "i": int,
                 "f": float,
                 "s": str,
+                "l": list,
                 "C": attrType,
                 "e": enumType})
         self.a.stereotypes = st
         self.l.stereotypeInstances = st
-        for n in ["b", "i", "f", "s", "C", "e"]:
+        for n in ["b", "i", "f", "s", "l", "C", "e"]:
             eq_(self.l.getTaggedValue(n), None)
 
     def testEnumTypeAttributeValues(self):
@@ -178,6 +186,15 @@ class TestStereotypeTagValuesOnLinks():
 
     def testAttributeValueTypeCheckStr(self):
         self.st.attributes = {"t": str}
+        self.l.stereotypeInstances = self.st
+        try:
+            self.l.setTaggedValue("t", True)
+            exceptionExpected_()
+        except CException as e: 
+            eq_(f"value type for attribute 't' does not match attribute type", e.value)
+
+    def testAttributeValueTypeCheckList(self):
+        self.st.attributes = {"t": list}
         self.l.stereotypeInstances = self.st
         try:
             self.l.setTaggedValue("t", True)
