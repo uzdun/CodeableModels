@@ -19,6 +19,8 @@ class CClass(CClassifier):
         if legalKeywordArgs == None:
             legalKeywordArgs = [] 
         legalKeywordArgs.append("stereotypeInstances")
+        legalKeywordArgs.append("values")
+        legalKeywordArgs.append("taggedValues")
         super()._initKeywordArgs(legalKeywordArgs, **kwargs)
 
     @property
@@ -111,7 +113,15 @@ class CClass(CClassifier):
 
     def setValue(self, attributeName, value, cl = None):
         return self._classObject.setValue(attributeName, value, cl)
-        
+
+    @property
+    def values(self):
+        return self._classObject.values
+
+    @values.setter
+    def values(self, valuesDict):
+        self._classObject.values = valuesDict
+
     def _removeValue(self, attributeName, cl):
         return self._classObject._removeValue(attributeName, cl)
     
@@ -138,6 +148,14 @@ class CClass(CClassifier):
     def _removeTaggedValue(self, attributeName, stereotype):
         self._taggedValues.removeTaggedValue(attributeName, stereotype)
 
+    @property
+    def taggedValues(self):
+        return self._taggedValues.getTaggedValuesDict(self._stereotypeInstancesHolder.getStereotypeInstancePath())
+
+    @taggedValues.setter
+    def taggedValues(self, valuesDict):
+        self._taggedValues.setTaggedValuesDict(valuesDict, self._stereotypeInstancesHolder.getStereotypeInstancePath())
+
     def association(self, target, descriptor = None, **kwargs):
         if not isinstance(target, CClass):
             raise CException(f"class '{self!s}' is not compatible with association target '{target!s}'")
@@ -162,3 +180,5 @@ class CClass(CClassifier):
 
     def deleteLinks(self, links, **kwargs):
         return self._classObject.deleteLinks(links, **kwargs)
+
+

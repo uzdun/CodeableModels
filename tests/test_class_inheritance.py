@@ -366,7 +366,7 @@ class TestClassInheritance():
             CClass(self.mcl, "ST", superclass = t)
             exceptionExpected_()
         except CException as e: 
-            eq_("unknown keyword argument 'superclass', should be one of: ['stereotypeInstances', 'attributes', 'superclasses', 'bundles']", e.value)
+            eq_("unknown keyword argument 'superclass', should be one of: ['stereotypeInstances', 'values', 'taggedValues', 'attributes', 'superclasses', 'bundles']", e.value)
 
     def testSuperclassesThatAreDeleted(self):
         c1 = CClass(self.mcl, "C1")

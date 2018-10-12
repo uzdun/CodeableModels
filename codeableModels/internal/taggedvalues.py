@@ -57,3 +57,20 @@ class CTaggedValues:
             self._taggedValues[stereotype].pop(attributeName, None)
         except KeyError:
             return
+
+    def getTaggedValuesDict(self, stereotypePath):
+        result = {}
+        for st in stereotypePath:
+            if st in self._taggedValues:
+                for attrName in self._taggedValues[st]:
+                    if not attrName in result:
+                        result[attrName] = self._taggedValues[st][attrName]
+        return result
+
+    def setTaggedValuesDict(self, valuesDict, stereotypePath):
+        if valuesDict == None:
+            valuesDict = {}
+        if not isinstance(valuesDict, dict):
+            raise CException(f"malformed tagged values description: '{valuesDict!s}'")
+        for valueName in valuesDict:
+            self.setTaggedValue(valueName, valuesDict[valueName], stereotypePath)

@@ -15,15 +15,21 @@ class CObject(CBundlable):
         else:
             # don't check if this is a class object, as classifier is then a metaclass 
            checkIsCClass(cl)
+
+        values = kwargs.pop('values', None)
+
         if cl != None:
             checkNamedElementIsNotDeleted(cl)
-        super().__init__(name, **kwargs)
         self._classifier = cl
+        super().__init__(name, **kwargs)
         if self._classObjectClass == None:
             # don't add instance if this is a class object 
             self._classifier._addObject(self)
         self._initAttributeValues()
         self._linkObjects = []
+
+        if values != None:
+            self.values = values
 
     def _initAttributeValues(self):
         self._attributeValues = {}
@@ -137,6 +143,25 @@ class CObject(CBundlable):
                 self._attributeValues[classifier].update({attributeName: value})
             except KeyError:
                 self._attributeValues[classifier] = {attributeName: value}
+
+    @property
+    def values(self):
+        result = {}
+        for cl in self.classPath:
+            if cl in self._attributeValues:
+                for attrName in self._attributeValues[cl]:
+                    if not attrName in result:
+                        result[attrName] = self._attributeValues[cl][attrName]
+        return result
+
+    @values.setter
+    def values(self, valuesDict):
+        if valuesDict == None:
+            valuesDict = {}
+        if not isinstance(valuesDict, dict):
+            raise CException(f"malformed attribute values description: '{valuesDict!s}'")
+        for valueName in valuesDict:
+            self.setValue(valueName, valuesDict[valueName])
 
     def _removeValue(self, attributeName, classifier):
         try:

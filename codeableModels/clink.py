@@ -74,6 +74,15 @@ class CLink(object):
     def _removeTaggedValue(self, attributeName, stereotype):
         self._taggedValues.removeTaggedValue(attributeName, stereotype)
 
+    @property
+    def taggedValues(self):
+        return self._taggedValues.getTaggedValuesDict(self._stereotypeInstancesHolder.getStereotypeInstancePath())
+
+    @taggedValues.setter
+    def taggedValues(self, valuesDict):
+        self._taggedValues.setTaggedValuesDict(valuesDict, self._stereotypeInstancesHolder.getStereotypeInstancePath())
+
+
 def _getTargetObjectsFromDefinition(targets, isClassLinks):
     if targets == None:
         targets = []

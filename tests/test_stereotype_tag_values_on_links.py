@@ -119,6 +119,72 @@ class TestStereotypeTagValuesOnLinks():
         for n in ["b", "i", "f", "s", "l", "C", "e"]:
             eq_(self.l.getTaggedValue(n), None)
 
+    def testTaggedValuesSetter(self):
+        objValType = CClass(CMetaclass())
+        objVal = CObject(objValType, "objVal")
+
+        st = CStereotype("S", attributes = {
+                "isBoolean": True, 
+                "intVal": 1,
+                "floatVal": 1.1,
+                "string": "abc",
+                "list": ["a", "b"],
+                "obj": objValType})
+        self.a.stereotypes = st
+        self.l.stereotypeInstances = st
+        self.l.taggedValues = {
+            "isBoolean": False, "intVal": 2, "floatVal": 2.1, 
+            "string": "y", "list": [], "obj": objVal}
+
+        eq_(self.l.getTaggedValue("isBoolean"), False)
+        eq_(self.l.getTaggedValue("intVal"), 2)
+        eq_(self.l.getTaggedValue("floatVal"), 2.1)
+        eq_(self.l.getTaggedValue("string"), "y")
+        eq_(self.l.getTaggedValue("list"), [])
+        eq_(self.l.getTaggedValue("obj"), objVal)
+
+        eq_(self.l.taggedValues, {"isBoolean": False, "intVal": 2, "floatVal": 2.1, 
+            "string": "y", "list": [], "obj": objVal})
+
+    def testTaggedValuesSetterOverwrite(self):
+        st = CStereotype("S", attributes = {
+                "isBoolean": True, 
+                "intVal": 1})
+        self.a.stereotypes = st
+        self.l.stereotypeInstances = st
+        self.l.taggedValues = {"isBoolean": False, "intVal": 2}
+        self.l.taggedValues = {"isBoolean": True, "intVal": 20}
+        eq_(self.l.getTaggedValue("isBoolean"), True)
+        eq_(self.l.getTaggedValue("intVal"), 20)
+        eq_(self.l.taggedValues, {'isBoolean': True, 'intVal': 20})
+        self.l.taggedValues = {}
+        # tagged values should not delete existing values
+        eq_(self.l.taggedValues, {"isBoolean": True, "intVal": 20})
+
+    def testTaggedValuesSetterWithSuperclass(self):
+        sst = CStereotype("SST", attributes = {
+                "intVal": 20, "intVal2": 30})
+        st = CStereotype("S", superclasses = sst, attributes = {
+                "isBoolean": True, 
+                "intVal": 1})
+        self.a.stereotypes = st
+        self.l.stereotypeInstances = st
+        self.l.taggedValues = {"isBoolean": False}
+        eq_(self.l.taggedValues, {"isBoolean": False, "intVal": 1, "intVal2": 30})
+        self.l.setTaggedValue("intVal", 12, sst)
+        self.l.setTaggedValue("intVal", 15, st)
+        self.l.setTaggedValue("intVal2", 16, sst)
+        eq_(self.l.taggedValues, {"isBoolean": False, "intVal": 15, "intVal2": 16})
+        eq_(self.l.getTaggedValue("intVal", sst), 12)
+        eq_(self.l.getTaggedValue("intVal", st), 15)
+
+    def testTaggedValuesSetterMalformedDescription(self):
+        try:
+            self.l.taggedValues = [1, 2, 3]
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "malformed tagged values description: '[1, 2, 3]'")
+
     def testEnumTypeAttributeValues(self):
         enumType = CEnum("EnumT", values = ["A", "B", "C"]) 
         self.st.attributes = {

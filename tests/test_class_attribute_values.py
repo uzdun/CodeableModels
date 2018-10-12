@@ -122,6 +122,72 @@ class TestClassAttributeValues():
         for n in ["b", "i", "f", "s", "l", "C", "e"]:
             eq_(cl.getValue(n), None)
 
+    def testValuesDefinedInConstructor(self):
+        objValType = CClass(CMetaclass())
+        objVal = CObject(objValType, "objVal")
+
+        mcl = CMetaclass("M", attributes = {
+                "isBoolean": True, 
+                "intVal": 1,
+                "floatVal": 1.1,
+                "string": "abc",
+                "list": ["a", "b"],
+                "obj": objValType})
+        cl = CClass(mcl, "C", values = {
+            "isBoolean": False, "intVal": 2, "floatVal": 2.1, 
+            "string": "y", "list": [], "obj": objVal})
+
+        eq_(cl.getValue("isBoolean"), False)
+        eq_(cl.getValue("intVal"), 2)
+        eq_(cl.getValue("floatVal"), 2.1)
+        eq_(cl.getValue("string"), "y")
+        eq_(cl.getValue("list"), [])
+        eq_(cl.getValue("obj"), objVal)
+
+        eq_(cl.values, {"isBoolean": False, "intVal": 2, "floatVal": 2.1, 
+            "string": "y", "list": [], "obj": objVal})
+
+    def testValuesSetterOverwrite(self):
+        mcl = CMetaclass("M", attributes = {
+                "isBoolean": True, 
+                "intVal": 1})
+        cl = CClass(mcl, "C", values = {
+            "isBoolean": False, "intVal": 2})
+        cl.values = {"isBoolean": True, "intVal": 20}
+        eq_(cl.getValue("isBoolean"), True)
+        eq_(cl.getValue("intVal"), 20)
+        eq_(cl.values, {'isBoolean': True, 'intVal': 20})
+        cl.values = {}
+        # values should not delete existing values
+        eq_(cl.values, {"isBoolean": True, "intVal": 20})
+
+    def testValuesSetterWithSuperclass(self):
+        smcl = CMetaclass("SMCL", attributes = {
+                "intVal": 20, "intVal2": 30})
+        mcl = CMetaclass("M", superclasses = smcl, attributes = {
+                "isBoolean": True, 
+                "intVal": 1})
+        cl = CClass(mcl, "C", values = {
+            "isBoolean": False})
+        eq_(cl.values, {"isBoolean": False, "intVal": 1, "intVal2": 30})
+        cl.setValue("intVal", 12, smcl)
+        cl.setValue("intVal", 15, mcl)
+        cl.setValue("intVal2", 16, smcl)
+        eq_(cl.values, {"isBoolean": False, "intVal": 15, "intVal2": 16})
+        eq_(cl.getValue("intVal", smcl), 12)
+        eq_(cl.getValue("intVal", mcl), 15)
+
+    def testValuesSetterMalformedDescription(self):
+        mcl = CMetaclass("M", attributes = {
+                "isBoolean": True, 
+                "intVal": 1})
+        cl = CClass(mcl, "C")
+        try:
+            cl.values = [1, 2, 3]
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "malformed attribute values description: '[1, 2, 3]'")
+
     def testEnumTypeAttributeValues(self):
         enumType = CEnum("EnumT", values = ["A", "B", "C"]) 
         mcl = CMetaclass(attributes = {

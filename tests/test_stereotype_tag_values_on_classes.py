@@ -114,6 +114,76 @@ class TestStereotypeTagValuesOnClasses():
         for n in ["b", "i", "f", "s", "l", "C", "e"]:
             eq_(cl.getTaggedValue(n), None)
 
+    def testTaggedValuesDefinedInConstructor(self):
+        objValType = CClass(CMetaclass())
+        objVal = CObject(objValType, "objVal")
+
+        st = CStereotype("S", attributes = {
+                "isBoolean": True, 
+                "intVal": 1,
+                "floatVal": 1.1,
+                "string": "abc",
+                "list": ["a", "b"],
+                "obj": objValType})
+        mcl = CMetaclass("M", stereotypes = st)
+        cl = CClass(mcl, "C", stereotypeInstances = st, taggedValues = {
+            "isBoolean": False, "intVal": 2, "floatVal": 2.1, 
+            "string": "y", "list": [], "obj": objVal})
+
+        eq_(cl.getTaggedValue("isBoolean"), False)
+        eq_(cl.getTaggedValue("intVal"), 2)
+        eq_(cl.getTaggedValue("floatVal"), 2.1)
+        eq_(cl.getTaggedValue("string"), "y")
+        eq_(cl.getTaggedValue("list"), [])
+        eq_(cl.getTaggedValue("obj"), objVal)
+
+        eq_(cl.taggedValues, {"isBoolean": False, "intVal": 2, "floatVal": 2.1, 
+            "string": "y", "list": [], "obj": objVal})
+
+    def testTaggedValuesSetterOverwrite(self):
+        st = CStereotype("S", attributes = {
+                "isBoolean": True, 
+                "intVal": 1})
+        mcl = CMetaclass("M", stereotypes = st)
+        cl = CClass(mcl, "C", stereotypeInstances = st, taggedValues = {
+            "isBoolean": False, "intVal": 2})
+        cl.taggedValues = {"isBoolean": True, "intVal": 20}
+        eq_(cl.getTaggedValue("isBoolean"), True)
+        eq_(cl.getTaggedValue("intVal"), 20)
+        eq_(cl.taggedValues, {'isBoolean': True, 'intVal': 20})
+        cl.taggedValues = {}
+        # tagged values should not delete existing values
+        eq_(cl.taggedValues, {"isBoolean": True, "intVal": 20})
+
+    def testTaggedValuesSetterWithSuperclass(self):
+        sst = CStereotype("SST", attributes = {
+                "intVal": 20, "intVal2": 30})
+        st = CStereotype("S", superclasses = sst, attributes = {
+                "isBoolean": True, 
+                "intVal": 1})
+        mcl = CMetaclass("M", stereotypes = st)
+        cl = CClass(mcl, "C", stereotypeInstances = st, taggedValues = {
+            "isBoolean": False})
+        eq_(cl.taggedValues, {"isBoolean": False, "intVal": 1, "intVal2": 30})
+        cl.setTaggedValue("intVal", 12, sst)
+        cl.setTaggedValue("intVal", 15, st)
+        cl.setTaggedValue("intVal2", 16, sst)
+        eq_(cl.taggedValues, {"isBoolean": False, "intVal": 15, "intVal2": 16})
+        eq_(cl.getTaggedValue("intVal", sst), 12)
+        eq_(cl.getTaggedValue("intVal", st), 15)
+
+    def testTaggedValuesSetterMalformedDescription(self):
+        st = CStereotype("S", attributes = {
+                "isBoolean": True, 
+                "intVal": 1})
+        mcl = CMetaclass("M", stereotypes = st)
+        cl = CClass(mcl, "C", stereotypeInstances = st)
+        try:
+            cl.taggedValues = [1, 2, 3]
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "malformed tagged values description: '[1, 2, 3]'")
+
     def testEnumTypeAttributeValues(self):
         enumType = CEnum("EnumT", values = ["A", "B", "C"]) 
         self.st.attributes = {
