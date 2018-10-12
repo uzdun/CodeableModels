@@ -296,18 +296,6 @@ def deleteLinks(linkDefinitions, **kwargs):
                 matchingLink.association._checkMultiplicity(target, targetLen, sourceLen, not matchesInOrder)  
                 matchingLink.delete()
 
-    def delete(self):
-        if self._isDeleted == True:
-            return
-        self._isDeleted = True
-        for si in self.stereotypeInstances:
-            si._extendedInstances.remove(self)
-        self._stereotypeInstancesHolder._stereotypes = []
-        if self._source != self._target:
-            self._target._linkObjects.remove(self)
-        self._source._linkObjects.remove(self)
-
-
 
 class LinkKeywordsContext(object):
     def __init__(self, **kwargs):

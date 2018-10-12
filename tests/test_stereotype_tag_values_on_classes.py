@@ -191,7 +191,6 @@ class TestStereotypeTagValuesOnClasses():
                 "e2": enumType}
         e2 = self.st.getAttribute("e2")
         e2.default = "A"
-        cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
         eq_(self.cl.getTaggedValue("e1"), None)
         eq_(self.cl.getTaggedValue("e2"), "A")
         self.cl.setTaggedValue("e1", "B")
