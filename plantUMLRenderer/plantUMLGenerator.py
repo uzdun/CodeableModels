@@ -10,18 +10,20 @@ class PlantUMLGenerator(object):
         if os.path.exists(self.directory):
             shutil.rmtree(self.directory)
         os.makedirs(self.directory)
+        self.classModelRenderer = ClassModelRenderer(plantUmlJarPath = self.plantUmlJarPath, directory = self.directory)
+        self.objectModelRenderer = ObjectModelRenderer(plantUmlJarPath = self.plantUmlJarPath, directory = self.directory)
 
     def getFileName(self, elementName):
         name = elementName.replace(' ', '_')
         return name
 
-    def generateClassModel(self, bundle, **kwargs):
-        renderer = ClassModelRenderer(plantUmlJarPath = self.plantUmlJarPath, directory = self.directory)
-        renderer.renderClassModelToFile(self.getFileName(bundle.name), bundle.elements, **kwargs)
+    def generateClassModel(self, bundle, **kwargs): 
+        self.classModelRenderer.directory = self.directory
+        self.classModelRenderer.renderClassModelToFile(self.getFileName(bundle.name), bundle.elements, **kwargs)
 
     def generateObjectModel(self, bundle, **kwargs):
-        renderer = ObjectModelRenderer(plantUmlJarPath = self.plantUmlJarPath, directory = self.directory)
-        renderer.renderObjectModelToFile(self.getFileName(bundle.name), bundle.elements, **kwargs)
+        self.objectModelRenderer.directory = self.directory
+        self.objectModelRenderer.renderObjectModelToFile(self.getFileName(bundle.name), bundle.elements, **kwargs)
 
     def generateClassModels(self, dirName, viewList):
         mainDir = self.directory

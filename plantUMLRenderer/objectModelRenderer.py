@@ -31,36 +31,16 @@ class ObjectModelRenderer(ModelRenderer):
         clName = object.classifier.name
         if clName == None:
             clName = ""
-        return '"' + sterotypeString + self.padAndBreakName(objName + " : " + clName) + '"'
+        objClassString = self.padAndBreakName(" : " + clName)
+        if objName != "":
+            objString = self.padAndBreakName(objName)
+            if len(objString + objClassString) > self.nameBreakLength:
+                objClassString = "\\n" + objClassString
+            objClassString = objString + objClassString
+        return '"' + sterotypeString + objClassString + '"'
 
     def renderObjectSpecification(self, context, obj):
         context.addLine("class " + self.renderObjectNameWithClassifier(obj) + " as " + self.getNodeID(context, obj) + self.renderAttributeValues(context, obj))
-
-    def renderAttributeValues(self, context, obj):
-        if not context.renderAttributeValues:
-            return ""
-        attributeValueAdded = False
-        attributeValueString = " {\n"
-        for cl in obj.classPath:
-            attributes = cl.attributes
-            for attribute in attributes:
-                name = attribute.name
-                value = obj.getValue(name, cl)
-                if not context.renderEmptyAttributes:
-                    if value == None:
-                        continue
-                attributeValueAdded = True
-                attributeValueString += self.renderAttributeValue(attribute, name, value) + "\n"
-        attributeValueString += "}\n"
-        if attributeValueAdded == False:
-            attributeValueString = ""
-        return attributeValueString
-
-    def renderAttributeValue(self, attribute, name, value):
-        type = attribute.type
-        if type == str or isCEnum(type) or isCClassifier(type):
-            value = '"' + value + '"'
-        return name + ' = ' + str(value)
 
     def renderLink(self, context, link):
         association = link.association 

@@ -1,7 +1,7 @@
 import os
 import shutil
 from subprocess import call
-from codeableModels.internal.commons import setKeywordArgs, isCObject, isCClass
+from codeableModels.internal.commons import setKeywordArgs, isCObject, isCClass, isCEnum, isCClassifier
 from enum import Enum 
 from codeableModels import CNamedElement
 
@@ -53,7 +53,7 @@ class ModelRenderer(object):
         self.renderPNG = True
         self.renderSVG = True
 
-        self.nameBreakLength = 18
+        self.nameBreakLength = 25
         self.namePadding = ""
         self.style = ModelStyle.PLAIN
 
@@ -126,6 +126,32 @@ class ModelRenderer(object):
         result += "» " + self.breakName(taggedValuesString)
         result += "\\n"
         return result 
+
+    def renderAttributeValues(self, context, obj):
+        if not context.renderAttributeValues:
+            return ""
+        attributeValueAdded = False
+        attributeValueString = " {\n"
+        for cl in obj.classPath:
+            attributes = cl.attributes
+            for attribute in attributes:
+                name = attribute.name
+                value = obj.getValue(name, cl)
+                if not context.renderEmptyAttributes:
+                    if value == None:
+                        continue
+                attributeValueAdded = True
+                attributeValueString += self.renderAttributeValue(attribute, name, value) + "\n"
+        attributeValueString += "}\n"
+        if attributeValueAdded == False:
+            attributeValueString = ""
+        return attributeValueString
+
+    def renderAttributeValue(self, attribute, name, value):
+        type = attribute.type
+        if type == str or isCEnum(type) or isCClassifier(type):
+            value = '"' + value + '"'
+        return self.breakName(name + ' = ' + str(value))
 
     def padAndBreakName(self, name, namePadding = None):
         if namePadding == None:
