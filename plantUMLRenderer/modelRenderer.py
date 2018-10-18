@@ -203,19 +203,9 @@ class ModelRenderer(object):
         # we add a "_" before the name to make sure the name is not a plantuml keyword
         name = name = f"_{name!s}"
 
-        # put a placeholder in the name for special characters we want to support 
-        # in names, but plantuml does not
-        name = name.replace(' ', '_1_')
-        name = name.replace('#', '_2_')
-        name = name.replace('-', '_3_')
-        name = name.replace('/', '_4_')
-        name = name.replace('+', '_5_')
-        name = name.replace('?', '_6_')
-        name = name.replace(',', '_7_')
-        name = name.replace('.', '_8_')
-        name = name.replace('\\', '_9_')
-        name = name.replace('(', '_0_')
-        name = name.replace(')', '_A_')
+        # put a placeholder in the name for special characters as plantuml does not
+        # support many of them
+        name = "".join([c if c.isalnum() else "_" + str(ord(c)) + "_" for c in name])
         return name
 
     def renderToFiles(self, fileNameBase, source):

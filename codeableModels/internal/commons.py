@@ -159,26 +159,30 @@ def checkIsCommonClassifier(classifier, objects):
         if not o.instanceOf(classifier):
             raise CException(f"object '{o!s}' not compatible with classifier '{classifier!s}'")
 
-
-# get the common (top level) metaclass in a list of classes
+# get the common metaclass in a list of classes; if more than more match, get the one
+# that is lowest in the class path
 def getCommonMetaclass(classes):
-    commonMetaclass = None
+    commonMetaclassCandidates = None
     for c in classes:
         if c == None or not isCClass(c):
             raise CException(f"not a class: '{c!s}'")
-        if commonMetaclass == None:
-            commonMetaclass = c.metaclass
+        if commonMetaclassCandidates == None:
+            commonMetaclassCandidates = [c.metaclass] + c.classObject.classPath
         else:
-            if commonMetaclass == c.metaclass:
-                continue
-            if commonMetaclass in c.metaclass.allSuperclasses:
-                continue
-            if commonMetaclass in c.metaclass.allSubclasses:
-                commonMetaclass = c.metaclass
-                continue
-            raise CException(f"class '{c!s}' has an incompatible classifier")
-    return commonMetaclass
-
+            updatedCommonMetaclassCandidates = []
+            metaclasses = [c.metaclass] + c.classObject.classPath
+            for cmc in commonMetaclassCandidates:
+                for mc in metaclasses:
+                    if cmc == mc:
+                        updatedCommonMetaclassCandidates.append(cmc)
+            if len(updatedCommonMetaclassCandidates) == 0:
+                break
+            commonMetaclassCandidates = updatedCommonMetaclassCandidates
+    if commonMetaclassCandidates == None:
+        return None
+    if len(commonMetaclassCandidates) == 0:
+        raise CException(f"class '{c!s}' has an incompatible classifier")
+    return commonMetaclassCandidates[0]
 
 def getLinkObjects(objList):
     result = []
