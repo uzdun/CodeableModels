@@ -106,7 +106,6 @@ class TestMetaclassAssociations():
         eq_(a_3.sourceRoleName, "a")
         eq_(a_3.composition, True)     
 
-
     def testGetAssociations(self):
         a1 = self.m1.association(self.m2, multiplicity = "1", roleName = "t",  
                 sourceMultiplicity = "*", sourceRoleName = "i")

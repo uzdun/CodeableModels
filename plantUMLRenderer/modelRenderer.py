@@ -149,8 +149,16 @@ class ModelRenderer(object):
 
     def renderAttributeValue(self, attribute, name, value):
         type = attribute.type
-        if type == str or isCEnum(type) or isCClassifier(type):
-            value = '"' + value + '"'
+        if type == str:
+            value = '"' + str(value) + '"'
+        elif type == list and value != None:
+            result = []
+            for elt in value:
+                if isinstance(elt, str):
+                    result.append('"' + str(elt) + '"')
+                else:
+                    result.append(str(elt))
+            value = "[" + ", ".join(result) + "]"
         return self.breakName(name + ' = ' + str(value))
 
     def padAndBreakName(self, name, namePadding = None):
@@ -206,6 +214,8 @@ class ModelRenderer(object):
         name = name.replace(',', '_7_')
         name = name.replace('.', '_8_')
         name = name.replace('\\', '_9_')
+        name = name.replace('(', '_0_')
+        name = name.replace(')', '_A_')
         return name
 
     def renderToFiles(self, fileNameBase, source):

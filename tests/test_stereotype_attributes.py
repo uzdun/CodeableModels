@@ -136,7 +136,32 @@ class TestMetaClassAttributes():
         eq_(self.stereotype.attributeNames, ["attrTypeObj", "isBoolean"])
         # using the CObject in attributes causes a new CAttribute to be created != objAttr
         neq_(self.stereotype.getAttribute("attrTypeObj"), objAttr)
-    
+
+    def testClassTypeAttribute(self):
+        attrType = CMetaclass("AttrType")
+        attrValue = CClass(attrType, "attrValue")
+        self.stereotype.attributes = {"attrTypeCl" : attrType}
+        clAttr = self.stereotype.getAttribute("attrTypeCl")
+        clAttr.default = attrValue
+        attributes = self.stereotype.attributes
+        eq_(set(attributes), {clAttr})
+
+        boolAttr = CAttribute(default = True)
+        self.stereotype.attributes = {"attrTypeCl" : clAttr, "isBoolean" : boolAttr}
+        attributes = self.stereotype.attributes
+        eq_(set(attributes), {clAttr, boolAttr})
+        eq_(self.stereotype.attributeNames, ["attrTypeCl", "isBoolean"])
+        clAttr = self.stereotype.getAttribute("attrTypeCl")
+        eq_(clAttr.type, attrType)
+        default = clAttr.default
+        ok_(isinstance(default, CClass))
+        eq_(default, attrValue)
+
+        self.stereotype.attributes = {"attrTypeCl" : attrValue, "isBoolean" : boolAttr}
+        eq_(self.stereotype.attributeNames, ["attrTypeCl", "isBoolean"])
+        # using the CClass in attributes causes a new CAttribute to be created != clAttr
+        neq_(self.stereotype.getAttribute("attrTypeCl"), clAttr)
+
     def testUseEnumTypeAttribute(self):
         enumValues = ["A", "B", "C"]
         enumObj = CEnum("ABCEnum", values = enumValues)

@@ -3,7 +3,7 @@ from codeableModels.cenum import CEnum
 from codeableModels.cattribute import CAttribute
 from codeableModels.cassociation import CAssociation
 from codeableModels.cexception import CException
-from codeableModels.internal.commons import setKeywordArgs, isKnownAttributeType, isCAttribute, isCClassifier, checkNamedElementIsNotDeleted
+from codeableModels.internal.commons import *
 
 class CClassifier(CBundlable):
     def __init__(self, name=None, **kwargs):
@@ -30,7 +30,10 @@ class CClassifier(CBundlable):
         attr = None
         if isCAttribute(value):
             attr = value
-        elif isKnownAttributeType(value) or isinstance(value, CEnum) or isinstance(value, CClassifier):
+        elif isKnownAttributeType(value) or isinstance(value, CEnum) or isCClassifier(value):
+            # if value is a CClass, we interpret it as the type for a CObject attribute, not the default 
+            # value of a CMetaclass type attribute: if you need to set a metaclass type default value, use 
+            # CAttribute's default instead
             attr = CAttribute(type = value)
         else:
             attr = CAttribute(default = value)

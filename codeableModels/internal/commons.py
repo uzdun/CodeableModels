@@ -21,6 +21,9 @@ def getAttributeType(attr):
     elif isCObject(attr):
         checkNamedElementIsNotDeleted(attr)
         return attr.classifier
+    elif isCClass(attr):
+        checkNamedElementIsNotDeleted(attr)
+        return attr.metaclass
     return None
     
 def isKnownAttributeType(type):

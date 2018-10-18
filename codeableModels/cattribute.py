@@ -1,4 +1,4 @@
-from codeableModels.internal.commons import isCNamedElement, checkNamedElementIsNotDeleted, setKeywordArgs, isCClassifier, isCEnum, getAttributeType
+from codeableModels.internal.commons import *
 from codeableModels.cexception import CException
 from codeableModels.cenum import CEnum
 
@@ -67,8 +67,11 @@ class CAttribute(object):
             if isCEnum(self._type):
                 if not default in self._type.values:
                     self.__wrongDefaultException(default, self._type)
-            elif isCClassifier(self._type):
+            elif isCClass(self._type):
                 if not default in self._type.objects:
+                    self.__wrongDefaultException(default, self._type)
+            elif isCMetaclass(self._type):
+                if not default in self._type.classes:
                     self.__wrongDefaultException(default, self._type)
             elif not isinstance(default, self._type):
                 self.__wrongDefaultException(default, self._type)
@@ -87,7 +90,7 @@ class CAttribute(object):
             raise CException(f"value for attribute '{name!s}' is not a known attribute type")
         if isCClassifier(attrType):
             if attrType != self._type and (not self._type in attrType.allSuperclasses):
-                raise CException(f"type of object '{value!s}' is not matching type of attribute '{name!s}'")
+                raise CException(f"type of '{value!s}' is not matching type of attribute '{name!s}'")
             return
         if attrType != self._type:
             if (self.type == float and attrType == int):

@@ -82,7 +82,24 @@ class TestClassAttributeValues():
             cl.setValue("attrTypeObj", nonAttrValue)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "type of object 'nonAttrValue' is not matching type of attribute 'attrTypeObj'")
+            eq_(e.value, "type of 'nonAttrValue' is not matching type of attribute 'attrTypeObj'")
+
+    def testClassTypeAttributeValues(self):
+        attrType = CMetaclass("AttrType")
+        attrValue = CClass(attrType, "attrValue")
+        self.mcl.attributes = {"attrTypeCl" : attrType}
+        clAttr = self.mcl.getAttribute("attrTypeCl")
+        clAttr.default = attrValue
+        eq_(clAttr.type, attrType)
+        cl = CClass(self.mcl, "C")
+        eq_(cl.getValue("attrTypeCl"), attrValue)
+
+        nonAttrValue = CClass(CMetaclass("MX"), "nonAttrValue")
+        try:
+            cl.setValue("attrTypeCl", nonAttrValue)
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "type of 'nonAttrValue' is not matching type of attribute 'attrTypeCl'")
 
     def testAddObjectAttributeGetSetValue(self):
         attrType = CClass(self.mcl, "AttrType")

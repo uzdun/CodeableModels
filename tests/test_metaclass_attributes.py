@@ -136,7 +136,32 @@ class TestMetaClassAttributes():
         eq_(self.mcl.attributeNames, ["attrTypeObj", "isBoolean"])
         # using the CObject in attributes causes a new CAttribute to be created != objAttr
         neq_(self.mcl.getAttribute("attrTypeObj"), objAttr)
-    
+
+    def testClassTypeAttribute(self):
+        attrType = CMetaclass("AttrType")
+        attrValue = CClass(attrType, "attrValue")
+        self.mcl.attributes = {"attrTypeCl" : attrType}
+        clAttr = self.mcl.getAttribute("attrTypeCl")
+        clAttr.default = attrValue
+        attributes = self.mcl.attributes
+        eq_(set(attributes), {clAttr})
+
+        boolAttr = CAttribute(default = True)
+        self.mcl.attributes = {"attrTypeCl" : clAttr, "isBoolean" : boolAttr}
+        attributes = self.mcl.attributes
+        eq_(set(attributes), {clAttr, boolAttr})
+        eq_(self.mcl.attributeNames, ["attrTypeCl", "isBoolean"])
+        clAttr = self.mcl.getAttribute("attrTypeCl")
+        eq_(clAttr.type, attrType)
+        default = clAttr.default
+        ok_(isinstance(default, CClass))
+        eq_(default, attrValue)
+
+        self.mcl.attributes = {"attrTypeCl" : attrValue, "isBoolean" : boolAttr}
+        eq_(self.mcl.attributeNames, ["attrTypeCl", "isBoolean"])
+        # using the CClass in attributes causes a new CAttribute to be created != clAttr
+        neq_(self.mcl.getAttribute("attrTypeCl"), clAttr)
+
     def testUseEnumTypeAttribute(self):
         enumValues = ["A", "B", "C"]
         enumObj = CEnum("ABCEnum", values = enumValues)

@@ -80,7 +80,23 @@ class TestStereotypeTagValuesOnLinks():
             self.l.setTaggedValue("attrTypeObj", nonAttrValue)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "type of object 'nonAttrValue' is not matching type of attribute 'attrTypeObj'")
+            eq_(e.value, "type of 'nonAttrValue' is not matching type of attribute 'attrTypeObj'")
+
+    def testClassTypeAttributeTaggedValues(self):
+        attrType = CMetaclass("AttrType")
+        attrValue = CClass(attrType, "attrValue")
+        self.st.attributes = {"attrTypeCl" : attrType}
+        clAttr = self.st.getAttribute("attrTypeCl")
+        clAttr.default = attrValue
+        eq_(clAttr.type, attrType)
+        eq_(self.l.getTaggedValue("attrTypeCl"), attrValue)
+
+        nonAttrValue = CClass(CMetaclass("MX"), "nonAttrValue")
+        try:
+            self.l.setTaggedValue("attrTypeCl", nonAttrValue)
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "type of 'nonAttrValue' is not matching type of attribute 'attrTypeCl'")
 
     def testAddObjectAttributeGetSetTaggedValue(self):
         attrType = CClass(self.m1, "AttrType")
@@ -269,7 +285,7 @@ class TestStereotypeTagValuesOnLinks():
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
 
     def testAttributeValueTypeCheckObject(self):
-        attrType = CMetaclass("AttrType")
+        attrType = CClass(CMetaclass(), "AttrType")
         self.st.attributes = {"t": attrType}
         self.l.stereotypeInstances = self.st
         try:
