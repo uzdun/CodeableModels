@@ -54,11 +54,11 @@ class ObjectModelRenderer(ModelRenderer):
         sterotypeString = self.renderStereotypes(link, link.stereotypeInstances)
 
         label = ""
-        if association.name != None and len(association.name) != 0:
+        if link.label != None and len(link.label) != 0:
             if not sterotypeString == "" and not context.renderLinkLabelsIfStereotyped:
                 label = ": \"" + sterotypeString + "\" "
             else:
-                label = ": \"" + sterotypeString + association.name + "\" "
+                label = ": \"" + sterotypeString + link.label + "\" "
         elif sterotypeString != "":
             label = ": \"" + sterotypeString + "\" "
 

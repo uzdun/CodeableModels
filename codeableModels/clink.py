@@ -8,6 +8,7 @@ class CLink(object):
         self._isDeleted = False
         self._source = sourceObject
         self._target = targetObject
+        self.label = association.name
         self.association = association
         self._stereotypeInstancesHolder = CStereotypeInstancesHolder(self)
         self._taggedValues = CTaggedValues()
@@ -186,6 +187,8 @@ def _linkObjects(context, source, targets):
                     link.delete()
                 raise CException(f"trying to link the same link twice '{source!s} -> {target!s}'' twice for the same association")
         link = CLink(context.association, sourceForLink, targetForLink)
+        if context.label != None:
+            link.label = context.label
 
         newLinks.append(link)
         sourceObj._linkObjects.append(link)
@@ -254,15 +257,12 @@ def deleteLinks(linkDefinitions, **kwargs):
 
     for source in linkDefinitions:
         targets = linkDefinitions[source]
-        #_determineMatchingAssociationAndSetContextInfo(context, source, targets)
 
         for target in targets:
             matchingLink = None
             for link in source._linkObjects:
                 if context.association != None and link.association != context.association:
                     continue
-                # if ((context.matchesInOrder[source] and source == link._source and target == link._target) or 
-                #     (not context.matchesInOrder[source] and target == link._source and source == link._target)):
                 matchesInOrder = True
                 matches = False
                 if (source == link._source and target == link._target):
@@ -302,6 +302,7 @@ class LinkKeywordsContext(object):
         self.roleName = kwargs.pop("roleName", None)
         self.association = kwargs.pop("association", None)
         self.stereotypeInstances = kwargs.pop("stereotypeInstances", None)
+        self.label = kwargs.pop("label", None)
         if len(kwargs) != 0:
             raise CException(f"unknown keywords argument")
         if self.association != None:
