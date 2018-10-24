@@ -159,30 +159,49 @@ def checkIsCommonClassifier(classifier, objects):
         if not o.instanceOf(classifier):
             raise CException(f"object '{o!s}' not compatible with classifier '{classifier!s}'")
 
-# get the common metaclass in a list of classes; if more than more match, get the one
-# that is lowest in the class path
-def getCommonMetaclass(classes):
-    commonMetaclassCandidates = None
+def _removeSuperclassesAndDuplicates(classes):
+    result = []
+    while len(classes) > 0:
+        currentClass = classes.pop(0)
+        append = True
+        for cl in classes:
+            if cl == currentClass or cl in currentClass.allSubclasses:
+                append = False
+                break
+        if append:
+            for cl in result:
+                if cl == currentClass or cl in currentClass.allSubclasses:
+                    append = False
+                    break
+        if append:
+            result.append(currentClass)
+    return result
+
+def getCommonMetaclasses(classes):
+    commonMetaclasses = None
     for c in classes:
         if c == None or not isCClass(c):
             raise CException(f"not a class: '{c!s}'")
-        if commonMetaclassCandidates == None:
-            commonMetaclassCandidates = [c.metaclass] + c.classObject.classPath
+        if commonMetaclasses == None:
+            commonMetaclasses = [c.metaclass] + c.classObject.classPath
         else:
-            updatedCommonMetaclassCandidates = []
+            updatedCommonMetaclasses = []
             metaclasses = [c.metaclass] + c.classObject.classPath
-            for cmc in commonMetaclassCandidates:
+            for cmc in commonMetaclasses:
                 for mc in metaclasses:
                     if cmc == mc:
-                        updatedCommonMetaclassCandidates.append(cmc)
-            if len(updatedCommonMetaclassCandidates) == 0:
+                        updatedCommonMetaclasses.append(cmc)
+            if len(updatedCommonMetaclasses) == 0:
                 break
-            commonMetaclassCandidates = updatedCommonMetaclassCandidates
-    if commonMetaclassCandidates == None:
-        return None
-    if len(commonMetaclassCandidates) == 0:
+            commonMetaclasses = updatedCommonMetaclasses
+    if commonMetaclasses == None:
+        return [None]
+    if len(commonMetaclasses) == 0:
         raise CException(f"class '{c!s}' has an incompatible classifier")
-    return commonMetaclassCandidates[0]
+    # if some superclasses and their subclasses are in the list, take only the subclasses 
+    # and remove duplicates form the list
+    commonMetaclasses = _removeSuperclassesAndDuplicates(commonMetaclasses)
+    return commonMetaclasses
 
 def getLinkObjects(objList):
     result = []

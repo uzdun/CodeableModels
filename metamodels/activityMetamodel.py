@@ -12,9 +12,10 @@ mergeNode = CMetaclass("MergeNode", superclasses = controlNode)
 initialNode = CMetaclass("InitialNode", superclasses = controlNode) 
 action = CMetaclass("Action", superclasses = activityNode) 
 acceptEventAction = CMetaclass("AcceptEventAction", superclasses = action) 
+sendSignalAction = CMetaclass("SendSignalAction", superclasses = action) 
 
 # edges
-edgeRelation = activityNode.association(activityNode, "[source] * -> [target] *")
+edgeRelation = activityNode.association(activityNode, "next: [source] * -> [target] *")
 
 _all = CBundle("_all", 
     elements = activityNode.getConnectedElements(addStereotypes = True))

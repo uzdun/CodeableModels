@@ -1,10 +1,8 @@
 from codeableModels.cbundlable import CBundlable
 from codeableModels.cmetaclass import CMetaclass
 from codeableModels.cexception import CException
-from codeableModels.clink import CLink, LinkKeywordsContext, addLinks, deleteLinks
-from codeableModels.internal.commons import (checkIsCClass, isCClass, setKeywordArgs, isCMetaclass, 
-    checkNamedElementIsNotDeleted, getCommonClassifier, checkIsCommonClassifier, checkIsCAssociation,
-    checkIsCClassifier, getCommonMetaclass)
+from codeableModels.clink import *
+from codeableModels.internal.commons import *
 
 class CObject(CBundlable):
     def __init__(self, cl, name=None, **kwargs):

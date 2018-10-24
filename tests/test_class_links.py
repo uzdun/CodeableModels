@@ -1156,6 +1156,42 @@ class TestClassLinks():
         except CException as e: 
             eq_(e.value, "no link found for 'c1 -> c2' in delete links for given role name 'x' and for given association")
 
+    def testLinkLabelNoneDefault(self):
+        a1 = self.m1.association(self.m2, name = "a1", multiplicity = "*")
+        a2 = self.m1.association(self.m2, multiplicity = "*")
+
+        c1 = CClass(self.m1, "c1")
+        c2 = CClass(self.m2, "c2")
+        c3 = CClass(self.m2, "c3")
+
+        l1 = setLinks({c1:c2}, association = a1) 
+        l2 = setLinks({c1:[c2, c3]}, association = a2) 
+
+        eq_(l1[0].label, None)
+        eq_(l2[0].label, None)
+        eq_(l2[1].label, None)
+
+    def testLinkLabelGetSet(self):
+        a1 = self.m1.association(self.m2, name = "a1", multiplicity = "*")
+        a2 = self.m1.association(self.m2, multiplicity = "*")
+
+        c1 = CClass(self.m1, "c1")
+        c2 = CClass(self.m2, "c2")
+        c3 = CClass(self.m2, "c3")
+
+        l1 = setLinks({c1:c2}, association = a1, label = "l1") 
+        l2 = addLinks({c1:[c2, c3]}, association = a2, label = "l2") 
+
+        eq_(l1[0].label, "l1")
+        eq_(l2[0].label, "l2")
+        eq_(l2[1].label, "l2")
+
+        l2[1].label = "l3"
+        eq_(l2[0].label, "l2")
+        eq_(l2[1].label, "l3")
+
+        l3 = c1.addLinks(c3, association = a1, label = "x1")
+        eq_(l3[0].label, "x1")
 
 if __name__ == "__main__":
     nose.main()

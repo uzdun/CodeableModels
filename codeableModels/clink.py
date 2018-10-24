@@ -1,4 +1,4 @@
-from codeableModels.internal.commons import setKeywordArgs, isCObject, isCClass, getCommonMetaclass, getCommonClassifier, checkIsCAssociation, checkIsCObject
+from codeableModels.internal.commons import *
 from codeableModels.cexception import CException
 from codeableModels.internal.taggedvalues import CTaggedValues
 from codeableModels.internal.stereotype_holders import CStereotypeInstancesHolder
@@ -8,7 +8,7 @@ class CLink(object):
         self._isDeleted = False
         self._source = sourceObject
         self._target = targetObject
-        self.label = association.name
+        self.label = None
         self.association = association
         self._stereotypeInstancesHolder = CStereotypeInstancesHolder(self)
         self._taggedValues = CTaggedValues()
@@ -125,18 +125,18 @@ def _checkLinkDefinitionAndReplaceClasses(linkDefinitions):
 
 def _determineMatchingAssociationAndSetContextInfo(context, source, targets):
     if source._classObjectClass != None:
-        context.targetClassifier = getCommonMetaclass([co._classObjectClass for co in targets])
+        targetClassifierCandidates = getCommonMetaclasses([co._classObjectClass for co in targets])
         context.sourceClassifier = source._classObjectClass.metaclass
     else:
-        context.targetClassifier = getCommonClassifier(targets)
+        targetClassifierCandidates = [getCommonClassifier(targets)]
         context.sourceClassifier = source.classifier    
 
     if context.association != None and context.targetClassifier == None:
         if context.sourceClassifier.conformsToType(context.association.source):
-            context.targetClassifier = context.association.target
+            targetClassifierCandidates = [context.association.target]
             context.sourceClassifier = context.association.source
         elif context.sourceClassifier.conformsToType(context.association.target):
-            context.targetClassifier = context.association.source
+            targetClassifierCandidates = [context.association.source]
             context.sourceClassifier = context.association.target
 
     associations = context.sourceClassifier.allAssociations
@@ -144,13 +144,18 @@ def _determineMatchingAssociationAndSetContextInfo(context, source, targets):
         associations = [context.association]
     matchesAssociationOrder = []
     matchesReverseAssociationOrder = []
+    matchingClassifier = None
+
     for association in associations:
-        if (association._matchesTarget(context.targetClassifier, context.roleName) and 
-            association._matchesSource(context.sourceClassifier, None)):
-            matchesAssociationOrder.append(association)
-        elif (association._matchesSource(context.targetClassifier, context.roleName) and
-            association._matchesTarget(context.sourceClassifier, None)):
-            matchesReverseAssociationOrder.append(association)
+        for targetClassifierCandidate in targetClassifierCandidates:
+            if (association._matchesTarget(targetClassifierCandidate, context.roleName) and 
+                association._matchesSource(context.sourceClassifier, None)):
+                matchesAssociationOrder.append(association)
+                matchingClassifier = targetClassifierCandidate
+            elif (association._matchesSource(targetClassifierCandidate, context.roleName) and
+                association._matchesTarget(context.sourceClassifier, None)):
+                matchesReverseAssociationOrder.append(association)
+                matchingClassifier = targetClassifierCandidate
     matches = len(matchesAssociationOrder) + len(matchesReverseAssociationOrder)
     if matches == 1:
         if len(matchesAssociationOrder) == 1:
@@ -159,11 +164,11 @@ def _determineMatchingAssociationAndSetContextInfo(context, source, targets):
         else:
             context.association = matchesReverseAssociationOrder[0]
             context.matchesInOrder[source] = False
+        context.targetClassifier = matchingClassifier
     elif matches == 0:
         raise CException(f"matching association not found for source '{source!s}' and targets '{[str(item) for item in targets]!s}'")
     else:
         raise CException(f"link specification ambiguous, multiple matching associations found for source '{source!s}' and targets '{[str(item) for item in targets]!s}'")
-
 
 def _linkObjects(context, source, targets):      
     newLinks = []
@@ -197,6 +202,8 @@ def _linkObjects(context, source, targets):
             target._linkObjects.append(link)
         if context.stereotypeInstances != None:
             link.stereotypeInstances = context.stereotypeInstances
+        if context.taggedValues != None:
+            link.taggedValues = context.taggedValues
     return newLinks
 
 def _removeLinksForAssociations(context, source, targets):
@@ -248,8 +255,10 @@ def addLinks(linkDefinitions, **kwargs):
     return setLinks(linkDefinitions, True, **kwargs)
 
 def deleteLinks(linkDefinitions, **kwargs):
-    # stereotypeInstances is not supported for delete links
+    # stereotypeInstances / tagged values is not supported for delete links
     if "stereotypeInstances" in kwargs:
+        raise CException(f"unknown keywords argument")
+    if "taggedValues" in kwargs:
         raise CException(f"unknown keywords argument")
 
     context = LinkKeywordsContext(**kwargs)
@@ -303,6 +312,7 @@ class LinkKeywordsContext(object):
         self.association = kwargs.pop("association", None)
         self.stereotypeInstances = kwargs.pop("stereotypeInstances", None)
         self.label = kwargs.pop("label", None)
+        self.taggedValues = kwargs.pop("taggedValues", None)
         if len(kwargs) != 0:
             raise CException(f"unknown keywords argument")
         if self.association != None:

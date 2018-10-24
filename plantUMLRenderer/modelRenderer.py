@@ -117,13 +117,15 @@ class ModelRenderer(object):
                         taggedValueAdded = True
                         taggedValuesString += self.renderAttributeValue(taggedValue, taggedValue.name, value)
 
-            result += self.breakName(stereotype.name)
+            result += stereotype.name
+
+        result = self.breakName(result)
 
         if taggedValueAdded:
             taggedValuesString += "}"
         else:
             taggedValuesString = ""
-        result += "» " + self.breakName(taggedValuesString)
+        result += "» " + taggedValuesString
         result += "\\n"
         return result 
 

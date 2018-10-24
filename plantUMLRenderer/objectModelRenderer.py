@@ -13,7 +13,7 @@ class ObjectRenderingContext(RenderingContext):
         self.visitedLinks = set()
         self.renderAttributeValues = True
         self.renderEmptyAttributes = False
-        self.renderLinkLabelsIfStereotyped = False
+        self.renderAssociationNamesWhenNoLabelIsGiven = False
         self.excludedLinks = []
 
 class ObjectModelRenderer(ModelRenderer):
@@ -54,13 +54,17 @@ class ObjectModelRenderer(ModelRenderer):
         sterotypeString = self.renderStereotypes(link, link.stereotypeInstances)
 
         label = ""
+        if sterotypeString != "":
+            label = sterotypeString
         if link.label != None and len(link.label) != 0:
-            if not sterotypeString == "" and not context.renderLinkLabelsIfStereotyped:
-                label = ": \"" + sterotypeString + "\" "
-            else:
-                label = ": \"" + sterotypeString + link.label + "\" "
-        elif sterotypeString != "":
-            label = ": \"" + sterotypeString + "\" "
+            if len(label) > 0:
+                label = label + " "
+            label = label + link.label
+        elif context.renderAssociationNamesWhenNoLabelIsGiven and association.name != None and len(association.name) != 0:
+            if len(label) > 0:
+                label = label + " "
+            label = label + association.name
+        label = ": \"" + label + "\" "
 
         context.addLine(self.getNodeID(context, link.source) + arrow + self.getNodeID(context, link.target) + label)
 
@@ -103,7 +107,7 @@ class ObjectModelRenderer(ModelRenderer):
     def renderObjectModel(self, objectList, **kwargs):
         context = ObjectRenderingContext()
         setKeywordArgs(context, 
-            ["renderAttributeValues", "renderEmptyAttributes", "renderLinkLabelsIfStereotyped", "excludedLinks"], **kwargs)
+            ["renderAttributeValues", "renderEmptyAttributes", "renderAssociationNamesWhenNoLabelIsGiven", "excludedLinks"], **kwargs)
         self.renderStartGraph(context)
         self.renderObjects(context, objectList)
         self.renderEndGraph(context)

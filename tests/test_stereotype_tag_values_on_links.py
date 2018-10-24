@@ -3,7 +3,7 @@ from nose.tools import ok_, eq_
 from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
 
-from codeableModels import CMetaclass, CStereotype, CClass, CObject, CAttribute, CException, CEnum, setLinks
+from codeableModels import *
 
 class TestStereotypeTagValuesOnLinks():
     def setUp(self):
@@ -676,6 +676,58 @@ class TestStereotypeTagValuesOnLinks():
         eq_(self.l.getTaggedValue("i5"), 215)
         eq_(self.l.getTaggedValue("i6"), 216)
         eq_(self.l.getTaggedValue("i7"), 217)
+
+
+    def testTaggedValuesNonPosArgument_ObjectAddLinks(self):
+        s = CStereotype("S", attributes = {
+                "isBoolean": True, 
+                "intVal": 1,
+                "floatVal": 1.1,
+                "string": "abc",
+                "list": ["a", "b"]})
+        self.a.stereotypes = s
+
+        c1 = CClass(self.m1, "C1")
+        c2 = CClass(self.m2, "C2")
+        c3 = CClass(self.m2, "C3")
+
+        links = c1.addLinks([c2, c3], stereotypeInstances = s, taggedValues = {
+            "isBoolean": True, "intVal": 1, "floatVal": 1.1, "string": "abc", "list": ["a", "b"]
+        })
+        link = links[0]
+
+        eq_(link.stereotypeInstances, [s])
+        eq_(link.getTaggedValue("isBoolean"), True)
+        eq_(link.getTaggedValue("intVal"), 1)
+        eq_(link.getTaggedValue("floatVal"), 1.1)
+        eq_(link.getTaggedValue("string"), "abc")
+        eq_(link.getTaggedValue("list"), ["a", "b"])
+
+    def testTaggedValuesNonPosArgument_AddLinksFunction(self):
+        s = CStereotype("S", attributes = {
+                "isBoolean": True, 
+                "intVal": 1,
+                "floatVal": 1.1,
+                "string": "abc",
+                "list": ["a", "b"]})
+        self.a.stereotypes = s
+
+        c1 = CClass(self.m1, "C1")
+        c2 = CClass(self.m2, "C2")
+        c3 = CClass(self.m2, "C3")
+
+        links = addLinks({c1: [c2, c3]}, stereotypeInstances = s, taggedValues = {
+            "isBoolean": True, "intVal": 1, "floatVal": 1.1, "string": "abc", "list": ["a", "b"]
+        })
+        link = links[0]
+
+        eq_(link.stereotypeInstances, [s])
+        eq_(link.getTaggedValue("isBoolean"), True)
+        eq_(link.getTaggedValue("intVal"), 1)
+        eq_(link.getTaggedValue("floatVal"), 1.1)
+        eq_(link.getTaggedValue("string"), "abc")
+        eq_(link.getTaggedValue("list"), ["a", "b"])
+
 
 if __name__ == "__main__":
     nose.main()

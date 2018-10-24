@@ -48,6 +48,12 @@ class TestObjectLinks():
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "unknown keywords argument")
+        try:
+            deleteLinks({o1:o1}, taggedValues = None)
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "unknown keywords argument")
+
 
     def testSetOneToOneLink(self):
         self.c1.association(self.c2, name = "l", multiplicity = "1")
@@ -1154,7 +1160,7 @@ class TestObjectLinks():
         except CException as e: 
             eq_(e.value, "no link found for 'o1 -> o2' in delete links for given role name 'x' and for given association")
 
-    def testLinkLabelDefault(self):
+    def testLinkLabelNoneDefault(self):
         a1 = self.c1.association(self.c2, name = "a1", multiplicity = "*")
         a2 = self.c1.association(self.c2, multiplicity = "*")
 
@@ -1165,7 +1171,7 @@ class TestObjectLinks():
         l1 = setLinks({o1:o2}, association = a1) 
         l2 = setLinks({o1:[o2, o3]}, association = a2) 
 
-        eq_(l1[0].label, "a1")
+        eq_(l1[0].label, None)
         eq_(l2[0].label, None)
         eq_(l2[1].label, None)
 
