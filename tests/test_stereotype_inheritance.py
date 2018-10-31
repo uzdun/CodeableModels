@@ -360,7 +360,7 @@ class TestStereotypeInheritance():
             CStereotype("ST", superclass = t)
             exceptionExpected_()
         except CException as e: 
-            eq_("unknown keyword argument 'superclass', should be one of: ['extended', 'attributes', 'superclasses', 'bundles']", e.value)
+            eq_("unknown keyword argument 'superclass', should be one of: ['extended', 'defaultValues', 'attributes', 'superclasses', 'bundles']", e.value)
 
     def testSuperStereotypesThatAreDeleted(self):
         s1 = CStereotype("S1")

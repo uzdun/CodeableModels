@@ -6,7 +6,7 @@ import re
 
 from codeableModels import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
 
-class TestMetaClassAttributes():
+class TestStereotypeAttributes():
     def setUp(self):
         self.mcl = CMetaclass("MCL")
         self.stereotype = CStereotype("S", extended = self.mcl)
@@ -257,7 +257,6 @@ class TestMetaClassAttributes():
         self.stereotype.attributes = {}
         eq_(set(self.stereotype.attributes), set())
 
-
     def testTypeObjectAttributeClassIsDeletedInConstructor(self):
         attrCl = CClass(self.mcl, "AC")
         attrCl.delete()
@@ -282,7 +281,6 @@ class TestMetaClassAttributes():
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "cannot access named element that has been deleted")
-
 
 if __name__ == "__main__":
     nose.main()

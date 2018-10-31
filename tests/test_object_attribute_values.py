@@ -46,14 +46,14 @@ class TestObjectAttributeValues():
             o.getValue("x")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'x' unknown for object 'o'")
+            eq_(e.value, "attribute 'x' unknown for 'o'")
 
         self.cl.attributes =  {"isBoolean": True, "intVal": 1}
         try:
             o.setValue("x", 1)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'x' unknown for object 'o'")
+            eq_(e.value, "attribute 'x' unknown for 'o'")
 
     def testIntegersAsFloats(self):
         cl = CClass(self.mcl, "C", attributes = {
@@ -324,12 +324,12 @@ class TestObjectAttributeValues():
             o.getValue("intVal")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'intVal' unknown for object 'o'") 
+            eq_(e.value, "attribute 'intVal' unknown for 'o'") 
         try:
             o.setValue("intVal", 1)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'intVal' unknown for object 'o'") 
+            eq_(e.value, "attribute 'intVal' unknown for 'o'") 
 
     def testAttributeDeletedNoDefault(self):
         cl = CClass(self.mcl, "C", attributes = {
@@ -342,12 +342,12 @@ class TestObjectAttributeValues():
             o.getValue("intVal")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'intVal' unknown for object 'o'")    
+            eq_(e.value, "attribute 'intVal' unknown for 'o'")    
         try:
             o.setValue("intVal", 1)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'intVal' unknown for object 'o'") 
+            eq_(e.value, "attribute 'intVal' unknown for 'o'") 
 
     def testAttributesOverwrite(self):
         cl = CClass(self.mcl, "C", attributes = {
@@ -359,7 +359,7 @@ class TestObjectAttributeValues():
             o.getValue("floatVal")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'floatVal' unknown for object 'o'")        
+            eq_(e.value, "attribute 'floatVal' unknown for 'o'")        
         o.setValue("intVal", 18)
         cl.attributes = {
                 "isBoolean": False, 
@@ -489,7 +489,7 @@ class TestObjectAttributeValues():
             o.getValue("i1")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'i1' unknown for object 'o'")
+            eq_(e.value, "attribute 'i1' unknown for 'o'")
 
         eq_(o.getValue("i0", t1), 0)
         try:
@@ -506,7 +506,7 @@ class TestObjectAttributeValues():
             o.setValue("i1", 11)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'i1' unknown for object 'o'")
+            eq_(e.value, "attribute 'i1' unknown for 'o'")
 
         for name, value in {"i0" : 10, "i2" : 12, "i3" : 13}.items():
             eq_(o.getValue(name), value)
@@ -514,7 +514,7 @@ class TestObjectAttributeValues():
             o.getValue("i1")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'i1' unknown for object 'o'")
+            eq_(e.value, "attribute 'i1' unknown for 'o'")
 
         eq_(o.getValue("i0", t1), 10)
         try:
@@ -640,6 +640,89 @@ class TestObjectAttributeValues():
         eq_(o.getValue("i6"), 16)
         eq_(o.getValue("i7"), 17)
 
+    def testDeleteAttributeValues(self):
+        cl = CClass(self.mcl, "C", attributes = {
+                "isBoolean": True, 
+                "intVal": 1,
+                "floatVal": 1.1,
+                "string": "abc",
+                "list": ["a", "b"]})
+        o = CObject(cl, "o")
+        o.deleteValue("isBoolean")
+        o.deleteValue("intVal")
+        valueOfList = o.deleteValue("list")
+        eq_(o.values, {'floatVal': 1.1, 'string': 'abc'})
+        eq_(valueOfList, ['a', 'b'])
+
+    def testDeleteAttributeValuesWithSuperclass(self):
+        scl = CClass(self.mcl, "SCL", attributes = {
+                "intVal": 20, "intVal2": 30})
+        cl = CClass(self.mcl, "C", superclasses = scl, attributes = {
+                "isBoolean": True, 
+                "intVal": 1})
+        o = CObject(cl, "o", values = {
+            "isBoolean": False})
+        o.deleteValue("isBoolean")
+        o.deleteValue("intVal2")
+        eq_(o.values, {"intVal": 1})
+
+        o.setValue("intVal", 2, scl)
+        o.setValue("intVal", 3, cl)
+        eq_(o.values, {"intVal": 3})
+        o.deleteValue("intVal")
+        eq_(o.values, {"intVal": 2})
+
+        o.setValue("intVal", 2, scl)
+        o.setValue("intVal", 3, cl)
+        o.deleteValue("intVal", cl)
+        eq_(o.values, {"intVal": 2})
+
+        o.setValue("intVal", 2, scl)
+        o.setValue("intVal", 3, cl)
+        o.deleteValue("intVal", scl)
+        eq_(o.values, {"intVal": 3})
+
+    def testAttributeValuesExceptionalCases(self):
+        cl = CClass(self.mcl, "C", attributes = {"b": True})
+        o1 = CObject(cl, "o")
+        o1.delete()
+
+        try:
+            o1.getValue("b")                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't get value 'b' on deleted object")
+
+        try:
+            o1.setValue("b", 1)                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't set value 'b' on deleted object")
+
+        try:
+            o1.deleteValue("b")                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value,"can't delete value 'b' on deleted object")
+
+        try:
+            o1.values = {"b": 1}                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't set values on deleted object")
+
+        try:
+            o1.values                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't get values on deleted object")
+
+        o = CObject(cl, "o")
+        try:
+            o.deleteValue("x")
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "attribute 'x' unknown for 'o'")
 
 if __name__ == "__main__":
     nose.main()

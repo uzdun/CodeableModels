@@ -1,7 +1,8 @@
 from codeableModels.internal.commons import *
 from codeableModels.cexception import CException
-from codeableModels.internal.taggedvalues import CTaggedValues
 from codeableModels.internal.stereotype_holders import CStereotypeInstancesHolder
+from codeableModels.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
+
 
 class CLink(object):
     def __init__(self, association, sourceObject, targetObject, **kwargs):
@@ -11,7 +12,7 @@ class CLink(object):
         self.label = None
         self.association = association
         self._stereotypeInstancesHolder = CStereotypeInstancesHolder(self)
-        self._taggedValues = CTaggedValues()
+        self._taggedValues = {}
         super().__init__()
         self._initKeywordArgs(**kwargs)
 
@@ -67,22 +68,31 @@ class CLink(object):
         self._stereotypeInstancesHolder.stereotypes = elements
 
     def getTaggedValue(self, name, stereotype = None):
-       return self._taggedValues.getTaggedValue(name, self._stereotypeInstancesHolder.getStereotypeInstancePath(), stereotype)
+        if self._isDeleted:
+            raise CException(f"can't get tagged value '{name!s}' on deleted link")
+        return _getValue(self, self._stereotypeInstancesHolder.getStereotypeInstancePath(), self._taggedValues, name, ValueKind.TAGGED_VALUE, stereotype)
+
+    def deleteTaggedValue(self, name, stereotype = None):
+        if self._isDeleted:
+            raise CException(f"can't delete tagged value '{name!s}' on deleted link")
+        return _deleteValue(self, self._stereotypeInstancesHolder.getStereotypeInstancePath(), self._taggedValues, name, ValueKind.TAGGED_VALUE, stereotype)
 
     def setTaggedValue(self, name, value, stereotype = None):
-        self._taggedValues.setTaggedValue(name, value, self._stereotypeInstancesHolder.getStereotypeInstancePath(), stereotype)
-
-    def _removeTaggedValue(self, attributeName, stereotype):
-        self._taggedValues.removeTaggedValue(attributeName, stereotype)
+        if self._isDeleted:
+            raise CException(f"can't set tagged value '{name!s}' on deleted link")
+        return _setValue(self, self._stereotypeInstancesHolder.getStereotypeInstancePath(), self._taggedValues, name, value, ValueKind.TAGGED_VALUE, stereotype)
 
     @property
     def taggedValues(self):
-        return self._taggedValues.getTaggedValuesDict(self._stereotypeInstancesHolder.getStereotypeInstancePath())
+        if self._isDeleted:
+            raise CException(f"can't get tagged values on deleted link")
+        return _getValues(self._stereotypeInstancesHolder.getStereotypeInstancePath(), self._taggedValues)
 
     @taggedValues.setter
-    def taggedValues(self, valuesDict):
-        self._taggedValues.setTaggedValuesDict(valuesDict, self._stereotypeInstancesHolder.getStereotypeInstancePath())
-
+    def taggedValues(self, newValues):
+        if self._isDeleted:
+            raise CException(f"can't set tagged values on deleted link")
+        _setValues(self, newValues, ValueKind.TAGGED_VALUE)
 
 def _getTargetObjectsFromDefinition(targets, isClassLinks):
     if targets == None:

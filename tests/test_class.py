@@ -86,7 +86,7 @@ class TestClass():
             cl3.getValue("i")
             exceptionExpected_()
         except CException as e: 
-            eq_("can't get value 'i' on deleted object", e.value)
+            eq_("can't get value 'i' on deleted class", e.value)
 
     def testDeleteClassInstanceRelation(self):
         cl1 = CClass(self.mcl, "CL1")

@@ -205,5 +205,15 @@ class CClassifier(CBundlable):
                 connected.append(c)
         self._appendConnected(context, connected)
 
+    # get class path starting from this classifier, including this classifier
+    def _getClassPath(self):
+        classPath = [self]
+        for sc in self.superclasses:
+            for cl in sc._getClassPath():
+                if not cl in classPath:
+                    classPath.append(cl)
+        return classPath
 
-
+    @property
+    def classPath(self):
+        return self._getClassPath()

@@ -106,7 +106,7 @@ class ModelRenderer(object):
             else:
                 result += ", "
 
-            stereotypeClassPath = [stereotype] + list(stereotype.allSuperclasses)
+            stereotypeClassPath = stereotype.classPath
 
             for stereotypeClass in stereotypeClassPath:
                 for taggedValue in stereotypeClass.attributes:
@@ -134,7 +134,7 @@ class ModelRenderer(object):
             return ""
         attributeValueAdded = False
         attributeValueString = " {\n"
-        for cl in obj.classPath:
+        for cl in obj.classifier.classPath:
             attributes = cl.attributes
             for attribute in attributes:
                 name = attribute.name

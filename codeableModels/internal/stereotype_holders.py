@@ -45,9 +45,6 @@ class CStereotypesHolder:
     def stereotypes(self, elements):
         self._setStereotypes(elements)
 
-
-
-
 class CStereotypeInstancesHolder(CStereotypesHolder):
     def __init__(self, element):
         super().__init__(element)

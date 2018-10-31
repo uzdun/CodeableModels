@@ -48,14 +48,14 @@ class TestStereotypeTagValuesOnClasses():
             self.cl.getTaggedValue("x")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'x' unknown")
+            eq_(e.value, "tagged value 'x' unknown for 'C'")
 
         self.mcl.attributes =  {"isBoolean": True, "intVal": 1}
         try:
             self.cl.setTaggedValue("x", 1)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'x' unknown")
+            eq_(e.value, "tagged value 'x' unknown for 'C'")
 
     def testIntegersAsFloatTaggedValues(self):
         self.st.attributes = {"floatVal": float}
@@ -316,12 +316,12 @@ class TestStereotypeTagValuesOnClasses():
             cl.getTaggedValue("intVal")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'intVal' unknown") 
+            eq_(e.value, "tagged value 'intVal' unknown for 'C'") 
         try:
             cl.setTaggedValue("intVal", 1)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'intVal' unknown") 
+            eq_(e.value, "tagged value 'intVal' unknown for 'C'") 
 
     def testAttributeDeletedNoDefault(self):
         self.st.attributes = {
@@ -333,12 +333,12 @@ class TestStereotypeTagValuesOnClasses():
             self.cl.getTaggedValue("intVal")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'intVal' unknown")    
+            eq_(e.value, "tagged value 'intVal' unknown for 'C'")    
         try:
             self.cl.setTaggedValue("intVal", 1)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'intVal' unknown") 
+            eq_(e.value, "tagged value 'intVal' unknown for 'C'") 
 
     def testAttributesOverwrite(self):
         self.st.attributes = {
@@ -350,7 +350,7 @@ class TestStereotypeTagValuesOnClasses():
             cl.getTaggedValue("floatVal")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'floatVal' unknown")        
+            eq_(e.value, "tagged value 'floatVal' unknown for 'C'")        
         cl.setTaggedValue("intVal", 18)
         self.st.attributes = {
                 "isBoolean": False, 
@@ -400,7 +400,7 @@ class TestStereotypeTagValuesOnClasses():
             cl.getTaggedValue("isBoolean", st2) 
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'isBoolean' unknown for stereotype 'S2'")
+            eq_(e.value, "tagged value 'isBoolean' unknown for 'S2'")
 
     def testAttributesDeletedOnSubclassNoDefaults(self):
         self.st.attributes = {
@@ -424,7 +424,7 @@ class TestStereotypeTagValuesOnClasses():
             cl.getTaggedValue("isBoolean", st2) 
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'isBoolean' unknown for stereotype 'S2'")
+            eq_(e.value, "tagged value 'isBoolean' unknown for 'S2'")
 
 
     def testWrongStereotypeInTaggedValue(self):
@@ -506,14 +506,14 @@ class TestStereotypeTagValuesOnClasses():
             cl.getTaggedValue("i1")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'i1' unknown")
+            eq_(e.value, "tagged value 'i1' unknown for 'C'")
 
         eq_(cl.getTaggedValue("i0", t1), 0)
         try:
             cl.getTaggedValue("i1", t2)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "stereotype '' is not a stereotype of element")
+            eq_(e.value, "tagged value 'i1' unknown for ''")
         eq_(cl.getTaggedValue("i2", c), 2)
         eq_(cl.getTaggedValue("i3", sc), 3)
 
@@ -523,7 +523,7 @@ class TestStereotypeTagValuesOnClasses():
             cl.setTaggedValue("i1", 11)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'i1' unknown")
+            eq_(e.value, "tagged value 'i1' unknown for 'C'")
 
         for name, value in {"i0" : 10, "i2" : 12, "i3" : 13}.items():
             eq_(cl.getTaggedValue(name), value)
@@ -531,14 +531,14 @@ class TestStereotypeTagValuesOnClasses():
             cl.getTaggedValue("i1")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'i1' unknown")
+            eq_(e.value, "tagged value 'i1' unknown for 'C'")
 
         eq_(cl.getTaggedValue("i0", t1), 10)
         try:
             cl.getTaggedValue("i1", t2)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "stereotype '' is not a stereotype of element")
+            eq_(e.value, "tagged value 'i1' unknown for ''")
         eq_(cl.getTaggedValue("i2", c), 12)
         eq_(cl.getTaggedValue("i3", sc), 13)
 
@@ -677,6 +677,94 @@ class TestStereotypeTagValuesOnClasses():
         eq_(cl.getTaggedValue("i5"), 215)
         eq_(cl.getTaggedValue("i6"), 216)
         eq_(cl.getTaggedValue("i7"), 217)
+
+    def testDeleteTaggedValues(self):
+        s = CStereotype("S", attributes = {
+                "isBoolean": True, 
+                "intVal": 1,
+                "floatVal": 1.1,
+                "string": "abc",
+                "list": ["a", "b"]})
+        self.mcl.stereotypes = s
+        cl = CClass(self.mcl, "C", stereotypeInstances = s)
+        cl.deleteTaggedValue("isBoolean")
+        cl.deleteTaggedValue("intVal")
+        valueOfList = cl.deleteTaggedValue("list")
+        eq_(cl.taggedValues, {'floatVal': 1.1, 'string': 'abc'})
+        eq_(valueOfList, ['a', 'b'])
+
+    def testDeleteTaggedValuesWithSuperclass(self):
+        sst = CStereotype("SST", attributes = {
+                "intVal": 20, "intVal2": 30})
+        st = CStereotype("ST", superclasses = sst, attributes = {
+                "isBoolean": True, 
+                "intVal": 1})
+        self.mcl.stereotypes = st
+        
+        cl = CClass(self.mcl, "C", stereotypeInstances = st, taggedValues = {
+            "isBoolean": False})
+        cl.deleteTaggedValue("isBoolean")
+        cl.deleteTaggedValue("intVal2")
+        eq_(cl.taggedValues, {"intVal": 1})
+
+        cl.setTaggedValue("intVal", 2, sst)
+        cl.setTaggedValue("intVal", 3, st)
+        eq_(cl.taggedValues, {"intVal": 3})
+        cl.deleteTaggedValue("intVal")
+        eq_(cl.taggedValues, {"intVal": 2})
+
+        cl.setTaggedValue("intVal", 2, sst)
+        cl.setTaggedValue("intVal", 3, st)
+        cl.deleteTaggedValue("intVal", st)
+        eq_(cl.taggedValues, {"intVal": 2})
+
+        cl.setTaggedValue("intVal", 2, sst)
+        cl.setTaggedValue("intVal", 3, st)
+        cl.deleteTaggedValue("intVal", sst)
+        eq_(cl.taggedValues, {"intVal": 3})
+
+    def testTaggedValuesExceptionalCases(self):
+        s = CStereotype("S", attributes = {"b": True})
+        self.mcl.stereotypes = s
+        cl1 = CClass(self.mcl, "C", stereotypeInstances = s)
+        cl1.delete()
+
+        try:
+            cl1.getTaggedValue("b")                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't get tagged value 'b' on deleted class")
+
+        try:
+            cl1.setTaggedValue("b", 1)                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't set tagged value 'b' on deleted class")
+
+        try:
+            cl1.deleteTaggedValue("b")                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value,"can't delete tagged value 'b' on deleted class")
+
+        try:
+            cl1.taggedValues = {"b": 1}                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't set tagged values on deleted class")
+
+        try:
+            cl1.taggedValues                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't get tagged values on deleted class")
+
+        cl = CClass(self.mcl, "C", stereotypeInstances = s)
+        try:
+            cl.deleteTaggedValue("x")
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "tagged value 'x' unknown for 'C'")
 
 if __name__ == "__main__":
     nose.main()

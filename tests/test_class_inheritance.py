@@ -266,8 +266,7 @@ class TestClassInheritance():
 
     def testClassPathNoInheritance(self):
         t = CClass(self.mcl)
-        o = CObject(t)
-        eq_(set(o.classPath), set([t]))
+        eq_(set(t.classPath), set([t]))
     
     def testClassPathSimpleInheritance(self):
         t = CClass(self.mcl, "T")
@@ -276,12 +275,12 @@ class TestClassInheritance():
         b1 = CClass(self.mcl, "B1", superclasses = [m1])
         b2 = CClass(self.mcl, "B2", superclasses = [m1])
         b3 = CClass(self.mcl, "B3", superclasses = [t])
-        eq_(CObject(b1).classPath, [b1, m1, t])
-        eq_(CObject(b2).classPath, [b2, m1, t])
-        eq_(CObject(b3).classPath, [b3, t])
-        eq_(CObject(m1).classPath, [m1, t])
-        eq_(CObject(m2).classPath, [m2, t])
-        eq_(CObject(t).classPath, [t])
+        eq_(b1.classPath, [b1, m1, t])
+        eq_(b2.classPath, [b2, m1, t])
+        eq_(b3.classPath, [b3, t])
+        eq_(m1.classPath, [m1, t])
+        eq_(m2.classPath, [m2, t])
+        eq_(t.classPath, [t])
 
     def testClassPathMultipleInheritance(self):
         t = CClass(self.mcl, "T")
@@ -290,12 +289,12 @@ class TestClassInheritance():
         b1 = CClass(self.mcl, "B1", superclasses = [m1, m2])
         b2 = CClass(self.mcl, "B2", superclasses = [t, m1])
         b3 = CClass(self.mcl, "B3", superclasses = [t, m1, m2])
-        eq_(CObject(b1).classPath, [b1, m1, t, m2])
-        eq_(CObject(b2).classPath, [b2, t, m1])
-        eq_(CObject(b3).classPath, [b3, t, m1, m2])
-        eq_(CObject(m1).classPath, [m1, t])
-        eq_(CObject(m2).classPath, [m2, t])
-        eq_(CObject(t).classPath, [t])
+        eq_(b1.classPath, [b1, m1, t, m2])
+        eq_(b2.classPath, [b2, t, m1])
+        eq_(b3.classPath, [b3, t, m1, m2])
+        eq_(m1.classPath, [m1, t])
+        eq_(m2.classPath, [m2, t])
+        eq_(t.classPath, [t])
 
     def testClassInstanceOf(self):
         a = CClass(self.mcl)

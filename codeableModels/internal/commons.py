@@ -183,10 +183,10 @@ def getCommonMetaclasses(classes):
         if c == None or not isCClass(c):
             raise CException(f"not a class: '{c!s}'")
         if commonMetaclasses == None:
-            commonMetaclasses = [c.metaclass] + c.classObject.classPath
+            commonMetaclasses = c.metaclass.classPath
         else:
             updatedCommonMetaclasses = []
-            metaclasses = [c.metaclass] + c.classObject.classPath
+            metaclasses = c.metaclass.classPath
             for cmc in commonMetaclasses:
                 for mc in metaclasses:
                     if cmc == mc:
@@ -214,3 +214,4 @@ def getLinkObjects(objList):
                 raise CException(f"'{o!s}' is not an object")
         result.extend(obj.linkObjects)
     return result
+

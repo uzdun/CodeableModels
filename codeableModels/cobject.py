@@ -3,6 +3,7 @@ from codeableModels.cmetaclass import CMetaclass
 from codeableModels.cexception import CException
 from codeableModels.clink import *
 from codeableModels.internal.commons import *
+from codeableModels.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
 
 class CObject(CBundlable):
     def __init__(self, cl, name=None, **kwargs):
@@ -19,23 +20,26 @@ class CObject(CBundlable):
         if cl != None:
             checkNamedElementIsNotDeleted(cl)
         self._classifier = cl
+        self._attributeValues = {}
         super().__init__(name, **kwargs)
         if self._classObjectClass == None:
             # don't add instance if this is a class object 
             self._classifier._addObject(self)
-        self._initAttributeValues()
+            # do not init default attributes of a class object, the class constructor 
+            # does it after stereotype instances are added, who defining defaults first 
+            self._initAttributeValues()
         self._linkObjects = []
 
         if values != None:
             self.values = values
 
     def _initAttributeValues(self):
-        self._attributeValues = {}
         # init default values of attributes
-        for cl in self.classPath:
+        for cl in self.classifier.classPath:
             for attrName, attr in cl._attributes.items():
                 if attr.default != None:
-                    self.setValue(attrName, attr.default, cl)
+                    if self.getValue(attrName, cl) == None:
+                        self.setValue(attrName, attr.default, cl)
 
     @property
     def classifier(self):
@@ -50,20 +54,6 @@ class CObject(CBundlable):
             checkNamedElementIsNotDeleted(cl)
         self._classifier = cl
         self._classifier._addObject(self)
-
-    def _getClassPath(self, classifier = None):
-        if classifier == None:
-            classifier = self.classifier
-        classPath = [classifier]
-        for sc in classifier.superclasses:
-            for cl in self._getClassPath(sc):
-                if not cl in classPath:
-                    classPath.append(cl)
-        return classPath
-
-    @property
-    def classPath(self):
-        return self._getClassPath()
 
     def delete(self):
         if self._isDeleted == True:
@@ -92,74 +82,39 @@ class CObject(CBundlable):
         if cl in self.classifier.allSuperclasses:
             return True
         return False
-        
-    def _checkIsAttributeOfOwnClassifier(self, attributeName, classifier):
-        attribute = classifier.getAttribute(attributeName)
-        if attribute == None:
-            raise CException(f"attribute '{attributeName!s}' unknown for '{classifier!s}'")
-        if not classifier in self.classPath:
-            raise CException(f"'{classifier!s}' is not a classifier of '{self!s}'")
-        return attribute
+
+    def _getKindStr(self):
+        kindStr = "object"
+        if self._classObjectClass != None:
+            kindStr = "class"
+        return kindStr  
 
     def getValue(self, attributeName, classifier = None):
         if self._isDeleted:
-            raise CException(f"can't get value '{attributeName!s}' on deleted object")
-        if classifier == None:
-            # search on class path
-            for cl in self.classPath:
-                if cl.getAttribute(attributeName) != None:
-                    return self.getValue(attributeName, cl)
-            raise CException(f"attribute '{attributeName!s}' unknown for object '{self!s}'")
-        else:
-            # search only on specified classifier
-            attribute = self._checkIsAttributeOfOwnClassifier(attributeName, classifier)
-            attribute.checkAttributeTypeIsNotDeleted()
-            try:
-                attributeValuesClassifier = self._attributeValues[classifier]
-            except KeyError:
-                return None
-            try:
-                return attributeValuesClassifier[attributeName]
-            except KeyError:
-                return None
+            raise CException(f"can't get value '{attributeName!s}' on deleted {self._getKindStr()!s}")
+        return _getValue(self, self.classifier.classPath, self._attributeValues, attributeName, ValueKind.ATTRIBUTE_VALUE, classifier)
+   
+    def deleteValue(self, attributeName, classifier = None):
+        if self._isDeleted:
+            raise CException(f"can't delete value '{attributeName!s}' on deleted {self._getKindStr()!s}")
+        return _deleteValue(self, self.classifier.classPath, self._attributeValues, attributeName, ValueKind.ATTRIBUTE_VALUE, classifier)
 
     def setValue(self, attributeName, value, classifier = None):
         if self._isDeleted:
-            raise CException(f"can't set value '{attributeName!s}' on deleted object")
-        if classifier == None:
-            # search on class path
-            for cl in self.classPath:
-                if cl.getAttribute(attributeName) != None:
-                    return self.setValue(attributeName, value, cl)
-            raise CException(f"attribute '{attributeName!s}' unknown for object '{self!s}'")
-        else:
-            # search only on specified classifier
-            attribute = self._checkIsAttributeOfOwnClassifier(attributeName, classifier)
-            attribute.checkAttributeTypeIsNotDeleted()
-            attribute.checkAttributeValueType(attributeName, value)
-            try:
-                self._attributeValues[classifier].update({attributeName: value})
-            except KeyError:
-                self._attributeValues[classifier] = {attributeName: value}
-
+            raise CException(f"can't set value '{attributeName!s}' on deleted {self._getKindStr()!s}")
+        _setValue(self, self.classifier.classPath, self._attributeValues, attributeName, value, ValueKind.ATTRIBUTE_VALUE, classifier)
+    
     @property
     def values(self):
-        result = {}
-        for cl in self.classPath:
-            if cl in self._attributeValues:
-                for attrName in self._attributeValues[cl]:
-                    if not attrName in result:
-                        result[attrName] = self._attributeValues[cl][attrName]
-        return result
+        if self._isDeleted:
+            raise CException(f"can't get values on deleted {self._getKindStr()!s}")
+        return _getValues(self.classifier.classPath, self._attributeValues)
 
     @values.setter
-    def values(self, valuesDict):
-        if valuesDict == None:
-            valuesDict = {}
-        if not isinstance(valuesDict, dict):
-            raise CException(f"malformed attribute values description: '{valuesDict!s}'")
-        for valueName in valuesDict:
-            self.setValue(valueName, valuesDict[valueName])
+    def values(self, newValues):
+        if self._isDeleted:
+            raise CException(f"can't set values on deleted {self._getKindStr()!s}")
+        _setValues(self, newValues, ValueKind.ATTRIBUTE_VALUE)
 
     def _removeValue(self, attributeName, classifier):
         try:

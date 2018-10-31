@@ -45,28 +45,28 @@ class TestClassAttributeValues():
             cl.getValue("x")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'x' unknown for object 'C'")
+            eq_(e.value, "attribute 'x' unknown for 'C'")
 
         self.mcl.attributes =  {"isBoolean": True, "intVal": 1}
         try:
             cl.setValue("x", 1)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'x' unknown for object 'C'")
+            eq_(e.value, "attribute 'x' unknown for 'C'")
 
     def testIntegersAsFloats(self):
-        cl = CMetaclass("C", attributes = {
+        mcl = CMetaclass("C", attributes = {
                 "floatVal": float})
-        o = CClass(cl, "C")
-        o.setValue("floatVal", 15)
-        eq_(o.getValue("floatVal"), 15)
+        cl = CClass(mcl, "C")
+        cl.setValue("floatVal", 15)
+        eq_(cl.getValue("floatVal"), 15)
 
     def testAttributeDefinedAfterInstance(self):
-        cl = CMetaclass("C")
-        o = CClass(cl, "C")
-        cl.attributes = {"floatVal": float}
-        o.setValue("floatVal", 15)
-        eq_(o.getValue("floatVal"), 15)
+        mcl = CMetaclass("C")
+        cl = CClass(mcl, "C")
+        mcl.attributes = {"floatVal": float}
+        cl.setValue("floatVal", 15)
+        eq_(cl.getValue("floatVal"), 15)
 
     def testObjectTypeAttributeValues(self):
         attrType = CClass(self.mcl, "AttrType")
@@ -323,12 +323,12 @@ class TestClassAttributeValues():
             cl.getValue("intVal")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'intVal' unknown for object 'C'") 
+            eq_(e.value, "attribute 'intVal' unknown for 'C'") 
         try:
             cl.setValue("intVal", 1)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'intVal' unknown for object 'C'") 
+            eq_(e.value, "attribute 'intVal' unknown for 'C'") 
 
     def testAttributeDeletedNoDefault(self):
         mcl = CMetaclass( attributes = {
@@ -341,12 +341,12 @@ class TestClassAttributeValues():
             cl.getValue("intVal")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'intVal' unknown for object 'C'")    
+            eq_(e.value, "attribute 'intVal' unknown for 'C'")    
         try:
             cl.setValue("intVal", 1)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'intVal' unknown for object 'C'") 
+            eq_(e.value, "attribute 'intVal' unknown for 'C'") 
 
     def testAttributesOverwrite(self):
         mcl = CMetaclass(attributes = {
@@ -358,7 +358,7 @@ class TestClassAttributeValues():
             cl.getValue("floatVal")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'floatVal' unknown for object 'C'")        
+            eq_(e.value, "attribute 'floatVal' unknown for 'C'")        
         cl.setValue("intVal", 18)
         mcl.attributes = {
                 "isBoolean": False, 
@@ -489,7 +489,7 @@ class TestClassAttributeValues():
             cl.getValue("i1")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'i1' unknown for object 'C'")
+            eq_(e.value, "attribute 'i1' unknown for 'C'")
 
         eq_(cl.getValue("i0", t1), 0)
         try:
@@ -506,7 +506,7 @@ class TestClassAttributeValues():
             cl.setValue("i1", 11)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'i1' unknown for object 'C'")
+            eq_(e.value, "attribute 'i1' unknown for 'C'")
 
         for name, value in {"i0" : 10, "i2" : 12, "i3" : 13}.items():
             eq_(cl.getValue(name), value)
@@ -514,7 +514,7 @@ class TestClassAttributeValues():
             cl.getValue("i1")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "attribute 'i1' unknown for object 'C'")
+            eq_(e.value, "attribute 'i1' unknown for 'C'")
 
         eq_(cl.getValue("i0", t1), 10)
         try:
@@ -641,6 +641,90 @@ class TestClassAttributeValues():
         eq_(cl.getValue("i5"), 15)
         eq_(cl.getValue("i6"), 16)
         eq_(cl.getValue("i7"), 17)
+
+    def testDeleteAttributeValues(self):
+        mcl = CMetaclass("M", attributes = {
+                "isBoolean": True, 
+                "intVal": 1,
+                "floatVal": 1.1,
+                "string": "abc",
+                "list": ["a", "b"]})
+        cl = CClass(mcl, "C")
+        cl.deleteValue("isBoolean")
+        cl.deleteValue("intVal")
+        valueOfList = cl.deleteValue("list")
+        eq_(cl.values, {'floatVal': 1.1, 'string': 'abc'})
+        eq_(valueOfList, ['a', 'b'])
+
+    def testDeleteAttributeValuesWithSuperclass(self):
+        smcl = CMetaclass("SCL_M",  attributes = {
+                "intVal": 20, "intVal2": 30})
+        mcl = CMetaclass("M", superclasses = smcl, attributes = {
+                "isBoolean": True, 
+                "intVal": 1})
+        cl = CClass(mcl, "C", values = {
+            "isBoolean": False})
+        cl.deleteValue("isBoolean")
+        cl.deleteValue("intVal2")
+        eq_(cl.values, {"intVal": 1})
+
+        cl.setValue("intVal", 2, smcl)
+        cl.setValue("intVal", 3, mcl)
+        eq_(cl.values, {"intVal": 3})
+        cl.deleteValue("intVal")
+        eq_(cl.values, {"intVal": 2})
+
+        cl.setValue("intVal", 2, smcl)
+        cl.setValue("intVal", 3, mcl)
+        cl.deleteValue("intVal", mcl)
+        eq_(cl.values, {"intVal": 2})
+
+        cl.setValue("intVal", 2, smcl)
+        cl.setValue("intVal", 3, mcl)
+        cl.deleteValue("intVal", smcl)
+        eq_(cl.values, {"intVal": 3})
+
+    def testAttributeValuesExceptionalCases(self):
+        mcl = CMetaclass("M", attributes = {"b": True})
+        cl1 = CClass(mcl, "C")
+        cl1.delete()
+
+        try:
+            cl1.getValue("b")                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't get value 'b' on deleted class")
+
+        try:
+            cl1.setValue("b", 1)                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't set value 'b' on deleted class")
+
+        try:
+            cl1.deleteValue("b")                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value,"can't delete value 'b' on deleted class")
+
+        try:
+            cl1.values = {"b": 1}                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't set values on deleted class")
+
+        try:
+            cl1.values                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't get values on deleted class")
+
+        cl = CClass(mcl, "C")
+        try:
+            cl.deleteValue("x")
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "attribute 'x' unknown for 'C'")
 
 if __name__ == "__main__":
     nose.main()

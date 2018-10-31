@@ -164,5 +164,6 @@ class TestStereotypeInstancesOnAssociations():
         eq_(s1.allExtendedInstances, [linkObjects[0], linkObjects[1]])
         eq_(s2.allExtendedInstances, [linkObjects[1]])
 
+
 if __name__ == "__main__":
     nose.main()

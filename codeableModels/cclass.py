@@ -2,8 +2,8 @@ from codeableModels.cclassifier import CClassifier
 from codeableModels.internal.commons import checkIsCMetaclass, checkIsCObject, checkIsCStereotype, isCStereotype, checkNamedElementIsNotDeleted
 from codeableModels.cexception import CException
 from codeableModels.cobject import CObject
-from codeableModels.internal.taggedvalues import CTaggedValues
 from codeableModels.internal.stereotype_holders import CStereotypeInstancesHolder
+from codeableModels.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
 
 class CClass(CClassifier):
     def __init__(self, metaclass, name=None, **kwargs):
@@ -12,8 +12,9 @@ class CClass(CClassifier):
         self._objects = []
         self._classObject = CObject(self.metaclass, name, _classObjectClass = self)
         self._stereotypeInstancesHolder = CStereotypeInstancesHolder(self)
-        self._taggedValues = CTaggedValues()
+        self._taggedValues = {}
         super().__init__(name, **kwargs)
+        self._classObject._initAttributeValues()
         
     def _initKeywordArgs(self, legalKeywordArgs = None, **kwargs):
         if legalKeywordArgs == None:
@@ -84,11 +85,6 @@ class CClass(CClassifier):
 
         self._classObject.delete()
         
-
-    @property
-    def classPath(self):
-        return self._classObject.classPath
-
     def instanceOf(self, cl):
         return self._classObject.instanceOf(cl)
 
@@ -111,6 +107,9 @@ class CClass(CClassifier):
     def getValue(self, attributeName, cl = None):
         return self._classObject.getValue(attributeName, cl)
 
+    def deleteValue(self, attributeName, cl = None):
+        return self._classObject.deleteValue(attributeName, cl)
+
     def setValue(self, attributeName, value, cl = None):
         return self._classObject.setValue(attributeName, value, cl)
 
@@ -119,11 +118,8 @@ class CClass(CClassifier):
         return self._classObject.values
 
     @values.setter
-    def values(self, valuesDict):
-        self._classObject.values = valuesDict
-
-    def _removeValue(self, attributeName, cl):
-        return self._classObject._removeValue(attributeName, cl)
+    def values(self, newValues):
+        self._classObject.values = newValues
     
     def getObjects(self, name):
         return list(o for o in self.objects if o.name == name)
@@ -138,23 +134,53 @@ class CClass(CClassifier):
     @stereotypeInstances.setter
     def stereotypeInstances(self, elements):
         self._stereotypeInstancesHolder.stereotypes = elements
+        self._initStereotypeDefaultValues()
+
+    def _initStereotypeDefaultValues(self):
+        # stereotype instances applies all stereotype defaults, if the value has not 
+        # yet been set. as this runs during initialization before the metaclass default
+        # initialization, stereotypes have priority. If stereotypeInstances is called after
+        # class initialization has finished, other values like metaclass defaults might have
+        # been set. Then the stereotype defaults will not overwrite existing values (you need to 
+        # delete them explicitly in order for them to be replaced by stereotype defaults)
+        existingAttributeNames = []
+        for mcl in self.metaclass.classPath:
+            for attrName in mcl.attributeNames:
+                if not attrName in existingAttributeNames:
+                    existingAttributeNames.append(attrName)
+        for stereotypeInstance in self.stereotypeInstances:
+            for st in stereotypeInstance.classPath:
+                for name in st.defaultValues:
+                    if name in existingAttributeNames:
+                        if self.getValue(name) == None:
+                            self.setValue(name, st.defaultValues[name])
 
     def getTaggedValue(self, name, stereotype = None):
-       return self._taggedValues.getTaggedValue(name, self._stereotypeInstancesHolder.getStereotypeInstancePath(), stereotype)
+        if self._isDeleted:
+            raise CException(f"can't get tagged value '{name!s}' on deleted class")
+        return _getValue(self, self._stereotypeInstancesHolder.getStereotypeInstancePath(), self._taggedValues, name, ValueKind.TAGGED_VALUE, stereotype)
+
+    def deleteTaggedValue(self, name, stereotype = None):
+        if self._isDeleted:
+            raise CException(f"can't delete tagged value '{name!s}' on deleted class")
+        return _deleteValue(self, self._stereotypeInstancesHolder.getStereotypeInstancePath(), self._taggedValues, name, ValueKind.TAGGED_VALUE, stereotype)
 
     def setTaggedValue(self, name, value, stereotype = None):
-        self._taggedValues.setTaggedValue(name, value, self._stereotypeInstancesHolder.getStereotypeInstancePath(), stereotype)
-
-    def _removeTaggedValue(self, attributeName, stereotype):
-        self._taggedValues.removeTaggedValue(attributeName, stereotype)
+        if self._isDeleted:
+            raise CException(f"can't set tagged value '{name!s}' on deleted class")
+        return _setValue(self, self._stereotypeInstancesHolder.getStereotypeInstancePath(), self._taggedValues, name, value, ValueKind.TAGGED_VALUE, stereotype)
 
     @property
     def taggedValues(self):
-        return self._taggedValues.getTaggedValuesDict(self._stereotypeInstancesHolder.getStereotypeInstancePath())
+        if self._isDeleted:
+            raise CException(f"can't get tagged values on deleted class")
+        return _getValues(self._stereotypeInstancesHolder.getStereotypeInstancePath(), self._taggedValues)
 
     @taggedValues.setter
-    def taggedValues(self, valuesDict):
-        self._taggedValues.setTaggedValuesDict(valuesDict, self._stereotypeInstancesHolder.getStereotypeInstancePath())
+    def taggedValues(self, newValues):
+        if self._isDeleted:
+            raise CException(f"can't set tagged values on deleted class")
+        _setValues(self, newValues, ValueKind.TAGGED_VALUE)
 
     def association(self, target, descriptor = None, **kwargs):
         if not isinstance(target, CClass):

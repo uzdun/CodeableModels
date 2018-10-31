@@ -84,7 +84,7 @@ class CMetaclass(CClassifier):
         for i in self.allClasses:
             for attrName in self.attributeNames:
                 if not attrName in attributesToKeep:
-                    i._removeValue(attrName, self)
+                    i.deleteValue(attrName, self)
 
     def association(self, target, descriptor = None, **kwargs):
         if not isinstance(target, CMetaclass):

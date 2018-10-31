@@ -263,8 +263,7 @@ class TestMetaclassInheritance():
 
     def testMetaclassPathNoInheritance(self):
         t = CMetaclass()
-        o = CClass(t)
-        eq_(set(o.classPath), set([t]))
+        eq_(set(t.classPath), set([t]))
     
     def testMetaclassPathSimpleInheritance(self):
         t = CMetaclass("T")
@@ -273,12 +272,12 @@ class TestMetaclassInheritance():
         b1 = CMetaclass("B1", superclasses = [m1])
         b2 = CMetaclass("B2", superclasses = [m1])
         b3 = CMetaclass("B3", superclasses = [t])
-        eq_(CClass(b1).classPath, [b1, m1, t])
-        eq_(CClass(b2).classPath, [b2, m1, t])
-        eq_(CClass(b3).classPath, [b3, t])
-        eq_(CClass(m1).classPath, [m1, t])
-        eq_(CClass(m2).classPath, [m2, t])
-        eq_(CClass(t).classPath, [t])
+        eq_(b1.classPath, [b1, m1, t])
+        eq_(b2.classPath, [b2, m1, t])
+        eq_(b3.classPath, [b3, t])
+        eq_(m1.classPath, [m1, t])
+        eq_(m2.classPath, [m2, t])
+        eq_(t.classPath, [t])
 
     def testMetaclassPathMultipleInheritance(self):
         t = CMetaclass("T")
@@ -287,12 +286,12 @@ class TestMetaclassInheritance():
         b1 = CMetaclass("B1", superclasses = [m1, m2])
         b2 = CMetaclass("B2", superclasses = [t, m1])
         b3 = CMetaclass("B3", superclasses = [t, m1, m2])
-        eq_(CClass(b1).classPath, [b1, m1, t, m2])
-        eq_(CClass(b2).classPath, [b2, t, m1])
-        eq_(CClass(b3).classPath, [b3, t, m1, m2])
-        eq_(CClass(m1).classPath, [m1, t])
-        eq_(CClass(m2).classPath, [m2, t])
-        eq_(CClass(t).classPath, [t])
+        eq_(b1.classPath, [b1, m1, t, m2])
+        eq_(b2.classPath, [b2, t, m1])
+        eq_(b3.classPath, [b3, t, m1, m2])
+        eq_(m1.classPath, [m1, t])
+        eq_(m2.classPath, [m2, t])
+        eq_(t.classPath, [t])
 
     def testMetaclassInstanceOf(self):
         a = CMetaclass()

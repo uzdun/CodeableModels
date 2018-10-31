@@ -232,7 +232,7 @@ class TestStereotypeTagValuesOnLinks():
 
     def testAttributeValueTypeCheckBool1(self):
         self.st.attributes = {"t": bool}
-        self.lstereotypeInstances = self.st
+        self.stereotypeInstances = self.st
         try:
             self.l.setTaggedValue("t", self.m1)
             exceptionExpected_()
@@ -401,7 +401,7 @@ class TestStereotypeTagValuesOnLinks():
             self.l.getTaggedValue("isBoolean", st2) 
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'isBoolean' unknown for stereotype 'S2'")
+            eq_(e.value, "tagged value 'isBoolean' unknown for 'S2'")
 
     def testAttributesDeletedOnSubclassNoDefaults(self):
         self.st.attributes = {
@@ -425,7 +425,7 @@ class TestStereotypeTagValuesOnLinks():
             self.l.getTaggedValue("isBoolean", st2) 
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "tagged value 'isBoolean' unknown for stereotype 'S2'")
+            eq_(e.value, "tagged value 'isBoolean' unknown for 'S2'")
 
     def testWrongStereotypeInTaggedValue(self):
         self.st.attributes = {
@@ -512,7 +512,7 @@ class TestStereotypeTagValuesOnLinks():
             self.l.getTaggedValue("i1", t2)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "stereotype '' is not a stereotype of element")
+            eq_(e.value, "tagged value 'i1' unknown for ''")
         eq_(self.l.getTaggedValue("i2", c), 2)
         eq_(self.l.getTaggedValue("i3", sc), 3)
 
@@ -537,7 +537,7 @@ class TestStereotypeTagValuesOnLinks():
             self.l.getTaggedValue("i1", t2)
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "stereotype '' is not a stereotype of element")
+            eq_(e.value, "tagged value 'i1' unknown for ''")
         eq_(self.l.getTaggedValue("i2", c), 12)
         eq_(self.l.getTaggedValue("i3", sc), 13)
 
@@ -728,6 +728,92 @@ class TestStereotypeTagValuesOnLinks():
         eq_(link.getTaggedValue("string"), "abc")
         eq_(link.getTaggedValue("list"), ["a", "b"])
 
+    def testDeleteTaggedValues(self):
+        s = CStereotype("S", attributes = {
+                "isBoolean": True, 
+                "intVal": 1,
+                "floatVal": 1.1,
+                "string": "abc",
+                "list": ["a", "b"]})
+        self.a.stereotypes = s
+        self.l.stereotypeInstances = s
+        self.l.deleteTaggedValue("isBoolean")
+        self.l.deleteTaggedValue("intVal")
+        valueOfList = self.l.deleteTaggedValue("list")
+        eq_(self.l.taggedValues, {'floatVal': 1.1, 'string': 'abc'})
+        eq_(valueOfList, ['a', 'b'])
+
+    def testDeleteTaggedValuesWithSuperclass(self):
+        sst = CStereotype("SST", attributes = {
+                "intVal": 20, "intVal2": 30})
+        st = CStereotype("ST", superclasses = sst, attributes = {
+                "isBoolean": True, 
+                "intVal": 1})
+        self.a.stereotypes = st
+        self.l.stereotypeInstances = st
+
+        self.l.deleteTaggedValue("isBoolean")
+        self.l.deleteTaggedValue("intVal2")
+        eq_(self.l.taggedValues, {"intVal": 1})
+
+        self.l.setTaggedValue("intVal", 2, sst)
+        self.l.setTaggedValue("intVal", 3, st)
+        eq_(self.l.taggedValues, {"intVal": 3})
+        self.l.deleteTaggedValue("intVal")
+        eq_(self.l.taggedValues, {"intVal": 2})
+
+        self.l.setTaggedValue("intVal", 2, sst)
+        self.l.setTaggedValue("intVal", 3, st)
+        self.l.deleteTaggedValue("intVal", st)
+        eq_(self.l.taggedValues, {"intVal": 2})
+
+        self.l.setTaggedValue("intVal", 2, sst)
+        self.l.setTaggedValue("intVal", 3, st)
+        self.l.deleteTaggedValue("intVal", sst)
+        eq_(self.l.taggedValues, {"intVal": 3})
+
+    def testDeleteTaggedValuesExceptionalCases(self):
+        s = CStereotype("S", attributes = {"b": True})
+        self.a.stereotypes = s
+        self.l.stereotypeInstances = s
+        self.l2.delete()
+
+        try:
+            self.l2.getTaggedValue("b")                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't get tagged value 'b' on deleted link")
+
+        try:
+            self.l2.setTaggedValue("b", 1)                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't set tagged value 'b' on deleted link")
+
+        try:
+            self.l2.deleteTaggedValue("b")                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value,"can't delete tagged value 'b' on deleted link")
+
+        try:
+            self.l2.taggedValues = {"b": 1}                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't set tagged values on deleted link")
+
+        try:
+            self.l2.taggedValues                
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "can't get tagged values on deleted link")
+
+        self.l.stereotypeInstances = s
+        try:
+            self.l.deleteTaggedValue("x")
+            exceptionExpected_()
+        except CException as e: 
+            eq_(e.value, "tagged value 'x' unknown")
 
 if __name__ == "__main__":
     nose.main()
