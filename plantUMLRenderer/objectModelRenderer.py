@@ -69,7 +69,7 @@ class ObjectModelRenderer(ModelRenderer):
         context.addLine(self.getNodeID(context, link.source) + arrow + self.getNodeID(context, link.target) + label)
 
     def renderLinks(self, context, obj, objList):
-        for classifier in obj.classPath:
+        for classifier in obj.classifier.classPath:
             for association in classifier.associations:
                 links = [l for l in obj.linkObjects if l.association == association]
                 for link in links:
