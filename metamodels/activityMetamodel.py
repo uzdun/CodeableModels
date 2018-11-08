@@ -11,7 +11,8 @@ decisionNode = CMetaclass("DecisionNode", superclasses = controlNode, attributes
 mergeNode = CMetaclass("MergeNode", superclasses = controlNode) 
 initialNode = CMetaclass("InitialNode", superclasses = controlNode) 
 action = CMetaclass("Action", superclasses = activityNode) 
-acceptEventAction = CMetaclass("AcceptEventAction", superclasses = action) 
+acceptEventAction = CMetaclass("AcceptEventAction", superclasses = action)
+acceptTimeEventAction = CMetaclass("AcceptTimeEventAction", superclasses = action, attributes = {"description": str})
 sendSignalAction = CMetaclass("SendSignalAction", superclasses = action) 
 
 # edges

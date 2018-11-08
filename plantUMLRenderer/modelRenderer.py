@@ -3,7 +3,7 @@ import shutil
 from subprocess import call
 from codeableModels.internal.commons import setKeywordArgs, isCObject, isCClass, isCEnum, isCClassifier
 from enum import Enum 
-from codeableModels import CNamedElement
+from codeableModels import *
 
 class RenderingContext(object):
     def __init__(self):
@@ -134,11 +134,19 @@ class ModelRenderer(object):
             return ""
         attributeValueAdded = False
         attributeValueString = " {\n"
+        renderedAttributes = set()
         for cl in obj.classifier.classPath:
             attributes = cl.attributes
             for attribute in attributes:
                 name = attribute.name
                 value = obj.getValue(name, cl)
+
+                # don't render the same attribute twice, but only the one that is lowest in the class hierarchy
+                if name in renderedAttributes:
+                    continue
+                else: 
+                    renderedAttributes.add(name)
+
                 if not context.renderEmptyAttributes:
                     if value == None:
                         continue
@@ -161,6 +169,7 @@ class ModelRenderer(object):
                 else:
                     result.append(str(elt))
             value = "[" + ", ".join(result) + "]"
+        _checkForIllegalValueCharacters(str(value))
         return self.breakName(name + ' = ' + str(value))
 
     def padAndBreakName(self, name, namePadding = None):
@@ -222,3 +231,8 @@ class ModelRenderer(object):
             call(["java", "-jar", f"{self.plantUmlJarPath!s}", f"{fileNameTxt!s}"])
         if self.renderSVG:
             call(["java", "-jar", f"{self.plantUmlJarPath!s}", f"{fileNameTxt!s}", "-tsvg"])
+
+
+def _checkForIllegalValueCharacters(value):
+    if '(' in value or ')' in value:
+        raise CException("do not use '(' or ')' in attribute values, as PlantUML interprets them as method parameters and would start a new compartment if they are part of an attribute value")
