@@ -47,6 +47,8 @@ class ClassModelRenderer(ModelRenderer):
             t = "Float"
         elif type == bool:
             t = "Boolean"
+        elif type == list:
+            t = "List"
         if t == None:
             raise CException(f"unknown type of attribute: '{attribute!s}")
         return attribute.name + ": " + t + "\n"

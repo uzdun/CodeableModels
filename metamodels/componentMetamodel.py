@@ -23,7 +23,7 @@ elasticSearchStore = CStereotype("ElasticSearchStore", superclasses = database)
 memcachedDB = CStereotype("MemcachedDB", superclasses = database)
 
 # connector relation and connector types
-connectorsRelation = component.association(component, "[source] * -> [target] *")
+connectorsRelation = component.association(component, "connected to: [source] * -> [target] *")
 
 connectorType = CStereotype("Connector Type", extended = connectorsRelation)
 directed = CStereotype("Directed", superclasses = connectorType)
