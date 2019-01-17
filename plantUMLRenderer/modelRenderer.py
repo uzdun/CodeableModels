@@ -56,6 +56,7 @@ class ModelRenderer(object):
         self.nameBreakLength = 25
         self.namePadding = ""
         self.style = ModelStyle.PLAIN
+        self.leftToRight = False
 
         self.ID = 0
 
@@ -84,6 +85,8 @@ class ModelRenderer(object):
                 context.addLine("skinparam defaultFontName Arial")
                 context.addLine("skinparam defaultFontSize 11")
                 context.addLine("skinparam classfontstyle bold")
+        if self.leftToRight == True:
+            context.addLine("left to right direction")
 
     def renderEndGraph(self, context):
         context.addLine("@enduml")
