@@ -63,10 +63,10 @@ decisionCategoryToContextsRelation = category.association(domainMetaclass, "has 
 
 decisionToContextsRelation = decision.association(domainMetaclass, "has context: [decision] 1 -> [context] *")
 
-decisionCategoryToContextsRelationType = CStereotype("Decision Category To Contexts Relation Type",
+contextRelationsType = CStereotype("Decision Category To Contexts Relation Type",
         extended = [decisionCategoryToContextsRelation, decisionToContextsRelation])
-decideForAllInstancesOf = CStereotype("decide for all instances of", superclasses = decisionCategoryToContextsRelationType)
-decideForSomeInstancesOf = CStereotype("decide for some instances of", superclasses = decisionCategoryToContextsRelationType)
+decideForAllInstancesOf = CStereotype("decide for all instances of", superclasses = contextRelationsType)
+decideForSomeInstancesOf = CStereotype("decide for some instances of", superclasses = contextRelationsType)
 
 doNothingDesignSolution = CMetaclass("Do Nothing", superclasses = designSolution)
 
@@ -97,8 +97,8 @@ solutionToNextDecisionsRelationTypeBundle = CBundle("Solutions To Next Decisions
         stopElementsInclusive = solutionsToNextDecisionsRelationMetaclasses))
 
 decisionCategoryToContextsRelationMetaclasses = [decisionCategoryToContextsRelation.source, decisionCategoryToContextsRelation.target]
-decisionCategoryToContextsRelationTypeBundle = CBundle("Decision Category To Contexts Relation Types", 
-        elements = decisionCategoryToContextsRelationMetaclasses + decisionCategoryToContextsRelationType.getConnectedElements(addStereotypes = True, 
+contextRelationsTypeBundle = CBundle("Decision Category To Contexts Relation Types", 
+        elements = decisionCategoryToContextsRelationMetaclasses + contextRelationsType.getConnectedElements(addStereotypes = True, 
         stopElementsInclusive = decisionCategoryToContextsRelationMetaclasses))
 
 guidanceMetaModelViews = [_all, {},
@@ -108,7 +108,7 @@ guidanceMetaModelViews = [_all, {},
     forceImpactTypeBundle, {},
     designSolutionDependencyTypeBundle, {},
     solutionToNextDecisionsRelationTypeBundle, {},
-    decisionCategoryToContextsRelationTypeBundle, {}]
+    contextRelationsTypeBundle, {}]
 
 # helper functions
 def addStereotypedLinkWithHowTaggedValue(linkFrom, linkTo, stereotypeInstance, tagValue):
