@@ -4,12 +4,13 @@ import os
 import shutil
 
 class PlantUMLGenerator(object):
-    def __init__(self):
+    def __init__(self, deleteGenDir = True):
         self.directory = "../_generated"
         self.plantUmlJarPath = "../../libs/plantuml.jar"
-        if os.path.exists(self.directory):
-            shutil.rmtree(self.directory)
-        os.makedirs(self.directory)
+        if deleteGenDir:
+            if os.path.exists(self.directory):
+                shutil.rmtree(self.directory)
+            os.makedirs(self.directory)
         self.classModelRenderer = ClassModelRenderer(plantUmlJarPath = self.plantUmlJarPath, directory = self.directory)
         self.objectModelRenderer = ObjectModelRenderer(plantUmlJarPath = self.plantUmlJarPath, directory = self.directory)
 
