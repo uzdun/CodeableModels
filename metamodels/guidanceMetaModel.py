@@ -34,7 +34,7 @@ categoryHierarchyRelation = category.association(category, "has sub-category: [p
 
 designSolutionDependencies = designSolution.association(designSolution, "is dependent on: [from] * -> [to] *")
 designSolutionDependencyType = CStereotype("Design Solution Dependency Type", extended = designSolutionDependencies,
-        attributes = {"how": str})
+        attributes = {"how": str, "role": str})
 requires = CStereotype("Requires", superclasses = designSolutionDependencyType)
 uses = CStereotype("Uses", superclasses = designSolutionDependencyType)
 canUse = CStereotype("Can Use", superclasses = designSolutionDependencyType)
@@ -46,6 +46,7 @@ includes = CStereotype("Includes", superclasses = designSolutionDependencyType)
 alternativeTo = CStereotype("Alternative To", superclasses = designSolutionDependencyType)
 rulesOut = CStereotype("Rules Out", superclasses = designSolutionDependencyType)
 influences = CStereotype("Influences", superclasses = designSolutionDependencyType)
+leadsTo = CStereotype("Leads To", superclasses = designSolutionDependencyType)
 
 solutionsToNextDecisionsRelation = designSolution.association(decision, "is next: [prior solution] * -> [next decision] *")
 
@@ -59,9 +60,9 @@ decisionSolutionRelation = decision.association(designSolution, "has: *->*")
 option = CStereotype("Option", extended = decisionSolutionRelation, 
         attributes = {"name":str})
 
-decisionCategoryToContextsRelation = category.association(domainMetaclass, "has context: [category] 1 -> [context] *")
+decisionCategoryToContextsRelation = category.association(domainMetaclass, "has context: [category] * -> [context] *")
 
-decisionToContextsRelation = decision.association(domainMetaclass, "has context: [decision] 1 -> [context] *")
+decisionToContextsRelation = decision.association(domainMetaclass, "has context: [decision] * -> [context] *")
 
 contextRelationsType = CStereotype("Decision Category To Contexts Relation Type",
         extended = [decisionCategoryToContextsRelation, decisionToContextsRelation])
@@ -115,6 +116,12 @@ def addStereotypedLinkWithHowTaggedValue(linkFrom, linkTo, stereotypeInstance, t
     l = linkFrom.addLinks(linkTo, roleName = "to")[0]
     l.stereotypeInstances = [stereotypeInstance]
     l.setTaggedValue("how", tagValue)
+    return l
+
+def addStereotypedLinkWithRoleTaggedValue(linkFrom, linkTo, stereotypeInstance, tagValue):
+    l = linkFrom.addLinks(linkTo, roleName = "to")[0]
+    l.stereotypeInstances = [stereotypeInstance]
+    l.setTaggedValue("role", tagValue)
     return l
 
 def addDecisionOptionLink(decision, designSolution, optionName):
