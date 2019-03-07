@@ -39,6 +39,7 @@ requires = CStereotype("Requires", superclasses = designSolutionDependencyType)
 uses = CStereotype("Uses", superclasses = designSolutionDependencyType)
 canUse = CStereotype("Can Use", superclasses = designSolutionDependencyType)
 canBeCombinedWith = CStereotype("Can Be Combined With", superclasses = designSolutionDependencyType)
+canBeRealizedWith = CStereotype("Can be Realized With", superclasses = designSolutionDependencyType)
 variant = CStereotype("Variant", superclasses = designSolutionDependencyType)
 isA = CStereotype("Is-a", superclasses = designSolutionDependencyType)
 realizes = CStereotype("Realizes", superclasses = designSolutionDependencyType)
@@ -47,6 +48,7 @@ alternativeTo = CStereotype("Alternative To", superclasses = designSolutionDepen
 rulesOut = CStereotype("Rules Out", superclasses = designSolutionDependencyType)
 influences = CStereotype("Influences", superclasses = designSolutionDependencyType)
 leadsTo = CStereotype("Leads To", superclasses = designSolutionDependencyType)
+
 
 solutionsToNextDecisionsRelation = designSolution.association(decision, "is next: [prior solution] * -> [next decision] *")
 
