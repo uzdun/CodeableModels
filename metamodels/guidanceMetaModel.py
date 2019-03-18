@@ -9,6 +9,8 @@ category = CMetaclass("Category", superclasses = modelElement)
 designSolution = CMetaclass("Design Solution", superclasses = modelElement, 
         attributes = {"background reading": str})
 
+designSolutionDomainMetaclass = CMetaclass("Design Solution / Domain Class", superclasses = [designSolution, domainMetaclass])
+
 practice = CMetaclass("Practice", superclasses = designSolution)
 pattern = CMetaclass("Pattern", superclasses = practice)
 
