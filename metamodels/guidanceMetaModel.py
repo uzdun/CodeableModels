@@ -21,6 +21,10 @@ solutionsKnownUsesRelation = designSolution.association(knownUse, "used in: [sol
 decision = CMetaclass("Decision", superclasses = designSolution, attributes = {"recommendation": str})
 categoryDecisionsRelation = category.association(decision, "[category] 1 <>- [decisions] *")
 
+decisionType = CStereotype("Decision Type", extended = decision)
+singleAnswer = CStereotype("Single Answers", superclasses = decisionType)
+multipleAnswers = CStereotype("Multiple Answers", superclasses = decisionType)
+
 force = CMetaclass("Force", superclasses = modelElement)
 forceImpactRelation = designSolution.association(force, "has force: [solutions] * -> [forces] *")
 
@@ -131,7 +135,8 @@ def addStereotypedLinkWithRoleTaggedValue(linkFrom, linkTo, stereotypeInstance, 
 def addDecisionOptionLink(decision, designSolution, optionName):
     l = decision.addLinks(designSolution, association = decisionSolutionRelation)[0]
     l.stereotypeInstances = [option]
-    l.setTaggedValue("name", optionName)
+    if optionName != None:
+        l.setTaggedValue("name", optionName)
     return l
 
 def addStereotypedDesignSolutionLink(fromDesignSolution, toDesignSolution, stereotypeInstance):
