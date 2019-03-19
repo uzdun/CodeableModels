@@ -64,7 +64,7 @@ class ObjectModelRenderer(ModelRenderer):
             if len(label) > 0:
                 label = label + " "
             label = label + association.name
-        label = ": \"" + label + "\" "
+        label = ": \"" + self.breakName(label) + "\" "
 
         context.addLine(self.getNodeID(context, link.source) + arrow + self.getNodeID(context, link.target) + label)
 
