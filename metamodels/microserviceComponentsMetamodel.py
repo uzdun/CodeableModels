@@ -18,6 +18,7 @@ mongoDB = CStereotype("MongoDB", superclasses = database)
 lDAPStore = CStereotype("LDAPStore", superclasses = database)
 elasticSearchStore = CStereotype("ElasticSearchStore", superclasses = database)
 memcachedDB = CStereotype("MemcachedDB", superclasses = database)
+redisDB = CStereotype("RedisDB", superclasses = database)
 
 # Connector types
 directed = CStereotype("Directed", superclasses = connectorType)
@@ -39,6 +40,8 @@ jdbc = CStereotype("JDBC", superclasses = databaseConnector)
 odbc = CStereotype("ODBC", superclasses = databaseConnector)
 mongoWire = CStereotype("MongoWire", superclasses = databaseConnector)
 hdfs = CStereotype("HDFS", superclasses = databaseConnector)
+resp = CStereotype("RESP", superclasses = databaseConnector)
+
 
 restfulHTTP = CStereotype("RESTful HTTP", superclasses = serviceConnector)
 soap = CStereotype("SOAP", superclasses = serviceConnector)
