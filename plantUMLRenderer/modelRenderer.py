@@ -100,7 +100,7 @@ class ModelRenderer(object):
 
         result = "«"
         taggedValuesString = "\\n{"
-        taggedValueAdded = False
+        renderedTaggedValues = []
 
         firstStereotype = True
         for stereotype in stereotypes:
@@ -113,18 +113,19 @@ class ModelRenderer(object):
 
             for stereotypeClass in stereotypeClassPath:
                 for taggedValue in stereotypeClass.attributes:
-                    value = stereotypedElementInstance.getTaggedValue(taggedValue.name, stereotypeClass)
-                    if value != None:
-                        if taggedValueAdded:
-                            taggedValuesString += ", "
-                        taggedValueAdded = True
-                        taggedValuesString += self.renderAttributeValue(taggedValue, taggedValue.name, value)
+                    if not [taggedValue.name, stereotypeClass] in renderedTaggedValues:
+                        value = stereotypedElementInstance.getTaggedValue(taggedValue.name, stereotypeClass)
+                        if value != None: 
+                            if len(renderedTaggedValues) != 0:
+                                taggedValuesString += ", "
+                            taggedValuesString += self.renderAttributeValue(taggedValue, taggedValue.name, value)
+                            renderedTaggedValues.append([taggedValue.name, stereotypeClass])
 
             result += stereotype.name
 
         result = self.breakName(result)
 
-        if taggedValueAdded:
+        if len(renderedTaggedValues) != 0:
             taggedValuesString += "}"
         else:
             taggedValuesString = ""

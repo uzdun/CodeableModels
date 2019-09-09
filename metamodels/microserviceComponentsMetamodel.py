@@ -5,6 +5,7 @@ from metamodels.componentMetamodel import *
 service = CStereotype("Service", superclasses = componentType)
 database = CStereotype("Database", superclasses = componentType)
 pubSubComponent = CStereotype("Pub/Sub Component", superclasses = componentType)
+messageBroker = CStereotype("Message Broker", superclasses = componentType)
 externalComponent = CStereotype("External Component", superclasses = componentType)
 facade = CStereotype("Facade", superclasses = componentType)
 
@@ -20,9 +21,22 @@ elasticSearchStore = CStereotype("ElasticSearchStore", superclasses = database)
 memcachedDB = CStereotype("MemcachedDB", superclasses = database)
 redisDB = CStereotype("RedisDB", superclasses = database)
 
+monitoringComponent = CStereotype("Monitoring", superclasses = componentType)
+tracingComponent = CStereotype("Tracing", superclasses = componentType)
+loggingComponent = CStereotype("Logging", superclasses = componentType)
+
 # Connector types
 directed = CStereotype("Directed", superclasses = connectorType)
-callback = CStereotype("Callback", superclasses = connectorType)
+
+# use both synchronousConnector and asynchronousConnector, if both forms are mixed (or leave unspecified)
+# use synchronousConnector especially if connector implies asynchronous communication (as in messaging), but is used synchronously
+synchronousConnector = CStereotype("Synchronous", superclasses = connectorType) 
+# use asynchronousConnector especially if connector implies synchronous communication (as in restfulHTTP), but is used asynchronously
+asynchronousConnector = CStereotype("Asynchronous", superclasses = connectorType) 
+
+callback = CStereotype("Callback", superclasses = asynchronousConnector)
+polling = CStereotype("Polling", superclasses = asynchronousConnector)
+oneway = CStereotype("One Way", superclasses = asynchronousConnector)
 
 inMemoryConnector = CStereotype("In-Memory Connector", superclasses = connectorType)
 databaseConnector = CStereotype("Database Connector", superclasses = connectorType)
@@ -31,17 +45,21 @@ webConnector = CStereotype("Web Connector", superclasses = connectorType)
 looselyCoupledConnector = CStereotype("Loosely Coupled Connector", superclasses = connectorType)
 ldap = CStereotype("LDAP", superclasses = connectorType)
 memcachedConnector = CStereotype("Memcached Connector", superclasses = connectorType)
-messaging = CStereotype("Messaging", superclasses = connectorType)
+messaging = CStereotype("Messaging", superclasses = connectorType, attributes = {"channel": str})
 
-eventBasedConnector = CStereotype("Event-Based Connector", superclasses = looselyCoupledConnector)
-pubSubConnector = CStereotype("Pub/Sub Connector", superclasses = looselyCoupledConnector)
+eventBasedConnector = CStereotype("Event-Based Connector", superclasses = looselyCoupledConnector, 
+    attributes = {"channel": str})
+# optionally, it can be specified who publishes and who subscribes on this connector
+pubSubConnector = CStereotype("Pub/Sub Connector", superclasses = looselyCoupledConnector, attributes = {
+    "publishers": list, "subscribers": list
+})
 
 jdbc = CStereotype("JDBC", superclasses = databaseConnector)
 odbc = CStereotype("ODBC", superclasses = databaseConnector)
 mongoWire = CStereotype("MongoWire", superclasses = databaseConnector)
 hdfs = CStereotype("HDFS", superclasses = databaseConnector)
 resp = CStereotype("RESP", superclasses = databaseConnector)
-
+mySQLProtocol = CStereotype("MySQL Protocol", superclasses = databaseConnector)
 
 restfulHTTP = CStereotype("RESTful HTTP", superclasses = serviceConnector)
 soap = CStereotype("SOAP", superclasses = serviceConnector)
@@ -53,6 +71,7 @@ stomp = CStereotype("STOMP", superclasses = messaging)
 
 http = CStereotype("HTTP", superclasses = webConnector)
 https = CStereotype("HTTPS", superclasses = webConnector)
+http2 = CStereotype("HTTP/2", superclasses = webConnector)
 
 publisher = CStereotype("Publisher", superclasses = eventBasedConnector)
 subscriber = CStereotype("Subscriber", superclasses = eventBasedConnector)
