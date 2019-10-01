@@ -28,11 +28,12 @@ loggingComponent = CStereotype("Logging", superclasses = componentType)
 # Connector types
 directed = CStereotype("Directed", superclasses = connectorType)
 
-# use both synchronousConnector and asynchronousConnector, if both forms are mixed (or leave unspecified)
 # use synchronousConnector especially if connector implies asynchronous communication (as in messaging), but is used synchronously
 synchronousConnector = CStereotype("Synchronous", superclasses = connectorType) 
 # use asynchronousConnector especially if connector implies synchronous communication (as in restfulHTTP), but is used asynchronously
 asynchronousConnector = CStereotype("Asynchronous", superclasses = connectorType) 
+# use both syncAsyncConnector, if both forms are mixed (or leave unspecified)
+syncAsyncConnector = CStereotype("Synchronous + Asynchronous", superclasses = connectorType) 
 
 callback = CStereotype("Callback", superclasses = asynchronousConnector)
 polling = CStereotype("Polling", superclasses = asynchronousConnector)
