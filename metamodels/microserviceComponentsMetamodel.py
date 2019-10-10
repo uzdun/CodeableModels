@@ -33,7 +33,7 @@ synchronousConnector = CStereotype("Synchronous", superclasses = connectorType)
 # use asynchronousConnector especially if connector implies synchronous communication (as in restfulHTTP), but is used asynchronously
 asynchronousConnector = CStereotype("Asynchronous", superclasses = connectorType) 
 # use both syncAsyncConnector, if both forms are mixed (or leave unspecified)
-syncAsyncConnector = CStereotype("Synchronous + Asynchronous", superclasses = connectorType) 
+syncAsyncConnector = CStereotype("Synchronous + Asynchronous", superclasses = [synchronousConnector, asynchronousConnector]) 
 
 callback = CStereotype("Callback", superclasses = asynchronousConnector)
 polling = CStereotype("Polling", superclasses = asynchronousConnector)
@@ -55,6 +55,14 @@ pubSubConnector = CStereotype("Pub/Sub Connector", superclasses = looselyCoupled
     "publishers": list, "subscribers": list
 })
 
+publisher = CStereotype("Publisher", superclasses = eventBasedConnector)
+subscriber = CStereotype("Subscriber", superclasses = eventBasedConnector)
+publisherSubscriber = CStereotype("Publisher + Subscriber", superclasses = [publisher, subscriber])
+
+messageProducer = CStereotype("Message Producer", superclasses = messaging)
+messageConsumer = CStereotype("Message Consumer", superclasses = messaging)
+messageProducerConsumer = CStereotype("Message Producer + Consumer", superclasses = [messageProducer, messageConsumer])
+
 jdbc = CStereotype("JDBC", superclasses = databaseConnector)
 odbc = CStereotype("ODBC", superclasses = databaseConnector)
 mongoWire = CStereotype("MongoWire", superclasses = databaseConnector)
@@ -73,9 +81,6 @@ stomp = CStereotype("STOMP", superclasses = messaging)
 http = CStereotype("HTTP", superclasses = webConnector)
 https = CStereotype("HTTPS", superclasses = webConnector)
 http2 = CStereotype("HTTP/2", superclasses = webConnector)
-
-publisher = CStereotype("Publisher", superclasses = eventBasedConnector)
-subscriber = CStereotype("Subscriber", superclasses = eventBasedConnector)
 
 _all = CBundle("_all", 
     elements = component.getConnectedElements(addStereotypes = True) + connectorType.getConnectedElements(addStereotypes = True))
