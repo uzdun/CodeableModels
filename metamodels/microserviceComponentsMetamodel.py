@@ -46,14 +46,14 @@ webConnector = CStereotype("Web Connector", superclasses = connectorType)
 looselyCoupledConnector = CStereotype("Loosely Coupled Connector", superclasses = connectorType)
 ldap = CStereotype("LDAP", superclasses = connectorType)
 memcachedConnector = CStereotype("Memcached Connector", superclasses = connectorType)
-messaging = CStereotype("Messaging", superclasses = connectorType, attributes = {"channel": str})
+messaging = CStereotype("Messaging", superclasses = connectorType, attributes = {"channels": []})
 
 eventBasedConnector = CStereotype("Event-Based Connector", superclasses = looselyCoupledConnector, 
-    attributes = {"channel": str})
+    attributes = {"topics": []})
 # optionally, it can be specified who publishes and who subscribes on this connector
-pubSubConnector = CStereotype("Pub/Sub Connector", superclasses = looselyCoupledConnector, attributes = {
-    "publishers": list, "subscribers": list
-})
+# pubSubConnector = CStereotype("Pub/Sub Connector", superclasses = looselyCoupledConnector, attributes = {
+#     "publishers": list, "subscribers": list
+# })
 
 publisher = CStereotype("Publisher", superclasses = eventBasedConnector)
 subscriber = CStereotype("Subscriber", superclasses = eventBasedConnector)
