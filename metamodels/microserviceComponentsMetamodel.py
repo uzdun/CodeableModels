@@ -28,6 +28,9 @@ monitoringComponent = CStereotype("Monitoring", superclasses = componentType)
 tracingComponent = CStereotype("Tracing", superclasses = componentType)
 loggingComponent = CStereotype("Logging", superclasses = componentType)
 
+orchestrator = CStereotype("Orchestrator", superclasses = componentType)
+sagaOrchestrator = CStereotype("Saga Orchestrator", superclasses = orchestrator)
+
 # Connector types
 directed = CStereotype("Directed", superclasses = connectorType)
 
@@ -41,6 +44,8 @@ syncAsyncConnector = CStereotype("Synchronous + Asynchronous", superclasses = [s
 callback = CStereotype("Callback", superclasses = asynchronousConnector)
 polling = CStereotype("Polling", superclasses = asynchronousConnector)
 oneway = CStereotype("One Way", superclasses = asynchronousConnector)
+
+indirectRelationViaAPI = CStereotype("Indirect Relation via API", superclasses = connectorType)
 
 inMemoryConnector = CStereotype("In-Memory Connector", superclasses = connectorType)
 databaseConnector = CStereotype("Database Connector", superclasses = connectorType)
