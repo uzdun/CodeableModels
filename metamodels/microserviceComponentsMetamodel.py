@@ -6,6 +6,9 @@ service = CStereotype("Service", superclasses = componentType)
 database = CStereotype("Database", superclasses = componentType)
 pubSubComponent = CStereotype("Pub/Sub Component", superclasses = componentType)
 messageBroker = CStereotype("Message Broker", superclasses = componentType)
+# a component that provides event sourcing, could be e.g. on a pub/sub component as an additional function
+# or on a component listening to events
+eventSourcing = CStereotype("Event Sourcing", superclasses = componentType)
 externalComponent = CStereotype("External Component", superclasses = componentType)
 facade = CStereotype("Facade", superclasses = componentType)
 
@@ -46,22 +49,16 @@ webConnector = CStereotype("Web Connector", superclasses = connectorType)
 looselyCoupledConnector = CStereotype("Loosely Coupled Connector", superclasses = connectorType)
 ldap = CStereotype("LDAP", superclasses = connectorType)
 memcachedConnector = CStereotype("Memcached Connector", superclasses = connectorType)
-messaging = CStereotype("Messaging", superclasses = connectorType, attributes = {"channels": []})
+messaging = CStereotype("Messaging", superclasses = connectorType)
+eventBasedConnector = CStereotype("Event-Based Connector", superclasses = looselyCoupledConnector)
 
-eventBasedConnector = CStereotype("Event-Based Connector", superclasses = looselyCoupledConnector, 
-    attributes = {"topics": []})
-# optionally, it can be specified who publishes and who subscribes on this connector
-# pubSubConnector = CStereotype("Pub/Sub Connector", superclasses = looselyCoupledConnector, attributes = {
-#     "publishers": list, "subscribers": list
-# })
+publisher = CStereotype("Publisher", superclasses = eventBasedConnector,
+    attributes = {"publishedTopics": []})
+subscriber = CStereotype("Subscriber", superclasses = eventBasedConnector,
+    attributes = {"subscribedTopics": []})
 
-publisher = CStereotype("Publisher", superclasses = eventBasedConnector)
-subscriber = CStereotype("Subscriber", superclasses = eventBasedConnector)
-publisherSubscriber = CStereotype("Publisher + Subscriber", superclasses = [publisher, subscriber])
-
-messageProducer = CStereotype("Message Producer", superclasses = messaging)
-messageConsumer = CStereotype("Message Consumer", superclasses = messaging)
-messageProducerConsumer = CStereotype("Message Producer + Consumer", superclasses = [messageProducer, messageConsumer])
+messageProducer = CStereotype("Message Producer", superclasses = messaging, attributes = {"outChannels": []})
+messageConsumer = CStereotype("Message Consumer", superclasses = messaging, attributes = {"inChannels": []})
 
 jdbc = CStereotype("JDBC", superclasses = databaseConnector)
 odbc = CStereotype("ODBC", superclasses = databaseConnector)
