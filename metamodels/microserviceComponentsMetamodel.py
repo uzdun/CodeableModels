@@ -58,12 +58,12 @@ messaging = CStereotype("Messaging", superclasses = connectorType)
 eventBasedConnector = CStereotype("Event-Based Connector", superclasses = looselyCoupledConnector)
 
 publisher = CStereotype("Publisher", superclasses = eventBasedConnector,
-    attributes = {"publishedTopics": []})
+    attributes = {"publishedTopics": list})
 subscriber = CStereotype("Subscriber", superclasses = eventBasedConnector,
-    attributes = {"subscribedTopics": []})
+    attributes = {"subscribedTopics": list})
 
-messageProducer = CStereotype("Message Producer", superclasses = messaging, attributes = {"outChannels": []})
-messageConsumer = CStereotype("Message Consumer", superclasses = messaging, attributes = {"inChannels": []})
+messageProducer = CStereotype("Message Producer", superclasses = messaging, attributes = {"outChannels": list})
+messageConsumer = CStereotype("Message Consumer", superclasses = messaging, attributes = {"inChannels": list})
 
 jdbc = CStereotype("JDBC", superclasses = databaseConnector)
 odbc = CStereotype("ODBC", superclasses = databaseConnector)
