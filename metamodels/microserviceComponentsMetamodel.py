@@ -18,6 +18,7 @@ webUI = CStereotype("Web UI", superclasses = facade)
 inMemoryDataStore = CStereotype("In-Memory Data Store", superclasses = database)
 postgreSQLDB = CStereotype("PostgreSQLDB", superclasses = database)
 mySQLDB = CStereotype("MySQLDB", superclasses = database)
+sqlServer = CStereotype("SQL Server", superclasses = database)
 mongoDB = CStereotype("MongoDB", superclasses = database)
 lDAPStore = CStereotype("LDAPStore", superclasses = database)
 elasticSearchStore = CStereotype("ElasticSearchStore", superclasses = database)
@@ -48,7 +49,8 @@ oneway = CStereotype("One Way", superclasses = asynchronousConnector)
 indirectRelationViaAPI = CStereotype("Indirect Relation via API", superclasses = connectorType)
 
 inMemoryConnector = CStereotype("In-Memory Connector", superclasses = connectorType)
-databaseConnector = CStereotype("Database Connector", superclasses = connectorType)
+databaseConnector = CStereotype("Database Connector", superclasses = connectorType,
+                                attributes = {"read": list, "write": list, "read + write": list})
 serviceConnector = CStereotype("Service Connector", superclasses = connectorType)
 webConnector = CStereotype("Web Connector", superclasses = connectorType)
 looselyCoupledConnector = CStereotype("Loosely Coupled Connector", superclasses = connectorType)
@@ -83,6 +85,9 @@ stomp = CStereotype("STOMP", superclasses = messaging)
 http = CStereotype("HTTP", superclasses = webConnector)
 https = CStereotype("HTTPS", superclasses = webConnector)
 http2 = CStereotype("HTTP/2", superclasses = webConnector)
+
+linkedToMiddlewareHandler = CStereotype("Linked to Middleware Handler", superclasses = connectorType,
+                                        attributes = {"handler": str})
 
 _all = CBundle("_all", 
     elements = component.getConnectedElements(addStereotypes = True) + connectorType.getConnectedElements(addStereotypes = True))
