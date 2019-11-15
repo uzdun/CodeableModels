@@ -24,6 +24,7 @@ lDAPStore = CStereotype("LDAPStore", superclasses = database)
 elasticSearchStore = CStereotype("ElasticSearchStore", superclasses = database)
 memcachedDB = CStereotype("MemcachedDB", superclasses = database)
 redisDB = CStereotype("RedisDB", superclasses = database)
+eventStore = CStereotype("Event Store", superclasses = database)
 
 monitoringComponent = CStereotype("Monitoring", superclasses = componentType)
 tracingComponent = CStereotype("Tracing", superclasses = componentType)
