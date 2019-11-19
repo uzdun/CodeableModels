@@ -31,7 +31,8 @@ tracingComponent = CStereotype("Tracing", superclasses = componentType)
 loggingComponent = CStereotype("Logging", superclasses = componentType)
 
 orchestrator = CStereotype("Orchestrator", superclasses = componentType)
-sagaOrchestrator = CStereotype("Saga Orchestrator", superclasses = orchestrator)
+sagaOrchestrator = CStereotype("Saga Orchestrator", superclasses = orchestrator,
+                               attributes = {"sagas": list})
 
 # Connector types
 directed = CStereotype("Directed", superclasses = connectorType)
@@ -61,9 +62,9 @@ messaging = CStereotype("Messaging", superclasses = connectorType)
 eventBasedConnector = CStereotype("Event-Based Connector", superclasses = looselyCoupledConnector)
 
 publisher = CStereotype("Publisher", superclasses = eventBasedConnector,
-    attributes = {"publishedTopics": list})
+    attributes = {"publishes": list})
 subscriber = CStereotype("Subscriber", superclasses = eventBasedConnector,
-    attributes = {"subscribedTopics": list})
+    attributes = {"subscribesTo": list})
 
 messageProducer = CStereotype("Message Producer", superclasses = messaging, attributes = {"outChannels": list})
 messageConsumer = CStereotype("Message Consumer", superclasses = messaging, attributes = {"inChannels": list})
@@ -79,6 +80,7 @@ restfulHTTP = CStereotype("RESTful HTTP", superclasses = serviceConnector)
 soap = CStereotype("SOAP", superclasses = serviceConnector)
 avro = CStereotype("AVRO", superclasses = serviceConnector)
 grpc = CStereotype("GRPC", superclasses = serviceConnector)
+thrift = CStereotype("Thrift", superclasses = serviceConnector)
 
 jms = CStereotype("JMS", superclasses = messaging)
 stomp = CStereotype("STOMP", superclasses = messaging)
