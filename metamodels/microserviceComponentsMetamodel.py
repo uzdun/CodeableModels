@@ -9,6 +9,10 @@ messageBroker = CStereotype("Message Broker", superclasses = componentType)
 # a component that provides event sourcing, could be e.g. on a pub/sub component as an additional function
 # or on a component listening to events
 eventSourcing = CStereotype("Event Sourcing", superclasses = componentType)
+# stream-processing platforms like Kafka process events and messages, and keep a persistent distributed
+# log of those, which can be used for eventSourcing; thus they combine abilities of all of those
+streamProcessing = CStereotype("Stream Processing", superclasses = [pubSubComponent, messageBroker, eventSourcing])
+
 externalComponent = CStereotype("External Component", superclasses = componentType)
 facade = CStereotype("Facade", superclasses = componentType)
 
