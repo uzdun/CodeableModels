@@ -1,9 +1,9 @@
 import os
 import shutil
 from subprocess import call
-from codeableModels.internal.commons import setKeywordArgs, isCObject, isCClass, isCEnum, isCClassifier
+from codeable_models.internal.commons import setKeywordArgs, isCObject, isCClass, isCEnum, isCClassifier
 from enum import Enum 
-from codeableModels import *
+from codeable_models import *
 
 class RenderingContext(object):
     def __init__(self):

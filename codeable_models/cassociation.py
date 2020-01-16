@@ -1,7 +1,7 @@
-from codeableModels.internal.commons import setKeywordArgs, isCClassifier, isCMetaclass, isCStereotype
-from codeableModels.cexception import CException
-from codeableModels.cnamedelement import CNamedElement
-from codeableModels.internal.stereotype_holders import CStereotypesHolder
+from codeable_models.internal.commons import setKeywordArgs, isCClassifier, isCMetaclass, isCStereotype
+from codeable_models.cexception import CException
+from codeable_models.cnamedelement import CNamedElement
+from codeable_models.internal.stereotype_holders import CStereotypesHolder
 import re
 
 class CAssociation(CNamedElement):

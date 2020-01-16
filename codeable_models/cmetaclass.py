@@ -1,7 +1,7 @@
-from codeableModels.cclassifier import CClassifier
-from codeableModels.cexception import CException
-from codeableModels.internal.commons import checkIsCClass, setKeywordArgs, checkIsCStereotype, isCStereotype, checkNamedElementIsNotDeleted
-from codeableModels.internal.stereotype_holders import CStereotypesHolder
+from codeable_models.cclassifier import CClassifier
+from codeable_models.cexception import CException
+from codeable_models.internal.commons import checkIsCClass, setKeywordArgs, checkIsCStereotype, isCStereotype, checkNamedElementIsNotDeleted
+from codeable_models.internal.stereotype_holders import CStereotypesHolder
 
 class CMetaclass(CClassifier):
     def __init__(self, name=None, **kwargs):

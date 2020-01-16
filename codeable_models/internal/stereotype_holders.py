@@ -1,5 +1,5 @@
-from codeableModels.cexception import CException
-from codeableModels.internal.commons import checkIsCClass, isCClass, isCLink, setKeywordArgs, checkIsCStereotype, isCStereotype, checkNamedElementIsNotDeleted
+from codeable_models.cexception import CException
+from codeable_models.internal.commons import checkIsCClass, isCClass, isCLink, setKeywordArgs, checkIsCStereotype, isCStereotype, checkNamedElementIsNotDeleted
 
 class CStereotypesHolder:
     def __init__(self, element):

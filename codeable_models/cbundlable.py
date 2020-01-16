@@ -1,6 +1,6 @@
-from codeableModels.internal.commons import setKeywordArgs, checkNamedElementIsNotDeleted, isCBundle, isCMetaclass, isCClass, isCStereotype, isCBundlable
-from codeableModels.cexception import CException
-from codeableModels.cnamedelement import CNamedElement
+from codeable_models.internal.commons import setKeywordArgs, checkNamedElementIsNotDeleted, isCBundle, isCMetaclass, isCClass, isCStereotype, isCBundlable
+from codeable_models.cexception import CException
+from codeable_models.cnamedelement import CNamedElement
 
 class CBundlable(CNamedElement):
     def __init__(self, name, **kwargs):

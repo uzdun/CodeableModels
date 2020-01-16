@@ -1,12 +1,12 @@
-from codeableModels.cobject import CObject
-from codeableModels.cclassifier import CClassifier
-from codeableModels.cexception import CException
-from codeableModels.cmetaclass import CMetaclass
-from codeableModels.cbundlable import CBundlable
-from codeableModels.cstereotype import CStereotype
-from codeableModels.cclass import CClass
-from codeableModels.cenum import CEnum
-from codeableModels.internal.commons import isCNamedElement, setKeywordArgs, checkNamedElementIsNotDeleted
+from codeable_models.cobject import CObject
+from codeable_models.cclassifier import CClassifier
+from codeable_models.cexception import CException
+from codeable_models.cmetaclass import CMetaclass
+from codeable_models.cbundlable import CBundlable
+from codeable_models.cstereotype import CStereotype
+from codeable_models.cclass import CClass
+from codeable_models.cenum import CEnum
+from codeable_models.internal.commons import isCNamedElement, setKeywordArgs, checkNamedElementIsNotDeleted
 
 class CBundle(CBundlable):
     def __init__(self, name=None, **kwargs):

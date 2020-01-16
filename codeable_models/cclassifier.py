@@ -1,9 +1,9 @@
-from codeableModels.cbundlable import CBundlable
-from codeableModels.cenum import CEnum
-from codeableModels.cattribute import CAttribute
-from codeableModels.cassociation import CAssociation
-from codeableModels.cexception import CException
-from codeableModels.internal.commons import *
+from codeable_models.cbundlable import CBundlable
+from codeable_models.cenum import CEnum
+from codeable_models.cattribute import CAttribute
+from codeable_models.cassociation import CAssociation
+from codeable_models.cexception import CException
+from codeable_models.internal.commons import *
 
 class CClassifier(CBundlable):
     def __init__(self, name=None, **kwargs):

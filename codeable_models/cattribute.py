@@ -1,6 +1,6 @@
-from codeableModels.internal.commons import *
-from codeableModels.cexception import CException
-from codeableModels.cenum import CEnum
+from codeable_models.internal.commons import *
+from codeable_models.cexception import CException
+from codeable_models.cenum import CEnum
 
 class CAttribute(object):
     def __init__(self, **kwargs):

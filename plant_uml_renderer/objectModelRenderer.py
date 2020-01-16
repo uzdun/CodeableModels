@@ -1,8 +1,8 @@
 # import os
 # import shutil
 # from subprocess import call
-from codeableModels import CException
-from codeableModels.internal.commons import isCEnum, isCClassifier, setKeywordArgs, isCClass, isCObject
+from codeable_models import CException
+from codeable_models.internal.commons import isCEnum, isCClassifier, setKeywordArgs, isCClass, isCObject
 # from enum import Enum 
 # from codeableModels import CNamedElement
 from plantUMLRenderer.modelRenderer import RenderingContext, ModelRenderer

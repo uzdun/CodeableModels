@@ -1,6 +1,6 @@
-from codeableModels.cbundlable import CBundlable
-from codeableModels.internal.commons import setKeywordArgs
-from codeableModels.cexception import CException
+from codeable_models.cbundlable import CBundlable
+from codeable_models.internal.commons import setKeywordArgs
+from codeable_models.cexception import CException
 
 class CEnum(CBundlable):
     def __init__(self, name = None, **kwargs):

@@ -1,5 +1,5 @@
-from codeableModels.internal.commons import setKeywordArgs, checkNamedElementIsNotDeleted
-from codeableModels.cexception import CException
+from codeable_models.internal.commons import setKeywordArgs, checkNamedElementIsNotDeleted
+from codeable_models.cexception import CException
 
 class CNamedElement(object):
     def __init__(self, name, **kwargs):

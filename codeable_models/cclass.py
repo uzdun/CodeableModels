@@ -1,9 +1,9 @@
-from codeableModels.cclassifier import CClassifier
-from codeableModels.internal.commons import checkIsCMetaclass, checkIsCObject, checkIsCStereotype, isCStereotype, checkNamedElementIsNotDeleted
-from codeableModels.cexception import CException
-from codeableModels.cobject import CObject
-from codeableModels.internal.stereotype_holders import CStereotypeInstancesHolder
-from codeableModels.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
+from codeable_models.cclassifier import CClassifier
+from codeable_models.internal.commons import checkIsCMetaclass, checkIsCObject, checkIsCStereotype, isCStereotype, checkNamedElementIsNotDeleted
+from codeable_models.cexception import CException
+from codeable_models.cobject import CObject
+from codeable_models.internal.stereotype_holders import CStereotypeInstancesHolder
+from codeable_models.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
 
 class CClass(CClassifier):
     def __init__(self, metaclass, name=None, **kwargs):

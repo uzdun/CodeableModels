@@ -1,9 +1,9 @@
-from codeableModels.cclassifier import CClassifier
-from codeableModels.cexception import CException
-from codeableModels.cmetaclass import CMetaclass
-from codeableModels.cassociation import CAssociation
-from codeableModels.internal.commons import *
-from codeableModels.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
+from codeable_models.cclassifier import CClassifier
+from codeable_models.cexception import CException
+from codeable_models.cmetaclass import CMetaclass
+from codeable_models.cassociation import CAssociation
+from codeable_models.internal.commons import *
+from codeable_models.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
 
 
 def _determineExtendedTypeOfList(elements):

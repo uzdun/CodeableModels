@@ -1,7 +1,7 @@
-from codeableModels.internal.commons import *
-from codeableModels.cexception import CException
-from codeableModels.internal.stereotype_holders import CStereotypeInstancesHolder
-from codeableModels.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
+from codeable_models.internal.commons import *
+from codeable_models.cexception import CException
+from codeable_models.internal.stereotype_holders import CStereotypeInstancesHolder
+from codeable_models.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
 
 
 class CLink(object):

@@ -1,9 +1,9 @@
-from codeableModels.cbundlable import CBundlable
-from codeableModels.cmetaclass import CMetaclass
-from codeableModels.cexception import CException
-from codeableModels.clink import *
-from codeableModels.internal.commons import *
-from codeableModels.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
+from codeable_models.cbundlable import CBundlable
+from codeable_models.cmetaclass import CMetaclass
+from codeable_models.cexception import CException
+from codeable_models.clink import *
+from codeable_models.internal.commons import *
+from codeable_models.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
 
 class CObject(CBundlable):
     def __init__(self, cl, name=None, **kwargs):

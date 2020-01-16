@@ -1,5 +1,5 @@
-from codeableModels import CException, CMetaclass
-from codeableModels.internal.commons import isCEnum, isCClassifier, setKeywordArgs, isCStereotype, isCMetaclass
+from codeable_models import CException, CMetaclass
+from codeable_models.internal.commons import isCEnum, isCClassifier, setKeywordArgs, isCStereotype, isCMetaclass
 from plantUMLRenderer.modelRenderer import RenderingContext, ModelRenderer
 
 class ClassifierRenderingContext(RenderingContext):
