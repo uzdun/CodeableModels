@@ -4,7 +4,7 @@ from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
 import re
 
-from codeableModels import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
+from codeable_models import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
 
 class TestStereotypeAttributes():
     def setUp(self):
@@ -14,12 +14,12 @@ class TestStereotypeAttributes():
     def testPrimitiveEmptyInput(self):
         cl = CStereotype("S", extended = self.mcl, attributes = {})
         eq_(len(cl.attributes), 0)
-        eq_(len(cl.attributeNames), 0)
+        eq_(len(cl.attribute_names), 0)
 
     def testPrimitiveNoneInput(self):
         cl = CStereotype("S", extended = self.mcl, attributes = None)
         eq_(len(cl.attributes), 0)
-        eq_(len(cl.attributeNames), 0)
+        eq_(len(cl.attribute_names), 0)
 
     def testPrimitiveTypeAttributes(self):
         cl = CStereotype("S", extended = self.mcl, attributes = {
@@ -29,17 +29,17 @@ class TestStereotypeAttributes():
                 "string": "abc",
                 "list": ["a", "b"]})
         eq_(len(cl.attributes), 5)
-        eq_(len(cl.attributeNames), 5)
+        eq_(len(cl.attribute_names), 5)
 
-        ok_(set(["isBoolean", "intVal", "floatVal", "string", "list"]).issubset(cl.attributeNames))
+        ok_(set(["isBoolean", "intVal", "floatVal", "string", "list"]).issubset(cl.attribute_names))
 
-        a1 = cl.getAttribute("isBoolean")
-        a2 = cl.getAttribute("intVal") 
-        a3 = cl.getAttribute("floatVal")
-        a4 = cl.getAttribute("string")
-        a5 = cl.getAttribute("list")
+        a1 = cl.get_attribute("isBoolean")
+        a2 = cl.get_attribute("intVal")
+        a3 = cl.get_attribute("floatVal")
+        a4 = cl.get_attribute("string")
+        a5 = cl.get_attribute("list")
         ok_(set([a1, a2, a3, a4, a5]).issubset(cl.attributes))
-        eq_(None, cl.getAttribute("X"))
+        eq_(None, cl.get_attribute("X"))
 
         eq_(a1.type, bool)
         eq_(a2.type, int)
@@ -67,7 +67,7 @@ class TestStereotypeAttributes():
 
     def testAttributeGetNameAndClassifier(self):
         cl = CStereotype("S", attributes = {"isBoolean": True})
-        a = cl.getAttribute("isBoolean")
+        a = cl.get_attribute("isBoolean")
         eq_(a.name, "isBoolean")
         eq_(a.classifier, cl)
         cl.delete()
@@ -76,11 +76,11 @@ class TestStereotypeAttributes():
 
     def testPrimitiveAttributesNoDefault(self):
         self.stereotype.attributes = {"a": bool, "b": int, "c": str, "d": float, "e": list}
-        a1 = self.stereotype.getAttribute("a")
-        a2 = self.stereotype.getAttribute("b") 
-        a3 = self.stereotype.getAttribute("c")
-        a4 = self.stereotype.getAttribute("d")
-        a5 = self.stereotype.getAttribute("e")
+        a1 = self.stereotype.get_attribute("a")
+        a2 = self.stereotype.get_attribute("b")
+        a3 = self.stereotype.get_attribute("c")
+        a4 = self.stereotype.get_attribute("d")
+        a5 = self.stereotype.get_attribute("e")
         ok_(set([a1, a2, a3, a4, a5]).issubset(self.stereotype.attributes))
         eq_(a1.default, None)
         eq_(a1.type, bool)
@@ -94,9 +94,9 @@ class TestStereotypeAttributes():
         eq_(a5.type, list)
 
     def testGetAttributeNotFound(self):
-        eq_(self.stereotype.getAttribute("x"), None)
+        eq_(self.stereotype.get_attribute("x"), None)
         self.stereotype.attributes = {"a": bool, "b": int, "c": str, "d": float}
-        eq_(self.stereotype.getAttribute("x"), None)
+        eq_(self.stereotype.get_attribute("x"), None)
 
     def testSameNamedArgumentsCAttributes(self):
         a1 = CAttribute(default = "")
@@ -104,20 +104,20 @@ class TestStereotypeAttributes():
         n1 = "a"
         self.stereotype.attributes = {n1: a1, "a": a2}
         eq_(set(self.stereotype.attributes), {a2})
-        eq_(self.stereotype.attributeNames, ["a"])
+        eq_(self.stereotype.attribute_names, ["a"])
         
     def testSameNamedArgumentsDefaults(self):
         n1 = "a"
         self.stereotype.attributes = {n1: "", "a": 1}
         ok_(len(self.stereotype.attributes), 1)
-        eq_(self.stereotype.getAttribute("a").default, 1)
-        eq_(self.stereotype.attributeNames, ["a"])
+        eq_(self.stereotype.get_attribute("a").default, 1)
+        eq_(self.stereotype.attribute_names, ["a"])
 
     def testObjectTypeAttribute(self):
         attrType = CClass(self.mcl, "AttrType")
         attrValue = CObject(attrType, "attrValue")
         self.stereotype.attributes = {"attrTypeObj" : attrValue}
-        objAttr = self.stereotype.getAttribute("attrTypeObj")
+        objAttr = self.stereotype.get_attribute("attrTypeObj")
         attributes = self.stereotype.attributes
         eq_(set(attributes), {objAttr})
 
@@ -125,23 +125,23 @@ class TestStereotypeAttributes():
         self.stereotype.attributes = {"attrTypeObj" : objAttr, "isBoolean" : boolAttr}
         attributes = self.stereotype.attributes
         eq_(set(attributes), {objAttr, boolAttr})
-        eq_(self.stereotype.attributeNames, ["attrTypeObj", "isBoolean"])
-        objAttr = self.stereotype.getAttribute("attrTypeObj")
+        eq_(self.stereotype.attribute_names, ["attrTypeObj", "isBoolean"])
+        objAttr = self.stereotype.get_attribute("attrTypeObj")
         eq_(objAttr.type, attrType)
         default = objAttr.default
         ok_(isinstance(default, CObject))
         eq_(default, attrValue)
 
         self.stereotype.attributes = {"attrTypeObj" : attrValue, "isBoolean" : boolAttr}
-        eq_(self.stereotype.attributeNames, ["attrTypeObj", "isBoolean"])
+        eq_(self.stereotype.attribute_names, ["attrTypeObj", "isBoolean"])
         # using the CObject in attributes causes a new CAttribute to be created != objAttr
-        neq_(self.stereotype.getAttribute("attrTypeObj"), objAttr)
+        neq_(self.stereotype.get_attribute("attrTypeObj"), objAttr)
 
     def testClassTypeAttribute(self):
         attrType = CMetaclass("AttrType")
         attrValue = CClass(attrType, "attrValue")
         self.stereotype.attributes = {"attrTypeCl" : attrType}
-        clAttr = self.stereotype.getAttribute("attrTypeCl")
+        clAttr = self.stereotype.get_attribute("attrTypeCl")
         clAttr.default = attrValue
         attributes = self.stereotype.attributes
         eq_(set(attributes), {clAttr})
@@ -150,17 +150,17 @@ class TestStereotypeAttributes():
         self.stereotype.attributes = {"attrTypeCl" : clAttr, "isBoolean" : boolAttr}
         attributes = self.stereotype.attributes
         eq_(set(attributes), {clAttr, boolAttr})
-        eq_(self.stereotype.attributeNames, ["attrTypeCl", "isBoolean"])
-        clAttr = self.stereotype.getAttribute("attrTypeCl")
+        eq_(self.stereotype.attribute_names, ["attrTypeCl", "isBoolean"])
+        clAttr = self.stereotype.get_attribute("attrTypeCl")
         eq_(clAttr.type, attrType)
         default = clAttr.default
         ok_(isinstance(default, CClass))
         eq_(default, attrValue)
 
         self.stereotype.attributes = {"attrTypeCl" : attrValue, "isBoolean" : boolAttr}
-        eq_(self.stereotype.attributeNames, ["attrTypeCl", "isBoolean"])
+        eq_(self.stereotype.attribute_names, ["attrTypeCl", "isBoolean"])
         # using the CClass in attributes causes a new CAttribute to be created != clAttr
-        neq_(self.stereotype.getAttribute("attrTypeCl"), clAttr)
+        neq_(self.stereotype.get_attribute("attrTypeCl"), clAttr)
 
     def testUseEnumTypeAttribute(self):
         enumValues = ["A", "B", "C"]
@@ -172,8 +172,8 @@ class TestStereotypeAttributes():
         ok_(isinstance(ea1.type, CEnum))
 
         self.stereotype.attributes = {"letters1": ea1, "isBool": True, "letters2": ea2}
-        boolAttr = self.stereotype.getAttribute("isBool")
-        l1 = self.stereotype.getAttribute("letters1")
+        boolAttr = self.stereotype.get_attribute("isBool")
+        l1 = self.stereotype.get_attribute("letters1")
         eq_(set(self.stereotype.attributes), {l1, ea2, boolAttr})
         eq_(l1.default, "A")
         eq_(ea2.default, None)
@@ -189,8 +189,8 @@ class TestStereotypeAttributes():
     def testSetAttributeDefaultValue(self):
         enumObj = CEnum("ABCEnum", values = ["A", "B", "C"])
         self.stereotype.attributes = {"letters": enumObj, "b" : bool}
-        l = self.stereotype.getAttribute("letters")
-        b = self.stereotype.getAttribute("b")
+        l = self.stereotype.get_attribute("letters")
+        b = self.stereotype.get_attribute("b")
         eq_(l.default, None)
         eq_(b.default, None)
         l.default = "B"
@@ -206,8 +206,8 @@ class TestStereotypeAttributes():
         obj_b = CObject(cl_b, "obj_b")
 
         self.stereotype.attributes = {"a": cl_a, "b": obj_b}
-        a = self.stereotype.getAttribute("a")
-        b = self.stereotype.getAttribute("b")
+        a = self.stereotype.get_attribute("a")
+        b = self.stereotype.get_attribute("b")
         eq_(a.type, cl_a)
         eq_(a.default, None)
         eq_(b.type, cl_b)
@@ -232,7 +232,7 @@ class TestStereotypeAttributes():
         (testClass, testMetaclass)])
     def testAttributeTypeCheck(self, type, wrongDefault):
         self.stereotype.attributes = {"a": type}
-        attr = self.stereotype.getAttribute("a")
+        attr = self.stereotype.get_attribute("a")
         try:
             attr.default = wrongDefault
             exceptionExpected_()
@@ -268,7 +268,7 @@ class TestStereotypeAttributes():
 
     def testTypeObjectAttributeClassIsNone(self):
         s1 = CStereotype("S", attributes = {"ac": None})
-        ac = s1.getAttribute("ac")
+        ac = s1.get_attribute("ac")
         eq_(ac.default, None)
         eq_(ac.type, None)
 

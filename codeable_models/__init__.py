@@ -10,4 +10,4 @@ from codeable_models.cobject import CObject
 from codeable_models.cenum import CEnum
 from codeable_models.cbundle import CBundle, CPackage, CLayer
 from codeable_models.cassociation import CAssociation
-from codeable_models.clink import CLink, setLinks, addLinks, deleteLinks
+from codeable_models.clink import CLink, set_links, add_links, delete_links

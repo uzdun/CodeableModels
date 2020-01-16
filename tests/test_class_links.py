@@ -3,7 +3,7 @@ from nose.tools import ok_, eq_
 from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
 
-from codeableModels import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, setLinks, addLinks, deleteLinks
+from codeable_models import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, set_links, add_links, delete_links
 
 class TestClassLinks():
     def setUp(self):
@@ -14,37 +14,37 @@ class TestClassLinks():
     def testLinkMethodsWrongKeywordArgs(self):
         c1 = CClass(self.m1, "C1")
         try:
-            addLinks({c1:c1}, associationX = None)
+            add_links({c1:c1}, associationX = None)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "unknown keywords argument")
         try:
-            c1.addLinks(c1, associationX = None)
+            c1.add_links(c1, associationX = None)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "unknown keywords argument")
         try:
-            setLinks({c1: c1}, associationX = None)
+            set_links({c1: c1}, associationX = None)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "unknown keywords argument")
         try:
-            c1.deleteLinks(c1, associationX = None)
+            c1.delete_links(c1, associationX = None)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "unknown keywords argument")
         try:
-            deleteLinks({c1: c1}, associationX = None)
+            delete_links({c1: c1}, associationX = None)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "unknown keywords argument")
         try:
-            c1.getLinks(associationX = None)
+            c1.get_links(associationX = None)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "unknown keywords argument")
         try:
-            deleteLinks({c1:c1}, stereotypeInstances = None)
+            delete_links({c1:c1}, stereotype_instances = None)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "unknown keywords argument")
@@ -58,11 +58,11 @@ class TestClassLinks():
 
         eq_(c1.links, [])
 
-        setLinks({c1: c2})
+        set_links({c1: c2})
         eq_(c1.links, [c2])
         eq_(c2.links, [c1])
 
-        setLinks({c1: c3})
+        set_links({c1: c3})
         eq_(c1.links, [c3])
         eq_(c2.links, [])
         eq_(c3.links, [c1])
@@ -76,19 +76,19 @@ class TestClassLinks():
 
         eq_(c1.links, [])
 
-        addLinks({c1: c3})
+        add_links({c1: c3})
         eq_(c1.links, [c3])
         eq_(c3.links, [c1])
 
-        setLinks({c1: []}, roleName = "target")
+        set_links({c1: []}, role_name = "target")
         eq_(c1.links, [])
 
-        c1.addLinks(c2)
+        c1.add_links(c2)
         eq_(c1.links, [c2])
         eq_(c2.links, [c1])
 
         try:
-            addLinks({c1: c3})
+            add_links({c1: c3})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c1' have wrong multiplicity '2': should be '0..1'")
@@ -101,12 +101,12 @@ class TestClassLinks():
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
         try:
-            addLinks({c1: self.mcl})
+            add_links({c1: self.mcl})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link target 'MCL' is neither an object nor a class")
         try:
-            c1.addLinks([c2, self.mcl])
+            c1.add_links([c2, self.mcl])
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link target 'MCL' is neither an object nor a class")
@@ -116,27 +116,27 @@ class TestClassLinks():
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
         try:
-            setLinks({c1: self.mcl})
+            set_links({c1: self.mcl})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link target 'MCL' is neither an object nor a class")
         try:
-            setLinks({c1: [c2, self.mcl]})
+            set_links({c1: [c2, self.mcl]})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link target 'MCL' is neither an object nor a class")
         try:
-            setLinks({c1: [c2, None]})
+            set_links({c1: [c2, None]})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link target 'None' is neither an object nor a class")
         try:
-            setLinks({self.mcl: c2})
+            set_links({self.mcl: c2})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link source 'MCL' is neither an object nor a class")
         try:
-            setLinks({None: c2})
+            set_links({None: c2})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link should not contain an empty source")
@@ -146,7 +146,7 @@ class TestClassLinks():
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
         try:
-            setLinks([c1, c2])
+            set_links([c1, c2])
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link definitions should be of the form {<link source 1>: <link target(s) 1>, ..., <link source n>: <link target(s) n>}")
@@ -159,31 +159,31 @@ class TestClassLinks():
         c3 = CClass(self.m1, "c3")
         c4 = CClass(self.m2, "c4")
 
-        links = setLinks({c1: c2, c3: c4})
+        links = set_links({c1: c2, c3: c4})
         eq_(c1.links, [c2])
         eq_(c2.links, [c1])
         eq_(c3.links, [c4])
         eq_(c4.links, [c3])
-        eq_(c1.linkObjects, [links[0]])
-        eq_(c2.linkObjects, [links[0]])
-        eq_(c3.linkObjects, [links[1]])
-        eq_(c4.linkObjects, [links[1]])
+        eq_(c1.link_objects, [links[0]])
+        eq_(c2.link_objects, [links[0]])
+        eq_(c3.link_objects, [links[1]])
+        eq_(c4.link_objects, [links[1]])
 
         try:
-            links = setLinks({c1: None})
+            links = set_links({c1: None})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "matching association not found for source 'c1' and targets '[]'")
 
-        setLinks({c1: None}, association = a)
+        set_links({c1: None}, association = a)
         eq_(c1.links, [])
         eq_(c2.links, [])
         eq_(c3.links, [c4])
         eq_(c4.links, [c3])
-        eq_(c1.linkObjects, [])
-        eq_(c2.linkObjects, [])
-        eq_(c3.linkObjects, [links[1]])
-        eq_(c4.linkObjects, [links[1]]) 
+        eq_(c1.link_objects, [])
+        eq_(c2.link_objects, [])
+        eq_(c3.link_objects, [links[1]])
+        eq_(c4.link_objects, [links[1]])
 
     def testSetLinksOneToNLink(self):
         self.m1.association(self.m2, name = "l")
@@ -191,15 +191,15 @@ class TestClassLinks():
         c2 = CClass(self.m2, "c2")
         c3 = CClass(self.m2, "c3")
 
-        setLinks({c1: [c2, c3]})
+        set_links({c1: [c2, c3]})
         eq_(c1.links, [c2, c3])
         eq_(c2.links, [c1])
         eq_(c3.links, [c1])
-        setLinks({c1: c2})
+        set_links({c1: c2})
         eq_(c1.links, [c2])
         eq_(c2.links, [c1])
         eq_(c3.links, [])
-        setLinks({c3: c1, c2: c1})
+        set_links({c3: c1, c2: c1})
         eq_(c1.links, [c3, c2])
         eq_(c2.links, [c1])
         eq_(c3.links, [c1])
@@ -213,16 +213,16 @@ class TestClassLinks():
         c5 = CClass(self.m2, "c5")
         c6 = CClass(self.m2, "c6")
 
-        addLinks({c1: [c2, c3]})
+        add_links({c1: [c2, c3]})
         eq_(c1.links, [c2, c3])
         eq_(c2.links, [c1])
         eq_(c3.links, [c1])
-        addLinks({c1: c4})
+        add_links({c1: c4})
         eq_(c1.links, [c2, c3, c4])
         eq_(c2.links, [c1])
         eq_(c3.links, [c1])
         eq_(c4.links, [c1])
-        c1.addLinks([c5, c6])
+        c1.add_links([c5, c6])
         eq_(c1.links, [c2, c3, c4, c5, c6])      
         eq_(c2.links, [c1])
         eq_(c3.links, [c1])
@@ -235,30 +235,30 @@ class TestClassLinks():
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
         c3 = CClass(self.m2, "c3")
-        setLinks({c1: [c2, c3]})
-        setLinks({c1: c2})
+        set_links({c1: [c2, c3]})
+        set_links({c1: c2})
         eq_(c1.links, [c2])
         eq_(c2.links, [c1])
         eq_(c3.links, [])
         try:
-            setLinks({c1: []})
+            set_links({c1: []})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "matching association not found for source 'c1' and targets '[]'")
-        setLinks({c1: []}, association = a)
+        set_links({c1: []}, association = a)
         eq_(c1.links, [])
         eq_(c2.links, [])
         eq_(c3.links, [])
 
     def testNToNLink(self):
-        a = self.m1.association(self.m2, name = "l", sourceMultiplicity = "*")
+        a = self.m1.association(self.m2, name = "l", source_multiplicity = "*")
         c1a = CClass(self.m1, "c1a")
         c1b = CClass(self.m1, "c1b")
         c1c = CClass(self.m1, "c1c")
         c2a = CClass(self.m2, "c2a")
         c2b = CClass(self.m2, "c2b")
 
-        setLinks({c1a: [c2a, c2b], c1b: [c2a], c1c: [c2b]})
+        set_links({c1a: [c2a, c2b], c1b: [c2a], c1c: [c2b]})
         
         eq_(c1a.links, [c2a, c2b])
         eq_(c1b.links, [c2a])
@@ -266,13 +266,13 @@ class TestClassLinks():
         eq_(c2a.links, [c1a, c1b])
         eq_(c2b.links, [c1a, c1c])
 
-        setLinks({c2a: [c1a, c1b]})
+        set_links({c2a: [c1a, c1b]})
         try:
-            setLinks({c2b: []})
+            set_links({c2b: []})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "matching association not found for source 'c2b' and targets '[]'")
-        setLinks({c2b: []}, association = a)
+        set_links({c2b: []}, association = a)
 
 
         eq_(c1a.links, [c2a])
@@ -282,20 +282,20 @@ class TestClassLinks():
         eq_(c2b.links, [])
 
     def testRemoveNToNLink(self):
-        self.m1.association(self.m2, name = "l", sourceMultiplicity = "*", multiplicity = "*")
+        self.m1.association(self.m2, name = "l", source_multiplicity = "*", multiplicity = "*")
         c1 = CClass(self.m1, "c2")
         c2 = CClass(self.m2, "c2")
         c3 = CClass(self.m2, "c3")
         c4 = CClass(self.m1, "c4")
-        setLinks({c1: [c2, c3], c4: c2})
-        setLinks({c1: c2, c4: [c3, c2]})
+        set_links({c1: [c2, c3], c4: c2})
+        set_links({c1: c2, c4: [c3, c2]})
         eq_(c1.links, [c2])
         eq_(c2.links, [c1, c4])
         eq_(c3.links, [c4])
         eq_(c4.links, [c3, c2])
 
     def testNToNSetSelfLink(self):
-        self.m1.association(self.m1, name = "a", sourceMultiplicity = "*", multiplicity = "*", sourceRoleName = "super", roleName = "sub")
+        self.m1.association(self.m1, name = "a", source_multiplicity = "*", multiplicity = "*", source_role_name = "super", role_name = "sub")
 
         top = CClass(self.m1, "Top")
         mid1 = CClass(self.m1, "Mid1")
@@ -304,8 +304,8 @@ class TestClassLinks():
         bottom1 = CClass(self.m1, "Bottom1")
         bottom2 = CClass(self.m1, "Bottom2")
 
-        setLinks({top: [mid1, mid2, mid3]}, roleName = "sub")
-        mid1.addLinks([bottom1, bottom2], roleName = "sub")
+        set_links({top: [mid1, mid2, mid3]}, role_name = "sub")
+        mid1.add_links([bottom1, bottom2], role_name = "sub")
 
         eq_(top.links, [mid1, mid2, mid3])
         eq_(mid1.links, [top, bottom1, bottom2])
@@ -314,22 +314,22 @@ class TestClassLinks():
         eq_(bottom1.links, [mid1])
         eq_(bottom2.links, [mid1])
 
-        eq_(top.getLinks(roleName = "sub"), [mid1, mid2, mid3])
-        eq_(mid1.getLinks(roleName = "sub"), [bottom1, bottom2])
-        eq_(mid2.getLinks(roleName = "sub"), [])
-        eq_(mid3.getLinks(roleName = "sub"), [])
-        eq_(bottom1.getLinks(roleName = "sub"), [])
-        eq_(bottom2.getLinks(roleName = "sub"), [])
+        eq_(top.get_links(role_name = "sub"), [mid1, mid2, mid3])
+        eq_(mid1.get_links(role_name = "sub"), [bottom1, bottom2])
+        eq_(mid2.get_links(role_name = "sub"), [])
+        eq_(mid3.get_links(role_name = "sub"), [])
+        eq_(bottom1.get_links(role_name = "sub"), [])
+        eq_(bottom2.get_links(role_name = "sub"), [])
 
-        eq_(top.getLinks(roleName = "super"), [])
-        eq_(mid1.getLinks(roleName = "super"), [top])
-        eq_(mid2.getLinks(roleName = "super"), [top])
-        eq_(mid3.getLinks(roleName = "super"), [top])
-        eq_(bottom1.getLinks(roleName = "super"), [mid1])
-        eq_(bottom2.getLinks(roleName = "super"), [mid1])
+        eq_(top.get_links(role_name = "super"), [])
+        eq_(mid1.get_links(role_name = "super"), [top])
+        eq_(mid2.get_links(role_name = "super"), [top])
+        eq_(mid3.get_links(role_name = "super"), [top])
+        eq_(bottom1.get_links(role_name = "super"), [mid1])
+        eq_(bottom2.get_links(role_name = "super"), [mid1])
 
     def testNToNSetSelfLinkDeleteLinks(self):
-        self.m1.association(self.m1, name = "a", sourceMultiplicity = "*", multiplicity = "*", sourceRoleName = "super", roleName = "sub")
+        self.m1.association(self.m1, name = "a", source_multiplicity = "*", multiplicity = "*", source_role_name = "super", role_name = "sub")
 
         top = CClass(self.m1, "Top")
         mid1 = CClass(self.m1, "Mid1")
@@ -338,13 +338,13 @@ class TestClassLinks():
         bottom1 = CClass(self.m1, "Bottom1")
         bottom2 = CClass(self.m1, "Bottom2")
 
-        setLinks({top: [mid1, mid2, mid3], mid1: [bottom1, bottom2]}, roleName = "sub")
+        set_links({top: [mid1, mid2, mid3], mid1: [bottom1, bottom2]}, role_name = "sub")
         # delete links
-        setLinks({top: []}, roleName = "sub")
+        set_links({top: []}, role_name = "sub")
         eq_(top.links, [])
         eq_(mid1.links, [bottom1, bottom2])
         # change links
-        setLinks({mid1: top, mid3: top, bottom1: mid1, bottom2: mid1}, roleName = "super")
+        set_links({mid1: top, mid3: top, bottom1: mid1, bottom2: mid1}, role_name = "super")
 
         eq_(top.links, [mid1, mid3])
         eq_(mid1.links, [top, bottom1, bottom2])
@@ -353,19 +353,19 @@ class TestClassLinks():
         eq_(bottom1.links, [mid1])
         eq_(bottom2.links, [mid1])
 
-        eq_(top.getLinks(roleName = "sub"), [mid1, mid3])
-        eq_(mid1.getLinks(roleName = "sub"), [bottom1, bottom2])
-        eq_(mid2.getLinks(roleName = "sub"), [])
-        eq_(mid3.getLinks(roleName = "sub"), [])
-        eq_(bottom1.getLinks(roleName = "sub"), [])
-        eq_(bottom2.getLinks(roleName = "sub"), [])
+        eq_(top.get_links(role_name = "sub"), [mid1, mid3])
+        eq_(mid1.get_links(role_name = "sub"), [bottom1, bottom2])
+        eq_(mid2.get_links(role_name = "sub"), [])
+        eq_(mid3.get_links(role_name = "sub"), [])
+        eq_(bottom1.get_links(role_name = "sub"), [])
+        eq_(bottom2.get_links(role_name = "sub"), [])
 
-        eq_(top.getLinks(roleName = "super"), [])
-        eq_(mid1.getLinks(roleName = "super"), [top])
-        eq_(mid2.getLinks(roleName = "super"), [])
-        eq_(mid3.getLinks(roleName = "super"), [top])
-        eq_(bottom1.getLinks(roleName = "super"), [mid1])
-        eq_(bottom2.getLinks(roleName = "super"), [mid1])
+        eq_(top.get_links(role_name = "super"), [])
+        eq_(mid1.get_links(role_name = "super"), [top])
+        eq_(mid2.get_links(role_name = "super"), [])
+        eq_(mid3.get_links(role_name = "super"), [top])
+        eq_(bottom1.get_links(role_name = "super"), [mid1])
+        eq_(bottom2.get_links(role_name = "super"), [mid1])
 
     def testIncompatibleClassifier(self):
         self.m1.association(self.m2, name = "l", multiplicity = "*")
@@ -374,12 +374,12 @@ class TestClassLinks():
         c2 = CClass(self.m2, "c2")
         c3 = CObject(cl, "c3")
         try:
-            setLinks({c1: [c2, c3]})
+            set_links({c1: [c2, c3]})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link target 'c3' is an object, but source is an class")
         try:
-            setLinks({c1: c3})
+            set_links({c1: c3})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link target 'c3' is an object, but source is an class")
@@ -389,42 +389,42 @@ class TestClassLinks():
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
         try:
-            setLinks({c1: [c2, c2]})
+            set_links({c1: [c2, c2]})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "trying to link the same link twice 'c1 -> c2'' twice for the same association")
-        eq_(c1.getLinks(), [])
-        eq_(c2.getLinks(), [])
+        eq_(c1.get_links(), [])
+        eq_(c2.get_links(), [])
 
         b = self.m1.association(self.m2, "l: *->*")
-        c1.addLinks(c2, association = a)
-        c1.addLinks(c2, association = b)  
-        eq_(c1.getLinks(), [c2, c2])
-        eq_(c2.getLinks(), [c1, c1])
+        c1.add_links(c2, association = a)
+        c1.add_links(c2, association = b)
+        eq_(c1.get_links(), [c2, c2])
+        eq_(c2.get_links(), [c1, c1])
 
-    def testNonExistingRoleName(self):
-        self.m1.association(self.m1, roleName = "next", sourceRoleName = "prior", 
-            sourceMultiplicity = "1", multiplicity = "1")
+    def testNonExistingrole_name(self):
+        self.m1.association(self.m1, role_name = "next", source_role_name = "prior",
+            source_multiplicity = "1", multiplicity = "1")
         c1 = CClass(self.m1, "c1")
         try:
-            setLinks({c1 : c1}, roleName = "target")
+            set_links({c1 : c1}, role_name = "target")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "matching association not found for source 'c1' and targets '['c1']'")
 
     def testLinkAssociationAmbiguous(self):
-        self.m1.association(self.m2, name = "a1", roleName = "c2", multiplicity = "*")
-        self.m1.association(self.m2, name = "a2", roleName = "c2", multiplicity = "*")
+        self.m1.association(self.m2, name = "a1", role_name = "c2", multiplicity = "*")
+        self.m1.association(self.m2, name = "a2", role_name = "c2", multiplicity = "*")
 
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
         try:
-            setLinks({c1:c2})
+            set_links({c1:c2})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link specification ambiguous, multiple matching associations found for source 'c1' and targets '['c2']'")
         try:
-            setLinks({c1:c2}, roleName = "c2")
+            set_links({c1:c2}, role_name = "c2")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link specification ambiguous, multiple matching associations found for source 'c1' and targets '['c2']'")
@@ -437,14 +437,14 @@ class TestClassLinks():
         c2 = CClass(self.m2, "c2")
         c3 = CClass(self.m2, "c3")
 
-        setLinks({c1:c2}, association = a1) 
-        setLinks({c1:[c2, c3]}, association = a2) 
+        set_links({c1:c2}, association = a1)
+        set_links({c1:[c2, c3]}, association = a2)
 
-        eq_(c1.getLinks(), [c2, c2, c3])
+        eq_(c1.get_links(), [c2, c2, c3])
         eq_(c1.links, [c2, c2, c3])
 
-        eq_(c1.getLinks(association = a1), [c2])
-        eq_(c1.getLinks(association = a2), [c2, c3])
+        eq_(c1.get_links(association = a1), [c2])
+        eq_(c1.get_links(association = a2), [c2, c3])
 
     def testLinkWithInheritanceInClassifierTargets(self):
         subCl = CMetaclass(superclasses = self.m2)
@@ -459,28 +459,28 @@ class TestClassLinks():
         c_super_2 = CClass(self.m2, "c_super_2")
         try:
             # ambiguous, list works for both associations 
-            setLinks({c1: [c_sub_1, c_sub_2]})
+            set_links({c1: [c_sub_1, c_sub_2]})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link specification ambiguous, multiple matching associations found for source 'c1' and targets '['c_sub_1', 'c_sub_2']'")
-        setLinks({c1: [c_sub_1, c_sub_2]}, association = a1)
-        setLinks({c1: [c_sub_1]}, association = a2)
-        setLinks({c2: [c_super_1, c_super_2]})
+        set_links({c1: [c_sub_1, c_sub_2]}, association = a1)
+        set_links({c1: [c_sub_1]}, association = a2)
+        set_links({c2: [c_super_1, c_super_2]})
 
         eq_(c1.links, [c_sub_1, c_sub_2, c_sub_1])
-        eq_(c1.getLinks(), [c_sub_1, c_sub_2, c_sub_1])
-        eq_(c2.getLinks(), [c_super_1, c_super_2])
-        eq_(c1.getLinks(association = a1), [c_sub_1, c_sub_2])
-        eq_(c1.getLinks(association = a2), [c_sub_1])
-        eq_(c2.getLinks(association = a1), [])
-        eq_(c2.getLinks(association = a2), [c_super_1, c_super_2])
+        eq_(c1.get_links(), [c_sub_1, c_sub_2, c_sub_1])
+        eq_(c2.get_links(), [c_super_1, c_super_2])
+        eq_(c1.get_links(association = a1), [c_sub_1, c_sub_2])
+        eq_(c1.get_links(association = a2), [c_sub_1])
+        eq_(c2.get_links(association = a1), [])
+        eq_(c2.get_links(association = a2), [c_super_1, c_super_2])
 
         # this mixed list is applicable only for a2
-        setLinks({c2: [c_sub_1, c_super_1]})
-        eq_(c2.getLinks(association = a1), [])
-        eq_(c2.getLinks(association = a2), [c_sub_1, c_super_1])
+        set_links({c2: [c_sub_1, c_super_1]})
+        eq_(c2.get_links(association = a1), [])
+        eq_(c2.get_links(association = a2), [c_sub_1, c_super_1])
 
-    def testLinkWithInheritanceInClassifierTargets_UsingRoleNames(self):
+    def testLinkWithInheritanceInClassifierTargets_Usingrole_names(self):
         subCl = CMetaclass(superclasses = self.m2)
         a1 = self.m1.association(subCl, "a1: * -> [subCl] *")
         a2 = self.m1.association(self.m2, "a2: * -> [c2] *")
@@ -491,45 +491,45 @@ class TestClassLinks():
         c_sub_2 = CClass(subCl, "c_sub_2")
         c_super_1 = CClass(self.m2, "c_super_1")
         c_super_2 = CClass(self.m2, "c_super_2")
-        setLinks({c1: [c_sub_1, c_sub_2]}, roleName = "subCl")
-        setLinks({c1: [c_sub_1]}, roleName = "c2")
-        setLinks({c2: [c_super_1, c_super_2]})
+        set_links({c1: [c_sub_1, c_sub_2]}, role_name = "subCl")
+        set_links({c1: [c_sub_1]}, role_name = "c2")
+        set_links({c2: [c_super_1, c_super_2]})
 
         eq_(c1.links, [c_sub_1, c_sub_2, c_sub_1])
-        eq_(c1.getLinks(), [c_sub_1, c_sub_2, c_sub_1])
-        eq_(c2.getLinks(), [c_super_1, c_super_2])
-        eq_(c1.getLinks(association = a1), [c_sub_1, c_sub_2])
-        eq_(c1.getLinks(association = a2), [c_sub_1])
-        eq_(c2.getLinks(association = a1), [])
-        eq_(c2.getLinks(association = a2), [c_super_1, c_super_2])
-        eq_(c1.getLinks(roleName = "subCl"), [c_sub_1, c_sub_2])
-        eq_(c1.getLinks(roleName = "c2"), [c_sub_1])
-        eq_(c2.getLinks(roleName = "subCl"), [])
-        eq_(c2.getLinks(roleName = "c2"), [c_super_1, c_super_2])
+        eq_(c1.get_links(), [c_sub_1, c_sub_2, c_sub_1])
+        eq_(c2.get_links(), [c_super_1, c_super_2])
+        eq_(c1.get_links(association = a1), [c_sub_1, c_sub_2])
+        eq_(c1.get_links(association = a2), [c_sub_1])
+        eq_(c2.get_links(association = a1), [])
+        eq_(c2.get_links(association = a2), [c_super_1, c_super_2])
+        eq_(c1.get_links(role_name = "subCl"), [c_sub_1, c_sub_2])
+        eq_(c1.get_links(role_name = "c2"), [c_sub_1])
+        eq_(c2.get_links(role_name = "subCl"), [])
+        eq_(c2.get_links(role_name = "c2"), [c_super_1, c_super_2])
 
     def testLinkDeleteAssociation(self):
-        a = self.m1.association(self.m2, name = "l", sourceMultiplicity = "*", multiplicity = "*")
+        a = self.m1.association(self.m2, name = "l", source_multiplicity = "*", multiplicity = "*")
         c1 = CClass(self.m1, "c2")
         c2 = CClass(self.m2, "c2")
         c3 = CClass(self.m2, "c3")
         c4 = CClass(self.m1, "c4")
-        setLinks({c1: [c2, c3]})
-        setLinks({c4: [c2]})  
-        setLinks({c1: [c2]})
-        setLinks({c4: [c3, c2]})
+        set_links({c1: [c2, c3]})
+        set_links({c4: [c2]})
+        set_links({c1: [c2]})
+        set_links({c4: [c3, c2]})
         a.delete()
         eq_(c1.links, [])
         eq_(c2.links, [])
         eq_(c3.links, [])
         eq_(c4.links, [])
         try:
-            setLinks({c1: [c2, c3]})
+            set_links({c1: [c2, c3]})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "matching association not found for source 'c2' and targets '['c2', 'c3']'")
 
     def testOneToOneLinkMultiplicity(self):
-        a = self.m1.association(self.m2, name = "l", multiplicity = "1", sourceMultiplicity = "1..1")
+        a = self.m1.association(self.m2, name = "l", multiplicity = "1", source_multiplicity = "1..1")
 
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
@@ -537,57 +537,57 @@ class TestClassLinks():
         c4 = CClass(self.m1, "c4")
 
         try:
-            setLinks({c1: []}, association = a)
+            set_links({c1: []}, association = a)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c1' have wrong multiplicity '0': should be '1'")
         try:
-            setLinks({c1: [c2, c3]})
+            set_links({c1: [c2, c3]})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c1' have wrong multiplicity '2': should be '1'")
 
         try:
-            setLinks({c2: []}, association = a)
+            set_links({c2: []}, association = a)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c2' have wrong multiplicity '0': should be '1..1'")
         try:
-            setLinks({c2: [c1, c4]})
+            set_links({c2: [c1, c4]})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c2' have wrong multiplicity '2': should be '1..1'")
 
     def testOneToNLinkMultiplicity(self):
-        a = self.m1.association(self.m2, name = "l", sourceMultiplicity = "1", multiplicity = "1..*")
+        a = self.m1.association(self.m2, name = "l", source_multiplicity = "1", multiplicity = "1..*")
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
         c3 = CClass(self.m2, "c3")
         c4 = CClass(self.m1, "c4")
 
         try:
-            setLinks({c1: []}, association = a)
+            set_links({c1: []}, association = a)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c1' have wrong multiplicity '0': should be '1..*'")
         
-        setLinks({c1: [c2, c3]})
-        eq_(c1.getLinks(association = a), [c2, c3])
+        set_links({c1: [c2, c3]})
+        eq_(c1.get_links(association = a), [c2, c3])
 
         try:
-            setLinks({c2: []}, association = a)
+            set_links({c2: []}, association = a)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c2' have wrong multiplicity '0': should be '1'")
         try:
-            setLinks({c2: [c1, c4]})
+            set_links({c2: [c1, c4]})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c2' have wrong multiplicity '2': should be '1'")
 
 
     def testSpecificNToNLinkMultiplicity(self):
-        a = self.m1.association(self.m2, name = "l", sourceMultiplicity = "1..2", multiplicity = "2")
+        a = self.m1.association(self.m2, name = "l", source_multiplicity = "1..2", multiplicity = "2")
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
         c3 = CClass(self.m2, "c3")
@@ -596,33 +596,33 @@ class TestClassLinks():
         c6 = CClass(self.m2, "c6")
 
         try:
-            setLinks({c1: []}, association = a)
+            set_links({c1: []}, association = a)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c1' have wrong multiplicity '0': should be '2'")
         try:
-            setLinks({c1: [c2]}, association = a)
+            set_links({c1: [c2]}, association = a)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c1' have wrong multiplicity '1': should be '2'")
         try:
-            setLinks({c1: [c2, c3, c6]}, association = a)
+            set_links({c1: [c2, c3, c6]}, association = a)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c1' have wrong multiplicity '3': should be '2'")
 
-        setLinks({c1: [c2, c3]})
-        eq_(c1.getLinks(association = a), [c2, c3])
-        setLinks({c2: [c1, c4], c1: c3, c4: c3})
-        eq_(c2.getLinks(association = a), [c1, c4])
+        set_links({c1: [c2, c3]})
+        eq_(c1.get_links(association = a), [c2, c3])
+        set_links({c2: [c1, c4], c1: c3, c4: c3})
+        eq_(c2.get_links(association = a), [c1, c4])
 
         try:
-            setLinks({c2: []}, association = a)
+            set_links({c2: []}, association = a)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c2' have wrong multiplicity '0': should be '1..2'")
         try:
-            setLinks({c2: [c1, c4, c5]})
+            set_links({c2: [c1, c4, c5]})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c2' have wrong multiplicity '3': should be '1..2'")
@@ -630,100 +630,100 @@ class TestClassLinks():
     def testGetLinkObjects(self):
         c1Sub = CMetaclass("C1Sub", superclasses = self.m1)
         c2Sub = CMetaclass("C2Sub", superclasses = self.m2)
-        a1 = self.m1.association(self.m2, roleName = "c2", sourceRoleName = "c1", 
-            sourceMultiplicity = "*", multiplicity = "*")
-        a2 = self.m1.association(self.m1, roleName = "next", sourceRoleName = "prior", 
-            sourceMultiplicity = "1", multiplicity = "0..1")
+        a1 = self.m1.association(self.m2, role_name = "c2", source_role_name = "c1",
+            source_multiplicity = "*", multiplicity = "*")
+        a2 = self.m1.association(self.m1, role_name = "next", source_role_name = "prior",
+            source_multiplicity = "1", multiplicity = "0..1")
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
         c1Sub = CClass(c1Sub, "c1Sub")
         c2Sub = CClass(c2Sub, "c2Sub")
 
-        linkObjects1 = setLinks({c1: c2})
-        eq_(linkObjects1, c1.linkObjects)
-        link1 = c1.linkObjects[0]
-        link2 = [o for o in c1.linkObjects if o.association == a1][0]
+        link_objects1 = set_links({c1: c2})
+        eq_(link_objects1, c1.link_objects)
+        link1 = c1.link_objects[0]
+        link2 = [o for o in c1.link_objects if o.association == a1][0]
         eq_(link1, link2)
         eq_(link1.association, a1)
         eq_(link1.source, c1)
         eq_(link1.target, c2)
 
-        linkObjects2 = setLinks({c1: c2Sub})
-        eq_(linkObjects2, c1.linkObjects)
-        eq_(len(c1.linkObjects), 1)
-        link1 = c1.linkObjects[0]
-        link2 = [o for o in c1.linkObjects if o.association == a1][0]
+        link_objects2 = set_links({c1: c2Sub})
+        eq_(link_objects2, c1.link_objects)
+        eq_(len(c1.link_objects), 1)
+        link1 = c1.link_objects[0]
+        link2 = [o for o in c1.link_objects if o.association == a1][0]
         eq_(link1, link2)
         eq_(link1.association, a1)
         eq_(link1.source, c1)
         eq_(link1.target, c2Sub)
 
-        linkObjects3 = setLinks({c1: c2})
-        eq_(linkObjects3, c1.linkObjects)
-        eq_(len(c1.linkObjects), 1)
-        link1 = c1.linkObjects[0]
-        link2 = [o for o in c1.linkObjects if o.association == a1][0]
+        link_objects3 = set_links({c1: c2})
+        eq_(link_objects3, c1.link_objects)
+        eq_(len(c1.link_objects), 1)
+        link1 = c1.link_objects[0]
+        link2 = [o for o in c1.link_objects if o.association == a1][0]
         eq_(link1, link2)
         eq_(link1.association, a1)
         eq_(link1.source, c1)
         eq_(link1.target, c2)
 
-        linkObjects4 = setLinks({c1: c1}, roleName = "next")
-        eq_(linkObjects3 + linkObjects4, c1.linkObjects)
-        eq_(len(c1.linkObjects), 2)
-        link1 = c1.linkObjects[1]
-        link2 = [o for o in c1.linkObjects if o.association == a2][0]
+        link_objects4 = set_links({c1: c1}, role_name = "next")
+        eq_(link_objects3 + link_objects4, c1.link_objects)
+        eq_(len(c1.link_objects), 2)
+        link1 = c1.link_objects[1]
+        link2 = [o for o in c1.link_objects if o.association == a2][0]
         eq_(link1, link2)
         eq_(link1.association, a2)
         eq_(link1.source, c1)
         eq_(link1.target, c1)
 
-        linkObjects5 = setLinks({c1: c1Sub}, roleName = "next")
-        eq_(linkObjects3 + linkObjects5, c1.linkObjects)
-        eq_(len(c1.linkObjects), 2)
-        link1 = c1.linkObjects[1]
-        link2 = [o for o in c1.linkObjects if o.association == a2][0]
+        link_objects5 = set_links({c1: c1Sub}, role_name = "next")
+        eq_(link_objects3 + link_objects5, c1.link_objects)
+        eq_(len(c1.link_objects), 2)
+        link1 = c1.link_objects[1]
+        link2 = [o for o in c1.link_objects if o.association == a2][0]
         eq_(link1, link2)
         eq_(link1.association, a2)
         eq_(link1.source, c1)
         eq_(link1.target, c1Sub)
 
-        setLinks({c1: c1}, roleName = "next")
-        eq_(len(c1.linkObjects), 2)
-        link1 = c1.linkObjects[1]
-        link2 = [o for o in c1.linkObjects if o.association == a2][0]
+        set_links({c1: c1}, role_name = "next")
+        eq_(len(c1.link_objects), 2)
+        link1 = c1.link_objects[1]
+        link2 = [o for o in c1.link_objects if o.association == a2][0]
         eq_(link1, link2)
         eq_(link1.association, a2)
         eq_(link1.source, c1)
         eq_(link1.target, c1)
 
-        setLinks({c1: []}, association = a1)
-        setLinks({c1: []}, association = a2)
-        eq_(len(c1.linkObjects), 0)
+        set_links({c1: []}, association = a1)
+        set_links({c1: []}, association = a2)
+        eq_(len(c1.link_objects), 0)
 
-        setLinks({c1Sub: c1}, roleName = "next")
-        eq_(len(c1Sub.linkObjects), 1)
-        link1 = c1Sub.linkObjects[0]
-        link2 = [o for o in c1Sub.linkObjects if o.association == a2][0]
+        set_links({c1Sub: c1}, role_name = "next")
+        eq_(len(c1Sub.link_objects), 1)
+        link1 = c1Sub.link_objects[0]
+        link2 = [o for o in c1Sub.link_objects if o.association == a2][0]
         eq_(link1, link2)
         eq_(link1.association, a2)
         eq_(link1.source, c1Sub)
         eq_(link1.target, c1)    
 
     def testGetLinkObjectsSelfLink(self):
-        a1 = self.m1.association(self.m1, roleName = "to", sourceRoleName = "from", 
-            sourceMultiplicity = "*", multiplicity = "*")
+        a1 = self.m1.association(self.m1, role_name = "to", source_role_name = "from",
+            source_multiplicity = "*", multiplicity = "*")
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m1, "c2")
         c3 = CClass(self.m1, "c3")
         c4 = CClass(self.m1, "c4")
 
-        setLinks({c1: [c2, c3, c1]})
-        addLinks({c4: [c1, c3]})
-        link1 = c1.linkObjects[0]
-        link2 = [o for o in c1.linkObjects if o.association == a1][0]
-        link3 = [o for o in c1.linkObjects if o.roleName == "to"][0]
-        link4 = [o for o in c1.linkObjects if o.sourceRoleName == "from"][0]
+        set_links({c1: [c2, c3, c1]})
+        add_links({c4: [c1, c3]})
+        link1 = c1.link_objects[0]
+        link2 = [o for o in c1.link_objects if o.association == a1][0]
+        link3 = [o for o in c1.link_objects if o.role_name == "to"][0]
+        link4 = [o for o in c1.link_objects if o.source_role_name == "from"][0]
         eq_(link1, link2)
         eq_(link1, link3)
         eq_(link1, link4)
@@ -731,10 +731,10 @@ class TestClassLinks():
         eq_(link1.source, c1)
         eq_(link1.target, c2)
 
-        eq_(len(c1.linkObjects), 4)
-        eq_(len(c2.linkObjects), 1)
-        eq_(len(c3.linkObjects), 2)
-        eq_(len(c4.linkObjects), 2)
+        eq_(len(c1.link_objects), 4)
+        eq_(len(c2.link_objects), 1)
+        eq_(len(c3.link_objects), 2)
+        eq_(len(c4.link_objects), 2)
 
     def testAddLinks(self):
         a1 = self.m1.association(self.m2, "1 -> [role1] *")
@@ -746,35 +746,35 @@ class TestClassLinks():
         c3 = CClass(self.m2, "c3")
         c4 = CClass(self.m2, "c4")
 
-        addLinks({c1: c2}, roleName = "role1")
-        eq_(c1.getLinks(roleName = "role1"), [c2])
-        addLinks({c1: [c3, c4]}, roleName = "role1")
-        c1.getLinks(roleName = "role1")
-        eq_(c1.getLinks(roleName = "role1"), [c2, c3, c4])
+        add_links({c1: c2}, role_name = "role1")
+        eq_(c1.get_links(role_name = "role1"), [c2])
+        add_links({c1: [c3, c4]}, role_name = "role1")
+        c1.get_links(role_name = "role1")
+        eq_(c1.get_links(role_name = "role1"), [c2, c3, c4])
 
-        c1.addLinks(c2, roleName = "role2")
-        eq_(c1.getLinks(roleName = "role2"), [c2])
-        c1.addLinks([c3, c4], roleName = "role2")
-        c1.getLinks(roleName = "role2")
-        eq_(c1.getLinks(roleName = "role2"), [c2, c3, c4])
+        c1.add_links(c2, role_name = "role2")
+        eq_(c1.get_links(role_name = "role2"), [c2])
+        c1.add_links([c3, c4], role_name = "role2")
+        c1.get_links(role_name = "role2")
+        eq_(c1.get_links(role_name = "role2"), [c2, c3, c4])
 
-        c1.addLinks(c2, roleName = "role3")
-        eq_(c1.getLinks(roleName = "role3"), [c2])
+        c1.add_links(c2, role_name = "role3")
+        eq_(c1.get_links(role_name = "role3"), [c2])
         try:
-            addLinks({c1: [c3, c4]}, roleName = "role3")
+            add_links({c1: [c3, c4]}, role_name = "role3")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c1' have wrong multiplicity '3': should be '1'")
 
         try:
-            addLinks({c1: [c3]}, roleName = "role3")
+            add_links({c1: [c3]}, role_name = "role3")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c1' have wrong multiplicity '2': should be '1'")
-        eq_(c1.getLinks(roleName = "role3"), [c2])
+        eq_(c1.get_links(role_name = "role3"), [c2])
 
 
-    def testLinkSourceMultiplicity(self):
+    def testLinksource_multiplicity(self):
         a1 = self.m1.association(self.m2, "[sourceRole1] 1 -> [role1] *")
         a2 = self.m1.association(self.m2, "[sourceRole2] 1 -> [role2] 1")
 
@@ -784,12 +784,12 @@ class TestClassLinks():
         c4 = CClass(self.m2, "c4")
         c5 = CClass(self.m2, "c5")
 
-        setLinks({c1: c3}, roleName = "role1")
-        setLinks({c2: c3}, roleName = "role1")
+        set_links({c1: c3}, role_name = "role1")
+        set_links({c2: c3}, role_name = "role1")
 
-        eq_(c3.getLinks(roleName = "sourceRole1"), [c2])
+        eq_(c3.get_links(role_name = "sourceRole1"), [c2])
 
-    def testAddLinksSourceMultiplicity(self):
+    def testAddLinkssource_multiplicity(self):
         a1 = self.m1.association(self.m2, "[sourceRole1] 1 -> [role1] *")
         a2 = self.m1.association(self.m2, "[sourceRole2] 1 -> [role2] 1")
 
@@ -800,28 +800,28 @@ class TestClassLinks():
         c5 = CClass(self.m2, "c5")
         c6 = CClass(self.m2, "c6")
 
-        addLinks({c2: c3}, roleName = "role1")
-        addLinks({c2: c4}, roleName = "role1")
+        add_links({c2: c3}, role_name = "role1")
+        add_links({c2: c4}, role_name = "role1")
 
-        eq_(c3.getLinks(roleName = "sourceRole1"), [c2])
+        eq_(c3.get_links(role_name = "sourceRole1"), [c2])
 
-        addLinks({c2: c5}, roleName = "role1")
-        eq_(c2.getLinks(roleName = "role1"), [c3, c4, c5])
+        add_links({c2: c5}, role_name = "role1")
+        eq_(c2.get_links(role_name = "role1"), [c3, c4, c5])
 
         try:
-            addLinks({c1: [c4]}, roleName = "role1")
+            add_links({c1: [c4]}, role_name = "role1")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c4' have wrong multiplicity '2': should be '1'")
 
-        addLinks({c1: c6}, roleName = "role2")
-        eq_(c1.getLinks(roleName = "role2"), [c6])
+        add_links({c1: c6}, role_name = "role2")
+        eq_(c1.get_links(role_name = "role2"), [c6])
         try:
-            addLinks({c1: [c3, c4]}, roleName = "role2")
+            add_links({c1: [c3, c4]}, role_name = "role2")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c1' have wrong multiplicity '3': should be '1'")       
-        eq_(c1.getLinks(roleName = "role2"), [c6])
+        eq_(c1.get_links(role_name = "role2"), [c6])
 
     def testSetLinksMultipleLinksInDefinition(self):
         a1 = self.m1.association(self.m2, "[sourceRole1] * -> [role1] *")
@@ -832,12 +832,12 @@ class TestClassLinks():
         c4 = CClass(self.m2, "c4")
         c5 = CClass(self.m2, "c5")
 
-        setLinks({c1: c4, c2: [c4], c5: [c1, c2, c3]})
-        eq_(c1.getLinks(), [c4, c5])
-        eq_(c2.getLinks(), [c4, c5])
-        eq_(c3.getLinks(), [c5])
-        eq_(c4.getLinks(), [c1, c2])
-        eq_(c5.getLinks(), [c1, c2, c3])
+        set_links({c1: c4, c2: [c4], c5: [c1, c2, c3]})
+        eq_(c1.get_links(), [c4, c5])
+        eq_(c2.get_links(), [c4, c5])
+        eq_(c3.get_links(), [c5])
+        eq_(c4.get_links(), [c1, c2])
+        eq_(c5.get_links(), [c1, c2, c3])
 
     def testAddLinksMultipleLinksInDefinition(self):
         a1 = self.m1.association(self.m2, "[sourceRole1] * -> [role1] *")
@@ -848,12 +848,12 @@ class TestClassLinks():
         c4 = CClass(self.m2, "c4")
         c5 = CClass(self.m2, "c5")
 
-        addLinks({c1: c4, c2: [c4], c5: [c1, c2, c3]})
-        eq_(c1.getLinks(), [c4, c5])
-        eq_(c2.getLinks(), [c4, c5])
-        eq_(c3.getLinks(), [c5])
-        eq_(c4.getLinks(), [c1, c2])
-        eq_(c5.getLinks(), [c1, c2, c3])
+        add_links({c1: c4, c2: [c4], c5: [c1, c2, c3]})
+        eq_(c1.get_links(), [c4, c5])
+        eq_(c2.get_links(), [c4, c5])
+        eq_(c3.get_links(), [c5])
+        eq_(c4.get_links(), [c1, c2])
+        eq_(c5.get_links(), [c1, c2, c3])
 
 
     def testWrongTypesDeleteLinks(self):
@@ -861,32 +861,32 @@ class TestClassLinks():
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
         try:
-            deleteLinks(c1)
+            delete_links(c1)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link definitions should be of the form {<link source 1>: <link target(s) 1>, ..., <link source n>: <link target(s) n>}")
         try:
-            deleteLinks({c1: self.mcl})
+            delete_links({c1: self.mcl})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link target 'MCL' is neither an object nor a class")
         try:
-            deleteLinks({c1: [c2, self.mcl]})
+            delete_links({c1: [c2, self.mcl]})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link target 'MCL' is neither an object nor a class")
         try:
-            deleteLinks({c1: [c2, None]})
+            delete_links({c1: [c2, None]})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link target 'None' is neither an object nor a class")
         try:
-            deleteLinks({self.mcl: c2})
+            delete_links({self.mcl: c2})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link source 'MCL' is neither an object nor a class")
         try:
-            deleteLinks({None: c2})
+            delete_links({None: c2})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link should not contain an empty source")
@@ -899,34 +899,34 @@ class TestClassLinks():
         c3 = CClass(self.m1, "c3")
         c4 = CClass(self.m2, "c4")
 
-        links = addLinks({c1: c2, c3: c4})
-        c1.deleteLinks(c2)
+        links = add_links({c1: c2, c3: c4})
+        c1.delete_links(c2)
         eq_(c1.links, [])
         eq_(c2.links, [])
         eq_(c3.links, [c4])
         eq_(c4.links, [c3])
-        eq_(c1.linkObjects, [])
-        eq_(c2.linkObjects, [])
-        eq_(c3.linkObjects, [links[1]])
-        eq_(c4.linkObjects, [links[1]]) 
-        deleteLinks({c3: c4})
+        eq_(c1.link_objects, [])
+        eq_(c2.link_objects, [])
+        eq_(c3.link_objects, [links[1]])
+        eq_(c4.link_objects, [links[1]])
+        delete_links({c3: c4})
         eq_(c1.links, [])
         eq_(c2.links, [])
         eq_(c3.links, [])
         eq_(c4.links, [])
-        eq_(c1.linkObjects, [])
-        eq_(c2.linkObjects, [])
-        eq_(c3.linkObjects, [])
-        eq_(c4.linkObjects, [])
+        eq_(c1.link_objects, [])
+        eq_(c2.link_objects, [])
+        eq_(c3.link_objects, [])
+        eq_(c4.link_objects, [])
 
     def testDeleteOneToOneLinkWrongMultiplicity(self):
         a = self.m1.association(self.m2, "l: 1 -> [c2] 1")
 
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
-        addLinks({c1: c2})
+        add_links({c1: c2})
         try:
-            c1.deleteLinks(c2)
+            c1.delete_links(c2)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c1' have wrong multiplicity '0': should be '1'")
@@ -942,17 +942,17 @@ class TestClassLinks():
         c4 = CClass(self.m2, "c4")
         c5 = CClass(self.m2, "c5")
 
-        addLinks({c1: [c3, c4], c2: [c5]})
-        c4.deleteLinks([c1])
+        add_links({c1: [c3, c4], c2: [c5]})
+        c4.delete_links([c1])
         eq_(c1.links, [c3])
         eq_(c2.links, [c5])
         eq_(c3.links, [c1])
         eq_(c4.links, [])
         eq_(c5.links, [c2])
 
-        c4.addLinks([c2])
+        c4.add_links([c2])
         eq_(c2.links, [c5, c4])
-        deleteLinks({c1: c3, c2: c2.links})
+        delete_links({c1: c3, c2: c2.links})
         eq_(c1.links, [])
         eq_(c2.links, [])
         eq_(c3.links, [])
@@ -968,10 +968,10 @@ class TestClassLinks():
         c4 = CClass(self.m2, "c4")
         c5 = CClass(self.m2, "c5")
 
-        addLinks({c1: [c3, c4], c2: [c5]})
+        add_links({c1: [c3, c4], c2: [c5]})
         
         try:
-            c4.deleteLinks([c1])
+            c4.delete_links([c1])
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "links of object 'c4' have wrong multiplicity '0': should be '1'")    
@@ -987,16 +987,16 @@ class TestClassLinks():
         c5 = CClass(self.m2, "c5")
         c6 = CClass(self.m2, "c6")
 
-        addLinks({c1: [c3, c4], c2: [c4, c5]})
-        c4.deleteLinks([c1, c2])
+        add_links({c1: [c3, c4], c2: [c4, c5]})
+        c4.delete_links([c1, c2])
         eq_(c1.links, [c3])
         eq_(c2.links, [c5])
         eq_(c3.links, [c1])
         eq_(c4.links, [])
         eq_(c5.links, [c2])
 
-        addLinks({c4: [c1, c2], c6: [c2, c1]})
-        deleteLinks({c1: c6, c2: [c4, c5]})
+        add_links({c4: [c1, c2], c6: [c2, c1]})
+        delete_links({c1: c6, c2: [c4, c5]})
         eq_(c1.links, [c3, c4])
         eq_(c2.links, [c6])
         eq_(c3.links, [c1])
@@ -1013,23 +1013,23 @@ class TestClassLinks():
         c4 = CClass(self.m2, "c4")
         c5 = CClass(self.m2, "c5")
 
-        addLinks({c1: [c3, c4], c2: [c5]}, association = a)
+        add_links({c1: [c3, c4], c2: [c5]}, association = a)
 
         try:
-            deleteLinks({c1:c5})
+            delete_links({c1:c5})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "no link found for 'c1 -> c5' in delete links")  
 
         b = self.m1.association(self.m2, "l: 0..1 -> *")
         try:
-            deleteLinks({c1:c5})
+            delete_links({c1:c5})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "no link found for 'c1 -> c5' in delete links")  
 
         try:
-            c4.deleteLinks([c1], association = b)
+            c4.delete_links([c1], association = b)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "no link found for 'c4 -> c1' in delete links for given association")  
@@ -1043,32 +1043,32 @@ class TestClassLinks():
         c3 = CClass(self.m2, "c3")
         c4 = CClass(self.m2, "c4")
 
-        addLinks({c1: [c3], c2: [c3, c4]}, association = b)
-        deleteLinks({c2: c3})
+        add_links({c1: [c3], c2: [c3, c4]}, association = b)
+        delete_links({c2: c3})
         eq_(c1.links, [c3])
         eq_(c2.links, [c4])
         eq_(c3.links, [c1])
         eq_(c4.links, [c2])
-        addLinks({c1: [c3], c2: [c3, c4]}, association = a)
+        add_links({c1: [c3], c2: [c3, c4]}, association = a)
         
         try:
-            deleteLinks({c1: c3})
+            delete_links({c1: c3})
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link definition in delete links ambiguous for link 'c1->c3': found multiple matches")
 
-        deleteLinks({c1: c3, c2: c4}, association = b)     
+        delete_links({c1: c3, c2: c4}, association = b)
         eq_(c1.links, [c3])
         eq_(c2.links, [c3, c4])
         eq_(c3.links, [c1, c2])
         eq_(c4.links, [c2])
         for o in [c1, c2, c3, c4]:
-            for lo in o.linkObjects:
+            for lo in o.link_objects:
                 eq_(lo.association, a)
         
-        c1.addLinks(c3, association = b)
+        c1.add_links(c3, association = b)
         try:
-            c1.deleteLinks(c3)
+            c1.delete_links(c3)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "link definition in delete links ambiguous for link 'c1->c3': found multiple matches")
@@ -1078,14 +1078,14 @@ class TestClassLinks():
         eq_(c3.links, [c1, c2, c1])
         eq_(c4.links, [c2])
         
-        c1.deleteLinks(c3, association = a)
+        c1.delete_links(c3, association = a)
         eq_(c1.links, [c3])
         eq_(c2.links, [c3, c4])
         eq_(c3.links, [c2, c1])
         eq_(c4.links, [c2])
 
 
-    def testDeleteLinkSelectByRoleName(self):
+    def testDeleteLinkSelectByrole_name(self):
         a = self.m1.association(self.m2, "a: [sourceA] * -> [targetA] *")
         b = self.m1.association(self.m2, "b: [sourceB] * -> [targetB] *")
 
@@ -1094,42 +1094,42 @@ class TestClassLinks():
         c3 = CClass(self.m2, "c3")
         c4 = CClass(self.m2, "c4")
 
-        addLinks({c1: [c3], c2: [c3, c4]}, roleName = "targetB")
-        deleteLinks({c2: c3})
+        add_links({c1: [c3], c2: [c3, c4]}, role_name = "targetB")
+        delete_links({c2: c3})
         eq_(c1.links, [c3])
         eq_(c2.links, [c4])
         eq_(c3.links, [c1])
         eq_(c4.links, [c2])
-        addLinks({c1: [c3], c2: [c3, c4]}, roleName = "targetA")
+        add_links({c1: [c3], c2: [c3, c4]}, role_name = "targetA")
         
-        deleteLinks({c1: c3, c2: c4}, roleName = "targetB")     
+        delete_links({c1: c3, c2: c4}, role_name = "targetB")
         eq_(c1.links, [c3])
         eq_(c2.links, [c3, c4])
         eq_(c3.links, [c1, c2])
         eq_(c4.links, [c2])
         for o in [c1, c2, c3, c4]:
-            for lo in o.linkObjects:
+            for lo in o.link_objects:
                 eq_(lo.association, a)
 
-        addLinks({c1: [c3], c2: [c3, c4]}, roleName = "targetB")
-        c3.deleteLinks([c1, c2], roleName = "sourceB")   
-        deleteLinks({c4: c2}, roleName = "sourceB") 
+        add_links({c1: [c3], c2: [c3, c4]}, role_name = "targetB")
+        c3.delete_links([c1, c2], role_name = "sourceB")
+        delete_links({c4: c2}, role_name = "sourceB")
 
         eq_(c1.links, [c3])
         eq_(c2.links, [c3, c4])
         eq_(c3.links, [c1, c2])
         eq_(c4.links, [c2])
         for o in [c1, c2, c3, c4]:
-            for lo in o.linkObjects:
+            for lo in o.link_objects:
                 eq_(lo.association, a)
 
-    def testDeleteLinksWrongRoleName(self):
+    def testDeleteLinksWrongrole_name(self):
         a = self.m1.association(self.m2, "a: [sourceA] * -> [targetA] *")
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
-        c1.addLinks(c2)
+        c1.add_links(c2)
         try:
-            c1.deleteLinks(c2, roleName = "target")
+            c1.delete_links(c2, role_name = "target")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "no link found for 'c1 -> c2' in delete links for given role name 'target'")
@@ -1138,20 +1138,20 @@ class TestClassLinks():
         a = self.m1.association(self.m2, "a: [sourceA] * -> [targetA] *")
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
-        c1.addLinks(c2)
+        c1.add_links(c2)
         try:
-            c1.deleteLinks(c2, association = c1)
+            c1.delete_links(c2, association = c1)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "'c1' is not a association")
         b = self.m1.association(self.m2, "b: [sourceB] * -> [targetB] *")
         try:
-            c1.deleteLinks(c2, association = b)
+            c1.delete_links(c2, association = b)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "no link found for 'c1 -> c2' in delete links for given association")
         try:
-            c1.deleteLinks(c2, association = b, roleName = "x")
+            c1.delete_links(c2, association = b, role_name = "x")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "no link found for 'c1 -> c2' in delete links for given role name 'x' and for given association")
@@ -1164,8 +1164,8 @@ class TestClassLinks():
         c2 = CClass(self.m2, "c2")
         c3 = CClass(self.m2, "c3")
 
-        l1 = setLinks({c1:c2}, association = a1) 
-        l2 = setLinks({c1:[c2, c3]}, association = a2) 
+        l1 = set_links({c1:c2}, association = a1)
+        l2 = set_links({c1:[c2, c3]}, association = a2)
 
         eq_(l1[0].label, None)
         eq_(l2[0].label, None)
@@ -1179,8 +1179,8 @@ class TestClassLinks():
         c2 = CClass(self.m2, "c2")
         c3 = CClass(self.m2, "c3")
 
-        l1 = setLinks({c1:c2}, association = a1, label = "l1") 
-        l2 = addLinks({c1:[c2, c3]}, association = a2, label = "l2") 
+        l1 = set_links({c1:c2}, association = a1, label = "l1")
+        l2 = add_links({c1:[c2, c3]}, association = a2, label = "l2")
 
         eq_(l1[0].label, "l1")
         eq_(l2[0].label, "l2")
@@ -1190,7 +1190,7 @@ class TestClassLinks():
         eq_(l2[0].label, "l2")
         eq_(l2[1].label, "l3")
 
-        l3 = c1.addLinks(c3, association = a1, label = "x1")
+        l3 = c1.add_links(c3, association = a1, label = "x1")
         eq_(l3[0].label, "x1")
 
 if __name__ == "__main__":

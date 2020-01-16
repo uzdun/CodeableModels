@@ -1,5 +1,5 @@
 from codeable_models import CMetaclass, CBundle, CStereotype
-from metamodels.domainMetaModel import domain_metaclass, domain_meta_model
+from metamodels.domain_meta_model import domain_metaclass, domain_meta_model
 
 model_element = CMetaclass("Model Element", attributes={"aka": str, "description": str})
 category = CMetaclass("Category", superclasses=model_element)

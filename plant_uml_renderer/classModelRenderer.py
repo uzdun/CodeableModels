@@ -1,6 +1,6 @@
 from codeable_models import CException, CMetaclass
-from codeable_models.internal.commons import isCEnum, isCClassifier, setKeywordArgs, isCStereotype, isCMetaclass
-from plantUMLRenderer.modelRenderer import RenderingContext, ModelRenderer
+from codeable_models.internal.commons import is_cenum, is_cclassifier, set_keyword_args, is_cstereotype, is_cmetaclass
+from plant_uml_renderer.modelRenderer import RenderingContext, ModelRenderer
 
 class ClassifierRenderingContext(RenderingContext):
     def __init__(self):
@@ -16,9 +16,9 @@ class ClassifierRenderingContext(RenderingContext):
 class ClassModelRenderer(ModelRenderer):
     def renderClassifierSpecification(self, context, cl):
         stereotypeString = ""
-        if isCStereotype(cl):
+        if is_cstereotype(cl):
             stereotypeString = self.renderStereotypesString("stereotype")
-        if isCMetaclass(cl):
+        if is_cmetaclass(cl):
             stereotypeString = self.renderStereotypesString("metaclass")
         nameLabel = '"' + stereotypeString + self.padAndBreakName(cl.name) + '"'
         context.addLine("class " + nameLabel + " as " + self.getNodeID(context, cl) + self.renderAttributes(context, cl))
@@ -37,7 +37,7 @@ class ClassModelRenderer(ModelRenderer):
     def renderAttribute(self, attribute):
         type = attribute.type
         t = None
-        if isCEnum(type) or isCClassifier(type):
+        if is_cenum(type) or is_cclassifier(type):
             t = type.name
         elif type == str:
             t = "String"
@@ -97,7 +97,7 @@ class ClassModelRenderer(ModelRenderer):
             label = ": \"" + extendedByString + "\" "
         headLabel = ""
         if (not (association.aggregation or association.composition)):
-            headLabel = " \" " + association.sourceMultiplicity + " \" "
+            headLabel = " \" " + association.source_multiplicity + " \" "
         tailLabel =  " \" " + association.multiplicity + " \" "
 
         context.addLine(self.getNodeID(context, association.source) + headLabel +
@@ -107,7 +107,7 @@ class ClassModelRenderer(ModelRenderer):
         if context.renderExtendedRelations == False:
             return
         for extended in stereotype.extended:
-            if isCMetaclass(extended):
+            if is_cmetaclass(extended):
                 if extended in context.excludedExtendedClasses:
                     continue
                 if extended in classList:
@@ -125,19 +125,19 @@ class ClassModelRenderer(ModelRenderer):
 
     def renderClasses(self, context, classList):
         for cl in classList:
-            if not isCClassifier(cl):
+            if not is_cclassifier(cl):
                 raise CException(f"'{cl!s}' handed to class renderer is not a classifier'")
             self.renderClassifierSpecification(context, cl)
         self.renderInheritanceRelations(context, classList)
         for cl in classList:
             self.renderAssociations(context, cl, classList)
-            if isCStereotype(cl):
+            if is_cstereotype(cl):
                 self.renderExtendedRelations(context, cl, classList)
 
     def renderClassModel(self, classList, **kwargs):
         context = ClassifierRenderingContext()
-        setKeywordArgs(context, 
-            ["renderAssociations", "renderInheritance", "renderAttributes", "excludedAssociations"], **kwargs)
+        set_keyword_args(context,
+                         ["renderAssociations", "renderInheritance", "renderAttributes", "excludedAssociations"], **kwargs)
         self.renderStartGraph(context)
         self.renderClasses(context, classList)
         self.renderEndGraph(context)

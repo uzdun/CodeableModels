@@ -1,3 +1,3 @@
-from plantUMLRenderer.plantUMLGenerator import PlantUMLGenerator
-from plantUMLRenderer.classModelRenderer import ClassModelRenderer
-from plantUMLRenderer.objectModelRenderer import ObjectModelRenderer
+from plant_uml_renderer.plantUMLGenerator import PlantUMLGenerator
+from plant_uml_renderer.classModelRenderer import ClassModelRenderer
+from plant_uml_renderer.objectModelRenderer import ObjectModelRenderer

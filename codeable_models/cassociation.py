@@ -1,99 +1,103 @@
-from codeable_models.internal.commons import setKeywordArgs, isCClassifier, isCMetaclass, isCStereotype
+import re
+
 from codeable_models.cexception import CException
 from codeable_models.cnamedelement import CNamedElement
+from codeable_models.internal.commons import is_cmetaclass, is_cstereotype
 from codeable_models.internal.stereotype_holders import CStereotypesHolder
-import re
+
+
+def _check_for_classifier_and_role_name_match(classifier, role_name, association_classifier, association_role_name):
+    if classifier is None and role_name is None:
+        return False
+    matches = True
+    if role_name is not None:
+        if role_name != association_role_name:
+            matches = False
+    if matches and classifier is not None:
+        if not classifier.conforms_to_type(association_classifier):
+            matches = False
+    if matches:
+        return True
+    return False
+
 
 class CAssociation(CNamedElement):
     STAR_MULTIPLICITY = -1
 
-    def __init__(self, source, target, descriptor = None, **kwargs):
+    def __init__(self, source, target, descriptor=None, **kwargs):
         self.source = source
         self.target = target
-        self.roleName = None
-        self.sourceRoleName = None
-        self._sourceMultiplicityString = "1"
-        self._sourceLowerMultiplicity = 1
-        self._sourceUpperMultiplicity = 1
-        self._multiplicityString = "*"
-        self._lowerMultiplicity = 0
-        self._upperMultiplicity = self.STAR_MULTIPLICITY
-        self._aggregation = False
-        self._composition = False
-        self._stereotypesHolder = CStereotypesHolder(self)
+        self.role_name = None
+        self.source_role_name = None
+        self.source_multiplicity_ = "1"
+        self.source_lower_multiplicity = 1
+        self.source_upper_multiplicity = 1
+        self.multiplicity_ = "*"
+        self.lower_multiplicity = 0
+        self.upper_multiplicity = self.STAR_MULTIPLICITY
+        self.aggregation_ = False
+        self.composition_ = False
+        self.stereotypes_holder = CStereotypesHolder(self)
         name = kwargs.pop("name", None)
         self.ends = None
         super().__init__(name, **kwargs)
-        if descriptor != None:
-            self._evalDescriptor(descriptor)
-    
-    def _initKeywordArgs(self, legalKeywordArgs = None, **kwargs):
-        if legalKeywordArgs == None:
-            legalKeywordArgs = []
-        legalKeywordArgs.extend(["multiplicity", "roleName", "sourceMultiplicity", 
-            "sourceRoleName", "aggregation", "composition", "stereotypes"])
-        super()._initKeywordArgs(legalKeywordArgs, **kwargs)
+        if descriptor is not None:
+            self._eval_descriptor(descriptor)
+
+    def _init_keyword_args(self, legal_keyword_args=None, **kwargs):
+        if legal_keyword_args is None:
+            legal_keyword_args = []
+        legal_keyword_args.extend(["multiplicity", "role_name", "source_multiplicity",
+                                   "source_role_name", "aggregation", "composition", "stereotypes"])
+        super()._init_keyword_args(legal_keyword_args, **kwargs)
 
     def __str__(self):
         return super(CAssociation, self).__str__()
+
     def __repr__(self):
         name = ""
-        if self.name != None:
+        if self.name is not None:
             name = self.name
         return f"CAssociation name = {name!s}, source = {self.source!s} -> target = {self.target!s}"
-    
-    def _getOppositeClass(self, cl):
+
+    def get_opposite_class(self, cl):
         if cl == self.source:
             return self.target
         else:
             return self.source
 
-    def _matches(self, classifier, roleName, associationClassifier, associationRoleName):
-        if classifier == None and roleName == None:
-            return False
-        matches = True
-        if roleName != None:
-            if roleName != associationRoleName:
-                matches = False
-        if matches and classifier != None:
-            if not classifier.conformsToType(associationClassifier):
-                matches = False
-        if matches:
-            return True
-        return False
+    def matches_target(self, classifier, role_name):
+        return _check_for_classifier_and_role_name_match(classifier, role_name, self.target, self.role_name)
 
-    def _matchesTarget(self, classifier, roleName):
-        return self._matches(classifier, roleName, self.target, self.roleName)
-
-    def _matchesSource(self, classifier, roleName):
-        return self._matches(classifier, roleName, self.source, self.sourceRoleName)
+    def matches_source(self, classifier, role_name):
+        return _check_for_classifier_and_role_name_match(classifier, role_name, self.source, self.source_role_name)
 
     @property
     def aggregation(self):
-        return self._aggregation
+        return self.aggregation_
+
     @aggregation.setter
     def aggregation(self, aggregation):
         if aggregation:
-            self._composition = False
-        self._aggregation = aggregation
+            self.composition_ = False
+        self.aggregation_ = aggregation
 
-    def _setMultiplicity(self, multiplicity, isTargetMultiplicity):
+    def _set_multiplicity(self, multiplicity, is_target_multiplicity):
         if not isinstance(multiplicity, str):
             raise CException("multiplicity must be provided as a string")
-        lower = -2
-        upper = -2
+
         try:
-            dotsPos = multiplicity.find("..")
-            if dotsPos != -1:
-                lowerMatch = multiplicity[:dotsPos]
-                upperMatch = multiplicity[dotsPos+2:]
-                lower = int(lowerMatch)
+            dots_pos = multiplicity.find("..")
+            if dots_pos != -1:
+                lower_match = multiplicity[:dots_pos]
+                upper_match = multiplicity[dots_pos + 2:]
+                lower = int(lower_match)
                 if lower < 0:
                     raise CException(f"negative multiplicity in '{multiplicity!s}'")
-                if upperMatch.strip() == "*":
+                if upper_match.strip() == "*":
                     upper = self.STAR_MULTIPLICITY
                 else:
-                    upper = int(upperMatch)
+                    upper = int(upper_match)
                     if lower < 0 or upper < 0:
                         raise CException(f"negative multiplicity in '{multiplicity!s}'")
             elif multiplicity.strip() == "*":
@@ -109,89 +113,94 @@ class CAssociation(CNamedElement):
                 raise e
             raise CException(f"malformed multiplicity: '{multiplicity!s}'")
 
-        if isTargetMultiplicity:
-            self._upperMultiplicity = upper
-            self._lowerMultiplicity = lower
+        if is_target_multiplicity:
+            self.upper_multiplicity = upper
+            self.lower_multiplicity = lower
         else:
-            self._sourceUpperMultiplicity = upper
-            self._sourceLowerMultiplicity = lower
+            self.source_upper_multiplicity = upper
+            self.source_lower_multiplicity = lower
 
     @property
     def multiplicity(self):
-        return self._multiplicityString
+        return self.multiplicity_
+
     @multiplicity.setter
     def multiplicity(self, multiplicity):
-        self._multiplicityString = multiplicity
-        self._setMultiplicity(multiplicity, True)
+        self.multiplicity_ = multiplicity
+        self._set_multiplicity(multiplicity, True)
 
     @property
-    def sourceMultiplicity(self):
-        return self._sourceMultiplicityString
-    @sourceMultiplicity.setter
-    def sourceMultiplicity(self, multiplicity):
-        self._sourceMultiplicityString = multiplicity
-        self._setMultiplicity(multiplicity, False)
-        
+    def source_multiplicity(self):
+        return self.source_multiplicity_
+
+    @source_multiplicity.setter
+    def source_multiplicity(self, multiplicity):
+        self.source_multiplicity_ = multiplicity
+        self._set_multiplicity(multiplicity, False)
+
     @property
     def composition(self):
-        return self._composition
+        return self.composition_
+
     @composition.setter
     def composition(self, composition):
         if composition:
-            self._aggregation = False
-        self._composition = composition
+            self.aggregation_ = False
+        self.composition_ = composition
 
     @property
     def stereotypes(self):
-        return self._stereotypesHolder.stereotypes
-    
+        return self.stereotypes_holder.stereotypes
+
     @stereotypes.setter
     def stereotypes(self, elements):
-        self._stereotypesHolder.stereotypes = elements
+        self.stereotypes_holder.stereotypes = elements
 
     def delete(self):
-        if self._isDeleted == True:
+        if self.is_deleted:
             return
-        if isCMetaclass(self.source):
-            allInstances = self.source.allClasses
-        elif isCStereotype(self.source):
-            allInstances = self.source.allExtendedInstances
+        if is_cmetaclass(self.source):
+            all_instances = self.source.all_classes
+        elif is_cstereotype(self.source):
+            all_instances = self.source.all_extended_instances
         else:
-            allInstances = self.source.allObjects
-        for instance in allInstances:
-            for link in instance.linkObjects:
+            all_instances = self.source.all_objects
+        for instance in all_instances:
+            for link in instance.link_objects:
                 link.delete()
-        self.source._associations.remove(self)
+        self.source.associations_.remove(self)
         if self.source != self.target:
-            self.target._associations.remove(self)
-        for s in self._stereotypesHolder._stereotypes:
-            s._extended.remove(self)
-        self._stereotypesHolder._stereotypes = []
+            self.target.associations_.remove(self)
+        for s in self.stereotypes_holder.stereotypes:
+            s.extended_.remove(self)
+        self.stereotypes_holder.stereotypes_ = []
         super().delete()
-  
-    def _checkMultiplicity(self, object, actualLength, actualOppositeLength, checkTargetMultiplicity):
-        if checkTargetMultiplicity:
-            upper = self._upperMultiplicity
-            lower = self._lowerMultiplicity
-            otherSideLower = self._sourceLowerMultiplicity
-            multiplicityString = self._multiplicityString
-        else:
-            upper = self._sourceUpperMultiplicity
-            lower = self._sourceLowerMultiplicity
-            otherSideLower = self._lowerMultiplicity
-            multiplicityString = self._sourceMultiplicityString
 
-        if (upper != CAssociation.STAR_MULTIPLICITY and actualLength > upper) or actualLength < lower:
-            # if there is actually no link as actualOppositeLength is zero, this is ok, if the otherLower including zero:
-            if not (actualOppositeLength == 0 and otherSideLower == 0):
-                raise CException(f"links of object '{object}' have wrong multiplicity '{actualLength!s}': should be '{multiplicityString!s}'")
-        
-    def _evalDescriptor(self, descriptor):
+    def check_multiplicity(self, obj, actual_length, actual_opposite_length, check_target_multiplicity):
+        if check_target_multiplicity:
+            upper = self.upper_multiplicity
+            lower = self.lower_multiplicity
+            other_side_lower = self.source_lower_multiplicity
+            multiplicity_string = self.multiplicity_
+        else:
+            upper = self.source_upper_multiplicity
+            lower = self.source_lower_multiplicity
+            other_side_lower = self.lower_multiplicity
+            multiplicity_string = self.source_multiplicity_
+
+        if (upper != CAssociation.STAR_MULTIPLICITY and actual_length > upper) or actual_length < lower:
+            # if there is actually no link as actualOppositeLength is zero, this is ok, if the otherLower 
+            # including zero:
+            if not (actual_opposite_length == 0 and other_side_lower == 0):
+                raise CException(f"links of object '{obj}' have wrong multiplicity " +
+                                 f"'{actual_length!s}': should be '{multiplicity_string!s}'")
+
+    def _eval_descriptor(self, descriptor):
         # handle name only if a ':' is found in the descriptor
         index = descriptor.find(":")
         if index != -1:
             name = descriptor[0:index]
-            descriptor = descriptor[index+1:]
+            descriptor = descriptor[index + 1:]
             self.name = name.strip()
 
         # handle type of relation
@@ -212,29 +221,29 @@ class CAssociation(CNamedElement):
                     raise CException("association descriptor malformed: '" + descriptor + "'")
 
         # handle role names and multiplicities
-        sourceStr = descriptor[0:index]
-        targetStr = descriptor[index+length:]
-        regexpWithRoleName = '\s*\[([^\]]+)\]\s*(\S*)\s*'
-        regexpOnlyMultiplicity = '\s*(\S*)\s*'
+        source_str = descriptor[0:index]
+        target_str = descriptor[index + length:]
+        regexp_with_role_name = r'\s*\[([^\]]+)\]\s*(\S*)\s*'
+        regexp_only_multiplicity = r'\s*(\S*)\s*'
 
-        m = re.search(regexpWithRoleName, sourceStr)
-        if m != None:
-            self.sourceRoleName = m.group(1)
+        m = re.search(regexp_with_role_name, source_str)
+        if m is not None:
+            self.source_role_name = m.group(1)
             if m.group(2) != '':
-                self.sourceMultiplicity = m.group(2)
+                self.source_multiplicity = m.group(2)
         else:
-            m = re.search(regexpOnlyMultiplicity, sourceStr)
-            self.sourceMultiplicity = m.group(1)
+            m = re.search(regexp_only_multiplicity, source_str)
+            self.source_multiplicity = m.group(1)
 
-        m = re.search(regexpWithRoleName, targetStr)
-        if m != None:
-            self.roleName = m.group(1)
+        m = re.search(regexp_with_role_name, target_str)
+        if m is not None:
+            self.role_name = m.group(1)
             if m.group(2) != '':
                 self.multiplicity = m.group(2)
         else:
-            m = re.search(regexpOnlyMultiplicity, targetStr)
+            m = re.search(regexp_only_multiplicity, target_str)
             self.multiplicity = m.group(1)
-        
+
         if aggregation:
             self.aggregation = True
         elif composition:

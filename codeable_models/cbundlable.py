@@ -1,122 +1,128 @@
-from codeable_models.internal.commons import setKeywordArgs, checkNamedElementIsNotDeleted, isCBundle, isCMetaclass, isCClass, isCStereotype, isCBundlable
 from codeable_models.cexception import CException
 from codeable_models.cnamedelement import CNamedElement
+from codeable_models.internal.commons import set_keyword_args, check_named_element_is_not_deleted, is_cbundle, \
+    is_cmetaclass, is_cstereotype, is_cbundlable
+
 
 class CBundlable(CNamedElement):
     def __init__(self, name, **kwargs):
-        self._bundles = []
+        self.bundles_ = []
         super().__init__(name, **kwargs)
 
-    def _initKeywordArgs(self, legalKeywordArgs = None, **kwargs):
-        if legalKeywordArgs == None:
-            legalKeywordArgs = [] 
-        legalKeywordArgs.append("bundles")
-        super()._initKeywordArgs(legalKeywordArgs, **kwargs)
+    def _init_keyword_args(self, legal_keyword_args=None, **kwargs):
+        if legal_keyword_args is None:
+            legal_keyword_args = []
+        legal_keyword_args.append("bundles")
+        super()._init_keyword_args(legal_keyword_args, **kwargs)
 
     @property
     def bundles(self):
-        return list(self._bundles)
+        return list(self.bundles_)
 
     @bundles.setter
     def bundles(self, bundles):
-        if bundles == None:
+        if bundles is None:
             bundles = []
-        for b in self._bundles:
+        for b in self.bundles_:
             b.remove(self)
-        self._bundles = []
-        if isCBundle(bundles):
+        self.bundles_ = []
+        if is_cbundle(bundles):
             bundles = [bundles]
         elif not isinstance(bundles, list):
-            raise CException(f"bundles requires a list of bundles or a bundle as input")    
+            raise CException(f"bundles requires a list of bundles or a bundle as input")
         for b in bundles:
-            if not isCBundle(b):
+            if not is_cbundle(b):
                 raise CException(f"bundles requires a list of bundles or a bundle as input")
-            checkNamedElementIsNotDeleted(b)
-            if b in self._bundles:
-                raise CException(f"'{b.name!s}' is already a bundle of '{self.name!s}'")              
-            self._bundles.append(b)
-            b._elements.append(self)
+            check_named_element_is_not_deleted(b)
+            if b in self.bundles_:
+                raise CException(f"'{b.name!s}' is already a bundle of '{self.name!s}'")
+            self.bundles_.append(b)
+            b.elements_.append(self)
 
     def delete(self):
-        if self._isDeleted == True:
+        if self.is_deleted:
             return
-        bundlesToDelete = list(self._bundles)
-        for b in bundlesToDelete:
+        bundles_to_delete = list(self.bundles_)
+        for b in bundles_to_delete:
             b.remove(self)
-        self._bundles = []
+        self.bundles_ = []
         super().delete()
 
-    def getConnectedElements(self, **kwargs):
+    def get_connected_elements(self, **kwargs):
         context = ConnectedElementsContext()
 
-        allowedKeywordArgs = ["addBundles", "processBundles", "stopElementsInclusive", "stopElementsExclusive"]
-        if isCMetaclass(self) or isCBundle(self) or isCStereotype(self):
-            allowedKeywordArgs = ["addStereotypes", "processStereotypes"] + allowedKeywordArgs
-        setKeywordArgs(context, allowedKeywordArgs, **kwargs)
+        allowed_keyword_args = ["add_bundles", "process_bundles", "stop_elements_inclusive", "stop_elements_exclusive"]
+        if is_cmetaclass(self) or is_cbundle(self) or is_cstereotype(self):
+            allowed_keyword_args = ["add_stereotypes", "process_stereotypes"] + allowed_keyword_args
+        set_keyword_args(context, allowed_keyword_args, **kwargs)
 
-        if self in context.stopElementsExclusive:
+        if self in context.stop_elements_exclusive:
             return []
         context.elements.append(self)
-        self._computeConnected(context)
-        if context.addBundles == False:
-            context.elements = [elt for elt in context.elements if not isCBundle(elt)]
-        if context.addStereotypes == False:
-            context.elements = [elt for elt in context.elements if not isCStereotype(elt)]
+        self.compute_connected(context)
+        if not context.add_bundles:
+            context.elements = [elt for elt in context.elements if not is_cbundle(elt)]
+        if not context.add_stereotypes:
+            context.elements = [elt for elt in context.elements if not is_cstereotype(elt)]
         return context.elements
 
-    def _appendConnected(self, context, connected):
+    @staticmethod
+    def append_connected(context, connected):
         for c in connected:
-            if not c in context.elements:
+            if c not in context.elements:
                 context.elements.append(c)
-                if not c in context._allStopElements:
-                    c._computeConnected(context)
+                if c not in context.all_stop_elements:
+                    c.compute_connected(context)
 
-    def _computeConnected(self, context):
+    def compute_connected(self, context):
         connected = []
-        for bundle in self._bundles:
-            if not bundle in context.stopElementsExclusive:
+        for bundle in self.bundles_:
+            if bundle not in context.stop_elements_exclusive:
                 connected.append(bundle)
-        self._appendConnected(context, connected)
+        self.append_connected(context, connected)
+
 
 class ConnectedElementsContext(object):
     def __init__(self):
         self.elements = []
-        self.addBundles = False
-        self.addStereotypes = False
-        self.processBundles = False
-        self.processStereotypes = False
-        self._stopElementsInclusive = []
-        self._stopElementsExclusive = []
-        self._allStopElements = []
+        self.add_bundles = False
+        self.add_stereotypes = False
+        self.process_bundles = False
+        self.process_stereotypes = False
+        self._stop_elements_inclusive = []
+        self._stop_elements_exclusive = []
+        self.all_stop_elements = []
 
     @property
-    def stopElementsInclusive(self):
-        return list(self._stopElementsInclusive)
+    def stop_elements_inclusive(self):
+        return list(self._stop_elements_inclusive)
 
-    @stopElementsInclusive.setter
-    def stopElementsInclusive(self, stopElementsInclusive):
-        if isCBundlable(stopElementsInclusive):
-            stopElementsInclusive = [stopElementsInclusive]
-        if not isinstance(stopElementsInclusive, list):
-            raise CException(f"expected one element or a list of stop elements, but got: '{stopElementsInclusive!s}'")
-        for e in stopElementsInclusive:
-            if not isCBundlable(e):
-                raise CException(f"expected one element or a list of stop elements, but got: '{stopElementsInclusive!s}' with element of wrong type: '{e!s}'")
-        self._stopElementsInclusive = stopElementsInclusive
-        self._allStopElements = self._stopElementsInclusive + self._stopElementsExclusive
+    @stop_elements_inclusive.setter
+    def stop_elements_inclusive(self, stop_elements_inclusive):
+        if is_cbundlable(stop_elements_inclusive):
+            stop_elements_inclusive = [stop_elements_inclusive]
+        if not isinstance(stop_elements_inclusive, list):
+            raise CException(f"expected one element or a list of stop elements, but got: '{stop_elements_inclusive!s}'")
+        for e in stop_elements_inclusive:
+            if not is_cbundlable(e):
+                raise CException(f"expected one element or a list of stop elements, but got: " +
+                                 f"'{stop_elements_inclusive!s}' with element of wrong type: '{e!s}'")
+        self._stop_elements_inclusive = stop_elements_inclusive
+        self.all_stop_elements = self._stop_elements_inclusive + self._stop_elements_exclusive
 
     @property
-    def stopElementsExclusive(self):
-        return list(self._stopElementsExclusive)
+    def stop_elements_exclusive(self):
+        return list(self._stop_elements_exclusive)
 
-    @stopElementsExclusive.setter
-    def stopElementsExclusive(self, stopElementsExclusive):
-        if isCBundlable(stopElementsExclusive):
-            stopElementsExclusive = [stopElementsExclusive]
-        if not isinstance(stopElementsExclusive, list):
-            raise CException(f"expected a list of stop elements, but got: '{stopElementsExclusive!s}'")
-        for e in stopElementsExclusive:
-            if not isCBundlable(e):
-                raise CException(f"expected a list of stop elements, but got: '{stopElementsExclusive!s}' with element of wrong type: '{e!s}'")
-        self._stopElementsExclusive = stopElementsExclusive
-        self._allStopElements = self._stopElementsInclusive + self._stopElementsExclusive
+    @stop_elements_exclusive.setter
+    def stop_elements_exclusive(self, stop_elements_exclusive):
+        if is_cbundlable(stop_elements_exclusive):
+            stop_elements_exclusive = [stop_elements_exclusive]
+        if not isinstance(stop_elements_exclusive, list):
+            raise CException(f"expected a list of stop elements, but got: '{stop_elements_exclusive!s}'")
+        for e in stop_elements_exclusive:
+            if not is_cbundlable(e):
+                raise CException(f"expected a list of stop elements, but got: '{stop_elements_exclusive!s}'" +
+                                 f" with element of wrong type: '{e!s}'")
+        self._stop_elements_exclusive = stop_elements_exclusive
+        self.all_stop_elements = self._stop_elements_inclusive + self._stop_elements_exclusive

@@ -1,7 +1,7 @@
 import os
 import shutil
 from subprocess import call
-from codeable_models.internal.commons import setKeywordArgs, isCObject, isCClass, isCEnum, isCClassifier
+from codeable_models.internal.commons import set_keyword_args, is_cobject, is_cclass, is_cenum, is_cclassifier
 from enum import Enum 
 from codeable_models import *
 
@@ -15,9 +15,9 @@ class RenderingContext(object):
         self.unnamedID = 0
         
     def getUnnamedCElementID(self, element):
-        if isCObject(element) and element._classObjectClass != None:
+        if is_cobject(element) and element.class_object_class_ != None:
             # use the class object's class rather than the class object to identify them uniquely
-            element = element._classObjectClass
+            element = element.class_object_class_
         if element in self.unnamedObjects:
             return self.unnamedObjects[element]
         else:
@@ -61,12 +61,12 @@ class ModelRenderer(object):
         self.ID = 0
 
         super().__init__()
-        self._initKeywordArgs(**kwargs)
+        self._init_keyword_args(**kwargs)
 
-    def _initKeywordArgs(self, legalKeywordArgs = None, **kwargs):
+    def _init_keyword_args(self, legalKeywordArgs = None, **kwargs):
         if legalKeywordArgs == None:
             legalKeywordArgs = ["directory", "plantUmlJarPath", "genSVG", "genPNG"]
-        setKeywordArgs(self, legalKeywordArgs, **kwargs)
+        set_keyword_args(self, legalKeywordArgs, **kwargs)
 
     def renderStartGraph(self, context):
         context.addLine("@startuml")
@@ -99,7 +99,7 @@ class ModelRenderer(object):
             return ""
 
         result = "«"
-        taggedValuesString = "\\n{"
+        tagged_valuesString = "\\n{"
         renderedTaggedValues = []
 
         firstStereotype = True
@@ -109,16 +109,16 @@ class ModelRenderer(object):
             else:
                 result += ", "
 
-            stereotypeClassPath = stereotype.classPath
+            stereotypeClassPath = stereotype.class_path
 
             for stereotypeClass in stereotypeClassPath:
                 for taggedValue in stereotypeClass.attributes:
                     if not [taggedValue.name, stereotypeClass] in renderedTaggedValues:
-                        value = stereotypedElementInstance.getTaggedValue(taggedValue.name, stereotypeClass)
+                        value = stereotypedElementInstance.get_tagged_value(taggedValue.name, stereotypeClass)
                         if value != None: 
                             if len(renderedTaggedValues) != 0:
-                                taggedValuesString += ", "
-                            taggedValuesString += self.renderAttributeValue(taggedValue, taggedValue.name, value)
+                                tagged_valuesString += ", "
+                            tagged_valuesString += self.renderAttributeValue(taggedValue, taggedValue.name, value)
                             renderedTaggedValues.append([taggedValue.name, stereotypeClass])
 
             result += stereotype.name
@@ -126,10 +126,10 @@ class ModelRenderer(object):
         result = self.breakName(result)
 
         if len(renderedTaggedValues) != 0:
-            taggedValuesString += "}"
+            tagged_valuesString += "}"
         else:
-            taggedValuesString = ""
-        result += "» " + taggedValuesString
+            tagged_valuesString = ""
+        result += "» " + tagged_valuesString
         result += "\\n"
         return result 
 
@@ -139,11 +139,11 @@ class ModelRenderer(object):
         attributeValueAdded = False
         attributeValueString = " {\n"
         renderedAttributes = set()
-        for cl in obj.classifier.classPath:
+        for cl in obj.classifier.class_path:
             attributes = cl.attributes
             for attribute in attributes:
                 name = attribute.name
-                value = obj.getValue(name, cl)
+                value = obj.get_value(name, cl)
 
                 # don't render the same attribute twice, but only the one that is lowest in the class hierarchy
                 if name in renderedAttributes:

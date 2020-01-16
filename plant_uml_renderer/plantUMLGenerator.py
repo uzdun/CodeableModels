@@ -1,5 +1,5 @@
-from plantUMLRenderer.classModelRenderer import ClassModelRenderer
-from plantUMLRenderer.objectModelRenderer import ObjectModelRenderer
+from plant_uml_renderer.classModelRenderer import ClassModelRenderer
+from plant_uml_renderer.objectModelRenderer import ObjectModelRenderer
 import os
 import shutil
 

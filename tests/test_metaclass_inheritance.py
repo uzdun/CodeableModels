@@ -5,15 +5,15 @@ from nose.tools import ok_, eq_
 from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
 
-from codeableModels import CMetaclass, CStereotype, CClass, CObject, CAttribute, CException, CEnum
+from codeable_models import CMetaclass, CStereotype, CClass, CObject, CAttribute, CException, CEnum
 
 class TestMetaclassInheritance():
     def testMetaclassNoInheritance(self):
         t = CMetaclass("T")
         eq_(set(t.superclasses), set())
         eq_(set(t.subclasses), set())
-        eq_(set(t.allSuperclasses), set())
-        eq_(set(t.allSubclasses), set())
+        eq_(set(t.all_superclasses), set())
+        eq_(set(t.all_subclasses), set())
 
     def testMetaclassSuperclassesEmptyInput(self):
         m1 = CMetaclass("M1", superclasses = [])
@@ -35,33 +35,33 @@ class TestMetaclassInheritance():
 
         eq_(set(t.superclasses), set())
         eq_(set(t.subclasses), set([m1, m2, b3]))
-        eq_(set(t.allSuperclasses), set())
-        eq_(set(t.allSubclasses), set([m1, m2, b1, b2, b3]))
+        eq_(set(t.all_superclasses), set())
+        eq_(set(t.all_subclasses), set([m1, m2, b1, b2, b3]))
 
         eq_(set(m1.superclasses), set([t]))
         eq_(set(m1.subclasses), set([b1, b2]))
-        eq_(set(m1.allSuperclasses), set([t]))
-        eq_(set(m1.allSubclasses), set([b1, b2]))
+        eq_(set(m1.all_superclasses), set([t]))
+        eq_(set(m1.all_subclasses), set([b1, b2]))
 
         eq_(set(m2.superclasses), set([t]))
         eq_(set(m2.subclasses), set())
-        eq_(set(m2.allSuperclasses), set([t]))
-        eq_(set(m2.allSubclasses), set())
+        eq_(set(m2.all_superclasses), set([t]))
+        eq_(set(m2.all_subclasses), set())
 
         eq_(set(b1.superclasses), set([m1]))
         eq_(set(b1.subclasses), set())
-        eq_(set(b1.allSuperclasses), set([t, m1]))
-        eq_(set(b1.allSubclasses), set())
+        eq_(set(b1.all_superclasses), set([t, m1]))
+        eq_(set(b1.all_subclasses), set())
 
         eq_(set(b2.superclasses), set([m1]))
         eq_(set(b2.subclasses), set())
-        eq_(set(b2.allSuperclasses), set([t, m1]))
-        eq_(set(b2.allSubclasses), set())
+        eq_(set(b2.all_superclasses), set([t, m1]))
+        eq_(set(b2.all_subclasses), set())
 
         eq_(set(b3.superclasses), set([t]))
         eq_(set(b3.subclasses), set())
-        eq_(set(b3.allSuperclasses), set([t]))
-        eq_(set(b3.allSubclasses), set())
+        eq_(set(b3.all_superclasses), set([t]))
+        eq_(set(b3.all_subclasses), set())
 
     def testMetaclassInheritanceDoubleAssignment(self):
         t = CMetaclass("T")
@@ -88,33 +88,33 @@ class TestMetaclassInheritance():
         eq_(t.name, None)
         eq_(set(t.superclasses), set())
         eq_(set(t.subclasses), set())
-        eq_(set(t.allSuperclasses), set())
-        eq_(set(t.allSubclasses), set())
+        eq_(set(t.all_superclasses), set())
+        eq_(set(t.all_subclasses), set())
 
         eq_(set(m1.superclasses), set())
         eq_(set(m1.subclasses), set([b1, b2]))
-        eq_(set(m1.allSuperclasses), set())
-        eq_(set(m1.allSubclasses), set([b1, b2]))
+        eq_(set(m1.all_superclasses), set())
+        eq_(set(m1.all_subclasses), set([b1, b2]))
 
         eq_(set(m2.superclasses), set())
         eq_(set(m2.subclasses), set())
-        eq_(set(m2.allSuperclasses), set())
-        eq_(set(m2.allSubclasses), set())
+        eq_(set(m2.all_superclasses), set())
+        eq_(set(m2.all_subclasses), set())
 
         eq_(set(b1.superclasses), set([m1]))
         eq_(set(b1.subclasses), set())
-        eq_(set(b1.allSuperclasses), set([m1]))
-        eq_(set(b1.allSubclasses), set())
+        eq_(set(b1.all_superclasses), set([m1]))
+        eq_(set(b1.all_subclasses), set())
 
         eq_(set(b2.superclasses), set([m1]))
         eq_(set(b2.subclasses), set())
-        eq_(set(b2.allSuperclasses), set([m1]))
-        eq_(set(b2.allSubclasses), set())
+        eq_(set(b2.all_superclasses), set([m1]))
+        eq_(set(b2.all_subclasses), set())
 
         eq_(set(b3.superclasses), set())
         eq_(set(b3.subclasses), set())
-        eq_(set(b3.allSuperclasses), set())
-        eq_(set(b3.allSubclasses), set())
+        eq_(set(b3.all_superclasses), set())
+        eq_(set(b3.all_subclasses), set())
 
     def testMetaclassInheritanceDeleteInnerClass(self):
         t = CMetaclass("T")
@@ -128,33 +128,33 @@ class TestMetaclassInheritance():
 
         eq_(set(t.superclasses), set())
         eq_(set(t.subclasses), set([m2, b3]))
-        eq_(set(t.allSuperclasses), set())
-        eq_(set(t.allSubclasses), set([m2, b3]))
+        eq_(set(t.all_superclasses), set())
+        eq_(set(t.all_subclasses), set([m2, b3]))
 
         eq_(set(m1.superclasses), set())
         eq_(set(m1.subclasses), set())
-        eq_(set(m1.allSuperclasses), set())
-        eq_(set(m1.allSubclasses), set())
+        eq_(set(m1.all_superclasses), set())
+        eq_(set(m1.all_subclasses), set())
 
         eq_(set(m2.superclasses), set([t]))
         eq_(set(m2.subclasses), set())
-        eq_(set(m2.allSuperclasses), set([t]))
-        eq_(set(m2.allSubclasses), set())
+        eq_(set(m2.all_superclasses), set([t]))
+        eq_(set(m2.all_subclasses), set())
 
         eq_(set(b1.superclasses), set())
         eq_(set(b1.subclasses), set())
-        eq_(set(b1.allSuperclasses), set())
-        eq_(set(b1.allSubclasses), set())
+        eq_(set(b1.all_superclasses), set())
+        eq_(set(b1.all_subclasses), set())
 
         eq_(set(b2.superclasses), set())
         eq_(set(b2.subclasses), set())
-        eq_(set(b2.allSuperclasses), set())
-        eq_(set(b2.allSubclasses), set())
+        eq_(set(b2.all_superclasses), set())
+        eq_(set(b2.all_subclasses), set())
 
         eq_(set(b3.superclasses), set([t]))
         eq_(set(b3.subclasses), set())
-        eq_(set(b3.allSuperclasses), set([t]))
-        eq_(set(b3.allSubclasses), set())
+        eq_(set(b3.all_superclasses), set([t]))
+        eq_(set(b3.all_subclasses), set())
 
     def testMetaclassSuperclassesReassignment(self):
         t = CMetaclass("T")
@@ -170,33 +170,33 @@ class TestMetaclassInheritance():
 
         eq_(set(t.superclasses), set())
         eq_(set(t.subclasses), set([m2, b3]))
-        eq_(set(t.allSuperclasses), set())
-        eq_(set(t.allSubclasses), set([m2, b3]))
+        eq_(set(t.all_superclasses), set())
+        eq_(set(t.all_subclasses), set([m2, b3]))
 
         eq_(set(m1.superclasses), set())
         eq_(set(m1.subclasses), set())
-        eq_(set(m1.allSuperclasses), set())
-        eq_(set(m1.allSubclasses), set())
+        eq_(set(m1.all_superclasses), set())
+        eq_(set(m1.all_subclasses), set())
 
         eq_(set(m2.superclasses), set([t]))
         eq_(set(m2.subclasses), set())
-        eq_(set(m2.allSuperclasses), set([t]))
-        eq_(set(m2.allSubclasses), set())
+        eq_(set(m2.all_superclasses), set([t]))
+        eq_(set(m2.all_subclasses), set())
 
         eq_(set(b1.superclasses), set())
         eq_(set(b1.subclasses), set())
-        eq_(set(b1.allSuperclasses), set())
-        eq_(set(b1.allSubclasses), set())
+        eq_(set(b1.all_superclasses), set())
+        eq_(set(b1.all_subclasses), set())
 
         eq_(set(b2.superclasses), set())
         eq_(set(b2.subclasses), set())
-        eq_(set(b2.allSuperclasses), set())
-        eq_(set(b2.allSubclasses), set())
+        eq_(set(b2.all_superclasses), set())
+        eq_(set(b2.all_subclasses), set())
 
         eq_(set(b3.superclasses), set([t]))
         eq_(set(b3.subclasses), set())
-        eq_(set(b3.allSuperclasses), set([t]))
-        eq_(set(b3.allSubclasses), set())
+        eq_(set(b3.all_superclasses), set([t]))
+        eq_(set(b3.all_subclasses), set())
 
     def testMetaclassMultipleInheritance(self):
         t1 = CMetaclass("T1")
@@ -210,43 +210,43 @@ class TestMetaclassInheritance():
 
         eq_(set(t1.superclasses), set())
         eq_(set(t1.subclasses), set([m1]))
-        eq_(set(t1.allSuperclasses), set())
-        eq_(set(t1.allSubclasses), set([m1, b1, b2, b3]))
+        eq_(set(t1.all_superclasses), set())
+        eq_(set(t1.all_subclasses), set([m1, b1, b2, b3]))
 
         eq_(set(t2.superclasses), set())
         eq_(set(t2.subclasses), set([m2]))
-        eq_(set(t2.allSuperclasses), set())
-        eq_(set(t2.allSubclasses), set([m2, b3, b2]))
+        eq_(set(t2.all_superclasses), set())
+        eq_(set(t2.all_subclasses), set([m2, b3, b2]))
 
         eq_(set(t3.superclasses), set())
         eq_(set(t3.subclasses), set([m2, m1]))
-        eq_(set(t3.allSuperclasses), set())
-        eq_(set(t3.allSubclasses), set([m2, m1, b1, b2, b3]))
+        eq_(set(t3.all_superclasses), set())
+        eq_(set(t3.all_subclasses), set([m2, m1, b1, b2, b3]))
 
         eq_(set(m1.superclasses), set([t1, t3]))
         eq_(set(m1.subclasses), set([b1, b2, b3]))
-        eq_(set(m1.allSuperclasses), set([t1, t3]))
-        eq_(set(m1.allSubclasses), set([b1, b2, b3]))
+        eq_(set(m1.all_superclasses), set([t1, t3]))
+        eq_(set(m1.all_subclasses), set([b1, b2, b3]))
 
         eq_(set(m2.superclasses), set([t2, t3]))
         eq_(set(m2.subclasses), set([b2, b3]))
-        eq_(set(m2.allSuperclasses), set([t2, t3]))
-        eq_(set(m2.allSubclasses), set([b2, b3]))
+        eq_(set(m2.all_superclasses), set([t2, t3]))
+        eq_(set(m2.all_subclasses), set([b2, b3]))
 
         eq_(set(b1.superclasses), set([m1]))
         eq_(set(b1.subclasses), set())
-        eq_(set(b1.allSuperclasses), set([m1, t1, t3]))
-        eq_(set(b1.allSubclasses), set())
+        eq_(set(b1.all_superclasses), set([m1, t1, t3]))
+        eq_(set(b1.all_subclasses), set())
 
         eq_(set(b2.superclasses), set([m1, m2]))
         eq_(set(b2.subclasses), set())
-        eq_(set(b2.allSuperclasses), set([m1, m2, t1, t2, t3]))
-        eq_(set(b2.allSubclasses), set())
+        eq_(set(b2.all_superclasses), set([m1, m2, t1, t2, t3]))
+        eq_(set(b2.all_subclasses), set())
 
         eq_(set(b3.superclasses), set([m1, m2]))
         eq_(set(b3.subclasses), set())
-        eq_(set(b3.allSuperclasses), set([m1, m2, t1, t2, t3]))
-        eq_(set(b3.allSubclasses), set())       
+        eq_(set(b3.all_superclasses), set([m1, m2, t1, t2, t3]))
+        eq_(set(b3.all_subclasses), set())
 
     def testMetaclassAsWrongTypeOfSuperclass(self):
         t = CMetaclass("M")
@@ -254,44 +254,44 @@ class TestMetaclassInheritance():
             CClass(t, "C", superclasses = [t])
             exceptionExpected_()
         except CException as e: 
-            ok_(re.match("^cannot add superclass 'M' to 'C': not of type([ <a-zA-Z.']+)CClass'>$", e.value))
+            ok_(re.match("^cannot add superclass 'M' to 'C': not of type([_ <a-zA-Z.']+)CClass'>$", e.value))
         try:
             CStereotype("S", superclasses = [t])
             exceptionExpected_()
         except CException as e: 
-            ok_(re.match("^cannot add superclass 'M' to 'S': not of type([ <a-zA-Z.']+)CStereotype'>$", e.value))
+            ok_(re.match("^cannot add superclass 'M' to 'S': not of type([_ <a-zA-Z.']+)CStereotype'>$", e.value))
 
-    def testMetaclassPathNoInheritance(self):
+    def testMetaclass_pathNoInheritance(self):
         t = CMetaclass()
-        eq_(set(t.classPath), set([t]))
+        eq_(set(t.class_path), set([t]))
     
-    def testMetaclassPathSimpleInheritance(self):
+    def testMetaclass_pathSimpleInheritance(self):
         t = CMetaclass("T")
         m1 = CMetaclass("M1", superclasses = [t])
         m2 = CMetaclass("M2", superclasses = [t])
         b1 = CMetaclass("B1", superclasses = [m1])
         b2 = CMetaclass("B2", superclasses = [m1])
         b3 = CMetaclass("B3", superclasses = [t])
-        eq_(b1.classPath, [b1, m1, t])
-        eq_(b2.classPath, [b2, m1, t])
-        eq_(b3.classPath, [b3, t])
-        eq_(m1.classPath, [m1, t])
-        eq_(m2.classPath, [m2, t])
-        eq_(t.classPath, [t])
+        eq_(b1.class_path, [b1, m1, t])
+        eq_(b2.class_path, [b2, m1, t])
+        eq_(b3.class_path, [b3, t])
+        eq_(m1.class_path, [m1, t])
+        eq_(m2.class_path, [m2, t])
+        eq_(t.class_path, [t])
 
-    def testMetaclassPathMultipleInheritance(self):
+    def testMetaclass_pathMultipleInheritance(self):
         t = CMetaclass("T")
         m1 = CMetaclass("M1", superclasses = [t])
         m2 = CMetaclass("M2", superclasses = [t])
         b1 = CMetaclass("B1", superclasses = [m1, m2])
         b2 = CMetaclass("B2", superclasses = [t, m1])
         b3 = CMetaclass("B3", superclasses = [t, m1, m2])
-        eq_(b1.classPath, [b1, m1, t, m2])
-        eq_(b2.classPath, [b2, t, m1])
-        eq_(b3.classPath, [b3, t, m1, m2])
-        eq_(m1.classPath, [m1, t])
-        eq_(m2.classPath, [m2, t])
-        eq_(t.classPath, [t])
+        eq_(b1.class_path, [b1, m1, t, m2])
+        eq_(b2.class_path, [b2, t, m1])
+        eq_(b3.class_path, [b3, t, m1, m2])
+        eq_(m1.class_path, [m1, t])
+        eq_(m2.class_path, [m2, t])
+        eq_(t.class_path, [t])
 
     def testMetaclassInstanceOf(self):
         a = CMetaclass()
@@ -299,18 +299,18 @@ class TestMetaclassInheritance():
         c = CMetaclass()
         cl = CClass(b, "C")
 
-        eq_(cl.instanceOf(a), True)
-        eq_(cl.instanceOf(b), True)
-        eq_(cl.instanceOf(c), False)
+        eq_(cl.instance_of(a), True)
+        eq_(cl.instance_of(b), True)
+        eq_(cl.instance_of(c), False)
 
         try:
-            cl.instanceOf(cl)
+            cl.instance_of(cl)
             exceptionExpected_()
         except CException as e: 
             eq_("'C' is not a metaclass", e.value)
 
         cl.delete()
-        eq_(cl.instanceOf(a), False)
+        eq_(cl.instance_of(a), False)
     
     def testMetaclassGetAllInstances(self):
         t = CMetaclass("T")
@@ -326,13 +326,13 @@ class TestMetaclassInheritance():
         b1o2 = CClass(b1)
 
         eq_(set(t.classes), set([to1, to2]))
-        eq_(set(t.allClasses), set([to1, to2, m1o1, m1o2, b1o1, b1o2, m2o]))
+        eq_(set(t.all_classes), set([to1, to2, m1o1, m1o2, b1o1, b1o2, m2o]))
         eq_(set(m1.classes), set([m1o1, m1o2]))
-        eq_(set(m1.allClasses), set([m1o1, m1o2, b1o1, b1o2]))
+        eq_(set(m1.all_classes), set([m1o1, m1o2, b1o1, b1o2]))
         eq_(set(m2.classes), set([m2o]))
-        eq_(set(m2.allClasses), set([m2o, b1o1, b1o2]))
+        eq_(set(m2.all_classes), set([m2o, b1o1, b1o2]))
         eq_(set(b1.classes), set([b1o1, b1o2]))
-        eq_(set(b1.allClasses), set([b1o1, b1o2]))
+        eq_(set(b1.all_classes), set([b1o1, b1o2]))
 
     def testMetaclassHasSuperclassHasSubclass(self):
         m1 = CMetaclass("M1")
@@ -341,20 +341,20 @@ class TestMetaclassInheritance():
         m4 = CMetaclass("M4", superclasses = [m2])
         m5 = CMetaclass("M5", superclasses = [])
 
-        eq_(m1.hasSuperclass(m2), False)
-        eq_(m5.hasSuperclass(m2), False)
-        eq_(m1.hasSuperclass(None), False)
-        eq_(m5.hasSuperclass(None), False)
-        eq_(m2.hasSuperclass(m1), True)
-        eq_(m3.hasSuperclass(m2), True)
-        eq_(m3.hasSuperclass(m2), True)  
-        eq_(m4.hasSuperclass(m2), True)
-        eq_(m3.hasSubclass(m2), False)
-        eq_(m3.hasSubclass(None), False)
-        eq_(m5.hasSubclass(m2), False)
-        eq_(m5.hasSubclass(None), False)
-        eq_(m1.hasSubclass(m3), True)
-        eq_(m1.hasSubclass(m2), True)
+        eq_(m1.has_superclass(m2), False)
+        eq_(m5.has_superclass(m2), False)
+        eq_(m1.has_superclass(None), False)
+        eq_(m5.has_superclass(None), False)
+        eq_(m2.has_superclass(m1), True)
+        eq_(m3.has_superclass(m2), True)
+        eq_(m3.has_superclass(m2), True)
+        eq_(m4.has_superclass(m2), True)
+        eq_(m3.has_subclass(m2), False)
+        eq_(m3.has_subclass(None), False)
+        eq_(m5.has_subclass(m2), False)
+        eq_(m5.has_subclass(None), False)
+        eq_(m1.has_subclass(m3), True)
+        eq_(m1.has_subclass(m2), True)
 
     def testMetaclassUnknownNonPositionalArgument(self):
         t = CMetaclass("T")

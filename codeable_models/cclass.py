@@ -1,210 +1,215 @@
 from codeable_models.cclassifier import CClassifier
-from codeable_models.internal.commons import checkIsCMetaclass, checkIsCObject, checkIsCStereotype, isCStereotype, checkNamedElementIsNotDeleted
 from codeable_models.cexception import CException
 from codeable_models.cobject import CObject
+from codeable_models.internal.commons import check_is_cmetaclass, check_is_cobject, check_named_element_is_not_deleted
 from codeable_models.internal.stereotype_holders import CStereotypeInstancesHolder
-from codeable_models.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
+from codeable_models.internal.var_values import delete_var_value, set_var_value, get_var_value, get_var_values, \
+    set_var_values, VarValueKind
+
 
 class CClass(CClassifier):
     def __init__(self, metaclass, name=None, **kwargs):
-        self._metaclass = None
+        self.metaclass_ = None
         self.metaclass = metaclass
-        self._objects = []
-        self._classObject = CObject(self.metaclass, name, _classObjectClass = self)
-        self._stereotypeInstancesHolder = CStereotypeInstancesHolder(self)
-        self._taggedValues = {}
+        self.objects_ = []
+        self.class_object_ = CObject(self.metaclass, name, class_object_class_=self)
+        self.stereotype_instances_holder = CStereotypeInstancesHolder(self)
+        self.tagged_values_ = {}
         super().__init__(name, **kwargs)
-        self._classObject._initAttributeValues()
-        
-    def _initKeywordArgs(self, legalKeywordArgs = None, **kwargs):
-        if legalKeywordArgs == None:
-            legalKeywordArgs = [] 
-        legalKeywordArgs.append("stereotypeInstances")
-        legalKeywordArgs.append("values")
-        legalKeywordArgs.append("taggedValues")
-        super()._initKeywordArgs(legalKeywordArgs, **kwargs)
+        self.class_object_.init_attribute_values()
+
+    def _init_keyword_args(self, legal_keyword_args=None, **kwargs):
+        if legal_keyword_args is None:
+            legal_keyword_args = []
+        legal_keyword_args.append("stereotype_instances")
+        legal_keyword_args.append("values")
+        legal_keyword_args.append("tagged_values")
+        super()._init_keyword_args(legal_keyword_args, **kwargs)
 
     @property
     def metaclass(self):
-        return self._metaclass
+        return self.metaclass_
 
     @property
-    def classObject(self):
-        return self._classObject
+    def class_object(self):
+        return self.class_object_
 
     @metaclass.setter
     def metaclass(self, mcl):
-        checkIsCMetaclass(mcl)
-        if (self._metaclass != None):
-            self._metaclass._removeClass(self)
-        if mcl != None:
-            checkNamedElementIsNotDeleted(mcl)
-        self._metaclass = mcl
-        self._metaclass._addClass(self)
+        check_is_cmetaclass(mcl)
+        if self.metaclass_ is not None:
+            self.metaclass_.remove_class(self)
+        if mcl is not None:
+            check_named_element_is_not_deleted(mcl)
+        self.metaclass_ = mcl
+        self.metaclass_.add_class(self)
 
     @property
     def objects(self):
-        return list(self._objects)
+        return list(self.objects_)
 
     @property
-    def allObjects(self):
-        allObjects = list(self._objects)
-        for scl in self.allSubclasses:
-            for cl in scl._objects:
-                allObjects.append(cl)
-        return allObjects
+    def all_objects(self):
+        all_objects = list(self.objects_)
+        for scl in self.all_subclasses:
+            for cl in scl.objects_:
+                all_objects.append(cl)
+        return all_objects
 
-    def _addObject(self, obj):
-        if obj in self._objects:
+    def add_object(self, obj):
+        if obj in self.objects_:
             raise CException(f"object '{obj!s}' is already an instance of the class '{self!s}'")
-        checkIsCObject(obj)
-        self._objects.append(obj)
-    
-    def _removeObject(self, obj):
-        if not obj in self._objects:
+        check_is_cobject(obj)
+        self.objects_.append(obj)
+
+    def remove_object(self, obj):
+        if obj not in self.objects_:
             raise CException(f"can't remove object '{obj!s}'' from class '{self!s}': not an instance")
-        self._objects.remove(obj)
+        self.objects_.remove(obj)
 
     def delete(self):
-        if self._isDeleted == True:
+        if self.is_deleted:
             return
 
-        objectsToDelete = list(self._objects)
-        for obj in objectsToDelete:
+        objects_to_delete = list(self.objects_)
+        for obj in objects_to_delete:
             obj.delete()
-        self._objects = []
+        self.objects_ = []
 
-        for si in self.stereotypeInstances:
-            si._extendedInstances.remove(self)
-        self._stereotypeInstancesHolder._stereotypes = []
+        for si in self.stereotype_instances:
+            si.extended_instances_.remove(self)
+        self.stereotype_instances_holder.stereotypes_ = []
 
-        self.metaclass._removeClass(self)
-        self._metaclass = None
+        self.metaclass.remove_class(self)
+        self.metaclass_ = None
 
         super().delete()
 
-        self._classObject.delete()
-        
-    def instanceOf(self, cl):
-        return self._classObject.instanceOf(cl)
+        self.class_object_.delete()
 
-    def _updateDefaultValuesOfClassifier(self, attribute = None):
-        for i in self.allObjects:
-            attrItems = self._attributes.items()
-            if attribute != None:
-                attrItems = {attribute._name: attribute}.items()
-            for attrName, attr in attrItems:
-                if attr.default != None:
-                    if i.getValue(attrName, self) == None:
-                        i.setValue(attrName, attr.default, self)
+    def instance_of(self, cl):
+        return self.class_object_.instance_of(cl)
 
-    def _removeAttributeValuesOfClassifier(self, attributesToKeep):
-        for i in self.allObjects:
-            for attrName in self.attributeNames:
-                if not attrName in attributesToKeep:
-                    i._removeValue(attrName, self)
+    def update_default_values_of_classifier(self, attribute=None):
+        for i in self.all_objects:
+            attr_items = self.attributes_.items()
+            if attribute is not None:
+                attr_items = {attribute.name_: attribute}.items()
+            for attrName, attr in attr_items:
+                if attr.default is not None:
+                    if i.get_value(attrName, self) is None:
+                        i.set_value(attrName, attr.default, self)
 
-    def getValue(self, attributeName, cl = None):
-        return self._classObject.getValue(attributeName, cl)
+    def _remove_attribute_values_of_classifier(self, attributes_to_keep):
+        for i in self.all_objects:
+            for attrName in self.attribute_names:
+                if attrName not in attributes_to_keep:
+                    i.remove_value(attrName, self)
 
-    def deleteValue(self, attributeName, cl = None):
-        return self._classObject.deleteValue(attributeName, cl)
+    def get_value(self, attribute_name, cl=None):
+        return self.class_object_.get_value(attribute_name, cl)
 
-    def setValue(self, attributeName, value, cl = None):
-        return self._classObject.setValue(attributeName, value, cl)
+    def delete_value(self, attribute_name, cl=None):
+        return self.class_object_.delete_value(attribute_name, cl)
+
+    def set_value(self, attribute_name, value, cl=None):
+        return self.class_object_.set_value(attribute_name, value, cl)
 
     @property
     def values(self):
-        return self._classObject.values
+        return self.class_object_.values
 
     @values.setter
-    def values(self, newValues):
-        self._classObject.values = newValues
-    
-    def getObjects(self, name):
+    def values(self, new_values):
+        self.class_object_.values = new_values
+
+    def get_objects(self, name):
         return list(o for o in self.objects if o.name == name)
-    def getObject(self, name):
-        l = self.getObjects(name)
-        return None if len(l) == 0 else l[0]
+
+    def get_object(self, name):
+        objects = self.get_objects(name)
+        return None if len(objects) == 0 else objects[0]
 
     @property
-    def stereotypeInstances(self):
-        return self._stereotypeInstancesHolder.stereotypes
-    
-    @stereotypeInstances.setter
-    def stereotypeInstances(self, elements):
-        self._stereotypeInstancesHolder.stereotypes = elements
-        self._initStereotypeDefaultValues()
+    def stereotype_instances(self):
+        return self.stereotype_instances_holder.stereotypes
 
-    def _initStereotypeDefaultValues(self):
-        # stereotype instances applies all stereotype defaults, if the value has not 
+    @stereotype_instances.setter
+    def stereotype_instances(self, elements):
+        self.stereotype_instances_holder.stereotypes = elements
+        self._init_stereotype_default_values()
+
+    def _init_stereotype_default_values(self):
+        # stereotype instances applies all stereotype defaults, if the value has not
         # yet been set. as this runs during initialization before the metaclass default
-        # initialization, stereotypes have priority. If stereotypeInstances is called after
+        # initialization, stereotypes have priority. If stereotype_instances is called after
         # class initialization has finished, other values like metaclass defaults might have
-        # been set. Then the stereotype defaults will not overwrite existing values (you need to 
+        # been set. Then the stereotype defaults will not overwrite existing values (you need to
         # delete them explicitly in order for them to be replaced by stereotype defaults)
-        existingAttributeNames = []
-        for mcl in self.metaclass.classPath:
-            for attrName in mcl.attributeNames:
-                if not attrName in existingAttributeNames:
-                    existingAttributeNames.append(attrName)
-        for stereotypeInstance in self.stereotypeInstances:
-            for st in stereotypeInstance.classPath:
-                for name in st.defaultValues:
-                    if name in existingAttributeNames:
-                        if self.getValue(name) == None:
-                            self.setValue(name, st.defaultValues[name])
+        existing_attribute_names = []
+        for mcl in self.metaclass.class_path:
+            for attrName in mcl.attribute_names:
+                if attrName not in existing_attribute_names:
+                    existing_attribute_names.append(attrName)
+        for stereotypeInstance in self.stereotype_instances:
+            for st in stereotypeInstance.class_path:
+                for name in st.default_values:
+                    if name in existing_attribute_names:
+                        if self.get_value(name) is None:
+                            self.set_value(name, st.default_values[name])
 
-    def getTaggedValue(self, name, stereotype = None):
-        if self._isDeleted:
+    def get_tagged_value(self, name, stereotype=None):
+        if self.is_deleted:
             raise CException(f"can't get tagged value '{name!s}' on deleted class")
-        return _getValue(self, self._stereotypeInstancesHolder.getStereotypeInstancePath(), self._taggedValues, name, ValueKind.TAGGED_VALUE, stereotype)
+        return get_var_value(self, self.stereotype_instances_holder.get_stereotype_instance_path(), self.tagged_values_,
+                             name, VarValueKind.TAGGED_VALUE, stereotype)
 
-    def deleteTaggedValue(self, name, stereotype = None):
-        if self._isDeleted:
+    def delete_tagged_value(self, name, stereotype=None):
+        if self.is_deleted:
             raise CException(f"can't delete tagged value '{name!s}' on deleted class")
-        return _deleteValue(self, self._stereotypeInstancesHolder.getStereotypeInstancePath(), self._taggedValues, name, ValueKind.TAGGED_VALUE, stereotype)
+        return delete_var_value(self, self.stereotype_instances_holder.get_stereotype_instance_path(),
+                                self.tagged_values_,
+                                name, VarValueKind.TAGGED_VALUE, stereotype)
 
-    def setTaggedValue(self, name, value, stereotype = None):
-        if self._isDeleted:
+    def set_tagged_value(self, name, value, stereotype=None):
+        if self.is_deleted:
             raise CException(f"can't set tagged value '{name!s}' on deleted class")
-        return _setValue(self, self._stereotypeInstancesHolder.getStereotypeInstancePath(), self._taggedValues, name, value, ValueKind.TAGGED_VALUE, stereotype)
+        return set_var_value(self, self.stereotype_instances_holder.get_stereotype_instance_path(), self.tagged_values_,
+                             name, value, VarValueKind.TAGGED_VALUE, stereotype)
 
     @property
-    def taggedValues(self):
-        if self._isDeleted:
+    def tagged_values(self):
+        if self.is_deleted:
             raise CException(f"can't get tagged values on deleted class")
-        return _getValues(self._stereotypeInstancesHolder.getStereotypeInstancePath(), self._taggedValues)
+        return get_var_values(self.stereotype_instances_holder.get_stereotype_instance_path(), self.tagged_values_)
 
-    @taggedValues.setter
-    def taggedValues(self, newValues):
-        if self._isDeleted:
+    @tagged_values.setter
+    def tagged_values(self, new_values):
+        if self.is_deleted:
             raise CException(f"can't set tagged values on deleted class")
-        _setValues(self, newValues, ValueKind.TAGGED_VALUE)
+        set_var_values(self, new_values, VarValueKind.TAGGED_VALUE)
 
-    def association(self, target, descriptor = None, **kwargs):
+    def association(self, target, descriptor=None, **kwargs):
         if not isinstance(target, CClass):
             raise CException(f"class '{self!s}' is not compatible with association target '{target!s}'")
         return super(CClass, self).association(target, descriptor, **kwargs)
 
     @property
-    def linkObjects(self):
-        return self._classObject.linkObjects
+    def link_objects(self):
+        return self.class_object_.link_objects
 
     @property
     def links(self):
-        return self._classObject.links
+        return self.class_object_.links
 
-    def getLinks(self, **kwargs):
-        return self._classObject.getLinks(**kwargs)
+    def get_links(self, **kwargs):
+        return self.class_object_.get_links(**kwargs)
 
-    def _getLinksForAssociation(self, association):
-        return self._classObject._getLinksForAssociation(association)
+    def get_links_for_association(self, association):
+        return self.class_object_.get_links_for_association(association)
 
-    def addLinks(self, links, **kwargs):
-        return self._classObject.addLinks(links, **kwargs)
+    def add_links(self, links, **kwargs):
+        return self.class_object_.add_links(links, **kwargs)
 
-    def deleteLinks(self, links, **kwargs):
-        return self._classObject.deleteLinks(links, **kwargs)
-
-
+    def delete_links(self, links, **kwargs):
+        return self.class_object_.delete_links(links, **kwargs)

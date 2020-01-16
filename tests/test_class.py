@@ -3,7 +3,7 @@ from nose.tools import ok_, eq_
 from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
 
-from codeableModels import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CBundle
+from codeable_models import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CBundle
 
 class TestClass():
     def setUp(self):
@@ -47,16 +47,16 @@ class TestClass():
 
     def testGetObjectsByName(self):
         c1 = CClass(self.mcl)
-        eq_(set(c1.getObjects("o1")), set())
+        eq_(set(c1.get_objects("o1")), set())
         o1 = CObject(c1, "o1")
         eq_(c1.objects, [o1])
-        eq_(set(c1.getObjects("o1")), set([o1]))
+        eq_(set(c1.get_objects("o1")), set([o1]))
         o2 = CObject(c1, "o1")
-        eq_(set(c1.getObjects("o1")), set([o1, o2]))
+        eq_(set(c1.get_objects("o1")), set([o1, o2]))
         ok_(o1 != o2)
         o3 = CObject(c1, "o1")
-        eq_(set(c1.getObjects("o1")), set([o1, o2, o3]))
-        eq_(c1.getObject("o1"), o1)
+        eq_(set(c1.get_objects("o1")), set([o1, o2, o3]))
+        eq_(c1.get_object("o1"), o1)
 
     def testDeleteClass(self):
         cl1 = CClass(self.mcl, "CL1")
@@ -66,7 +66,7 @@ class TestClass():
         cl1 = CClass(self.mcl, "CL1")
         cl2 = CClass(self.mcl, "CL2")
         cl3 = CClass(self.mcl, "CL3", superclasses = cl2, attributes = {"i" : 1})
-        cl3.setValue("i", 7)
+        cl3.set_value("i", 7)
         CObject(cl3)
         
         cl1.delete()
@@ -77,13 +77,13 @@ class TestClass():
         eq_(cl3.superclasses, [])
         eq_(cl2.subclasses, [])
         eq_(cl3.attributes, [])
-        eq_(cl3.attributeNames, [])
+        eq_(cl3.attribute_names, [])
         eq_(cl3.metaclass, None)
         eq_(cl3.objects, [])
         eq_(cl3.name, None)
         eq_(cl3.bundles, [])
         try:
-            cl3.getValue("i")
+            cl3.get_value("i")
             exceptionExpected_()
         except CException as e: 
             eq_("can't get value 'i' on deleted class", e.value)
@@ -161,22 +161,22 @@ class TestClass():
 
     def testGetClassObject(self):
         cl = CClass(self.mcl, "CX")
-        eq_(cl.classObject.name, cl.name)
-        eq_(cl.classObject.classifier, self.mcl)
-        eq_(cl.classObject._classObjectClass, cl)
+        eq_(cl.class_object.name, cl.name)
+        eq_(cl.class_object.classifier, self.mcl)
+        eq_(cl.class_object.class_object_class_, cl)
 
 
     def testGetConnectedElements_WrongKeywordArg(self):
         c1 = CClass(self.mcl, "c1")
         try:
-            c1.getConnectedElements(a = "c1")
+            c1.get_connected_elements(a ="c1")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "unknown keyword argument 'a', should be one of: ['addBundles', 'processBundles', 'stopElementsInclusive', 'stopElementsExclusive']")
+            eq_(e.value, "unknown keyword argument 'a', should be one of: ['add_bundles', 'process_bundles', 'stop_elements_inclusive', 'stop_elements_exclusive']")
 
     def testGetConnectedElementsEmpty(self):
         c1 = CClass(self.mcl, "c1")
-        eq_(set(c1.getConnectedElements()), set([c1]))
+        eq_(set(c1.get_connected_elements()), set([c1]))
 
     mcl = CMetaclass("MCL")
     c1 = CClass(mcl, "c1")
@@ -203,41 +203,41 @@ class TestClass():
     allTestElts = [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, b1, b2, bsub]
 
     @parameterized.expand([
-        (allTestElts, {"processBundles": True}, set([c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13])),
-        (allTestElts, {"processBundles": True, "addBundles": True}, set([c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, b1, b2, bsub])),
-        ([c1], {"processBundles": True}, set([c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13])),
-        ([c1], {"processBundles": True, "addBundles": True}, set([c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, b1, b2, bsub])),
+        (allTestElts, {"process_bundles": True}, set([c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13])),
+        (allTestElts, {"process_bundles": True, "add_bundles": True}, set([c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, b1, b2, bsub])),
+        ([c1], {"process_bundles": True}, set([c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13])),
+        ([c1], {"process_bundles": True, "add_bundles": True}, set([c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, b1, b2, bsub])),
         ([c7], {}, set([c7, c8, c9])),
-        ([c7], {"addBundles": True}, set([c7, c8, c9, b1, b2])),
+        ([c7], {"add_bundles": True}, set([c7, c8, c9, b1, b2])),
     ])
     def testGetConnectedElements(self, testElements, kwargsDict, connectedElementsResult):
         for elt in testElements:
-             eq_(set(elt.getConnectedElements(**kwargsDict)), connectedElementsResult)
+             eq_(set(elt.get_connected_elements(**kwargsDict)), connectedElementsResult)
 
-    def testGetConnectedElements_StopElementsInclusiveWrongTypes(self):
+    def testGetConnectedElements_stop_elements_inclusiveWrongTypes(self):
         c1 = CClass(self.mcl, "c1")
         try:
-            c1.getConnectedElements(stopElementsInclusive = "c1")
+            c1.get_connected_elements(stop_elements_inclusive ="c1")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "expected one element or a list of stop elements, but got: 'c1'")
         try:
-            c1.getConnectedElements(stopElementsInclusive = ["c1"])
+            c1.get_connected_elements(stop_elements_inclusive = ["c1"])
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "expected one element or a list of stop elements, but got: '['c1']' with element of wrong type: 'c1'")
 
     @parameterized.expand([
-        ([c1], {"stopElementsExclusive" : [c1]}, set()),
-        ([c1], {"stopElementsInclusive" : [c3, c6]}, set([c1, c2, c3, c4, c5, c6])),
-        ([c1], {"stopElementsExclusive" : [c3, c6]}, set([c1, c2, c4, c5])),
-        ([c1], {"stopElementsInclusive" : [c3, c6], "stopElementsExclusive" : [c3]}, set([c1, c2, c4, c5, c6])),
-        ([c7], {"stopElementsInclusive" : [b2], "stopElementsExclusive" : [b1], "processBundles": True, "addBundles": True}, set([c7, b2, c8, c9])),
-        ([c7], {"stopElementsExclusive" : [b1, b2], "processBundles": True, "addBundles": True}, set([c7, c8, c9])),
+        ([c1], {"stop_elements_exclusive" : [c1]}, set()),
+        ([c1], {"stop_elements_inclusive" : [c3, c6]}, set([c1, c2, c3, c4, c5, c6])),
+        ([c1], {"stop_elements_exclusive" : [c3, c6]}, set([c1, c2, c4, c5])),
+        ([c1], {"stop_elements_inclusive" : [c3, c6], "stop_elements_exclusive" : [c3]}, set([c1, c2, c4, c5, c6])),
+        ([c7], {"stop_elements_inclusive" : [b2], "stop_elements_exclusive" : [b1], "process_bundles": True, "add_bundles": True}, set([c7, b2, c8, c9])),
+        ([c7], {"stop_elements_exclusive" : [b1, b2], "process_bundles": True, "add_bundles": True}, set([c7, c8, c9])),
     ])
-    def testGetConnectedElements_StopElementsInclusive(self, testElements, kwargsDict, connectedElementsResult):
+    def testGetConnectedElements_stop_elements_inclusive(self, testElements, kwargsDict, connectedElementsResult):
         for elt in testElements:
-             eq_(set(elt.getConnectedElements(**kwargsDict)), connectedElementsResult)
+             eq_(set(elt.get_connected_elements(**kwargsDict)), connectedElementsResult)
 
 
 

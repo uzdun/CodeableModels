@@ -1,201 +1,205 @@
-from codeable_models.cclassifier import CClassifier
-from codeable_models.cexception import CException
-from codeable_models.cmetaclass import CMetaclass
 from codeable_models.cassociation import CAssociation
+from codeable_models.cclassifier import CClassifier
+from codeable_models.cmetaclass import CMetaclass
 from codeable_models.internal.commons import *
-from codeable_models.internal.values import _deleteValue, _setValue, _getValue, _getValues, _setValues, ValueKind
+from codeable_models.internal.var_values import delete_var_value, set_var_value, get_var_value, get_var_values, \
+    set_var_values, VarValueKind
 
 
-def _determineExtendedTypeOfList(elements):
+def _determine_extended_type_of_list(elements):
     if len(elements) == 0:
         return None
-    if isCMetaclass(elements[0]):
+    if is_cmetaclass(elements[0]):
         return CMetaclass
-    if isCAssociation(elements[0]):
+    if is_cassociation(elements[0]):
         return CAssociation
     raise CException(f"unknown type of extend element: '{elements[0]!s}'")
 
+
 class CStereotype(CClassifier):
     def __init__(self, name=None, **kwargs):
-        self._extended = []
-        self._extendedInstances = []
-        self._defaultValues = {}
+        self.extended_ = []
+        self.extended_instances_ = []
+        self.default_values_ = {}
         super().__init__(name, **kwargs)
 
-    def _initKeywordArgs(self, legalKeywordArgs = None, **kwargs):
-        if legalKeywordArgs == None:
-            legalKeywordArgs = [] 
-        legalKeywordArgs.append("extended")
-        legalKeywordArgs.append("defaultValues")
-        super()._initKeywordArgs(legalKeywordArgs, **kwargs)
+    def _init_keyword_args(self, legal_keyword_args=None, **kwargs):
+        if legal_keyword_args is None:
+            legal_keyword_args = []
+        legal_keyword_args.append("extended")
+        legal_keyword_args.append("default_values")
+        super()._init_keyword_args(legal_keyword_args, **kwargs)
 
     @property
     def extended(self):
-        return list(self._extended)
-    
+        return list(self.extended_)
+
     @extended.setter
     def extended(self, elements):
-        if elements == None:
+        if elements is None:
             elements = []
-        for e in self._extended:
-            e._stereotypesHolder._stereotypes.remove(self)
-        self._extended = []
-        if isCMetaclass(elements):
-            extendedType = CMetaclass
+        for e in self.extended_:
+            e.stereotypes_holder.stereotypes_.remove(self)
+        self.extended_ = []
+        if is_cmetaclass(elements):
+            extended_type = CMetaclass
             elements = [elements]
-        elif isCAssociation(elements):
-            extendedType = CAssociation
+        elif is_cassociation(elements):
+            extended_type = CAssociation
             elements = [elements]
         elif not isinstance(elements, list):
             raise CException(f"extended requires a list or a metaclass as input")
         else:
-            extendedType = _determineExtendedTypeOfList(elements)
-    
+            extended_type = _determine_extended_type_of_list(elements)
+
         for e in elements:
-            if extendedType == CMetaclass:
-                checkIsCMetaclass(e)
-            elif extendedType == CAssociation:
-                checkIsCAssociation(e)
+            if extended_type == CMetaclass:
+                check_is_cmetaclass(e)
+            elif extended_type == CAssociation:
+                check_is_cassociation(e)
             else:
                 raise CException(f"type of extend element incompatible: '{e!s}'")
-            checkNamedElementIsNotDeleted(e)
-            if e in self._extended:
+            check_named_element_is_not_deleted(e)
+            if e in self.extended_:
                 raise CException(f"'{e.name!s}' is already extended by stereotype '{self.name!s}'")
-            self._extended.append(e)
-            e._stereotypesHolder._stereotypes.append(self)
-        
-    @property
-    def extendedInstances(self):
-        return list(self._extendedInstances)
+            self.extended_.append(e)
+            e.stereotypes_holder.stereotypes_.append(self)
 
     @property
-    def allExtendedInstances(self):
-        allInstances = list(self._extendedInstances)
-        for scl in self.allSubclasses:
-            for cl in scl._extendedInstances:
-                allInstances.append(cl)
-        return allInstances
+    def extended_instances(self):
+        return list(self.extended_instances_)
+
+    @property
+    def all_extended_instances(self):
+        all_instances = list(self.extended_instances_)
+        for scl in self.all_subclasses:
+            for cl in scl.extended_instances_:
+                all_instances.append(cl)
+        return all_instances
 
     def delete(self):
-        if self._isDeleted == True:
+        if self.is_deleted:
             return
-        for e in self._extended:
-            e._stereotypesHolder._stereotypes.remove(self)
-        self._extended = []
+        for e in self.extended_:
+            e.stereotypes_holder.stereotypes_.remove(self)
+        self.extended_ = []
         super().delete()
-        
-    def _updateDefaultValuesOfClassifier(self, attribute = None):
-        allClasses = [self] + list(self.allSubclasses)
-        for sc in allClasses:
-            for i in sc._extendedInstances:
-                attrItems = self._attributes.items()
-                if attribute != None:
-                    attrItems = {attribute._name: attribute}.items()
-                for attrName, attr in attrItems:
-                    if attr.default != None:
-                        if i.getTaggedValue(attrName, self) == None:
-                            i.setTaggedValue(attrName, attr.default, self)
 
-    def _removeAttributeValuesOfClassifier(self, attributesToKeep):
-        for i in self._extendedInstances:
-            for attrName in self.attributeNames:
-                if not attrName in attributesToKeep:
-                    i.deleteTaggedValue(attrName, self)
+    def update_default_values_of_classifier(self, attribute=None):
+        all_classes = [self] + list(self.all_subclasses)
+        for sc in all_classes:
+            for i in sc.extended_instances_:
+                attr_items = self.attributes_.items()
+                if attribute is not None:
+                    attr_items = {attribute.name_: attribute}.items()
+                for attrName, attr in attr_items:
+                    if attr.default is not None:
+                        if i.get_tagged_value(attrName, self) is None:
+                            i.set_tagged_value(attrName, attr.default, self)
 
-    def isMetaclassExtendedByThisStereotype(self, metaclass):
-        if metaclass in self._extended:
+    def _remove_attribute_values_of_classifier(self, attributes_to_keep):
+        for i in self.extended_instances_:
+            for attrName in self.attribute_names:
+                if attrName not in attributes_to_keep:
+                    i.delete_tagged_value(attrName, self)
+
+    def is_metaclass_extended_by_this_stereotype(self, metaclass):
+        if metaclass in self.extended_:
             return True
-        for mcSuperclass in metaclass._getAllSuperclasses():
-            if mcSuperclass in self._extended:
+        for mcSuperclass in metaclass.get_all_superclasses():
+            if mcSuperclass in self.extended_:
                 return True
         return False
 
-    def isElementExtendedByStereotype(self, element):
-        if isCClass(element):
-            if self.isMetaclassExtendedByThisStereotype(element.metaclass):
+    def is_element_extended_by_stereotype(self, element):
+        if is_cclass(element):
+            if self.is_metaclass_extended_by_this_stereotype(element.metaclass):
                 return True
-            for superclass in self._getAllSuperclasses():
-                if superclass.isMetaclassExtendedByThisStereotype(element.metaclass):
+            for superclass in self.get_all_superclasses():
+                if superclass.is_metaclass_extended_by_this_stereotype(element.metaclass):
                     return True
             return False
-        elif isCLink(element):
+        elif is_clink(element):
             if element.association in self.extended:
                 return True
-            for superclass in self._getAllSuperclasses():
+            for superclass in self.get_all_superclasses():
                 if element.association in superclass.extended:
                     return True
             return False
         raise CException("element is neither a metaclass nor an association")
 
-    def association(self, target, descriptor = None, **kwargs):
+    def association(self, target, descriptor=None, **kwargs):
         if not isinstance(target, CStereotype):
             raise CException(f"stereotype '{self!s}' is not compatible with association target '{target!s}'")
         return super(CStereotype, self).association(target, descriptor, **kwargs)
 
-    def _computeConnected(self, context):
-        super()._computeConnected(context)
-        if context.processStereotypes == False:
+    def compute_connected(self, context):
+        super().compute_connected(context)
+        if not context.process_stereotypes:
             return
         connected = []
         for e in self.extended:
-            if not e in context.stopElementsExclusive:
+            if e not in context.stop_elements_exclusive:
                 connected.append(e)
-        self._appendConnected(context, connected)
+        self.append_connected(context, connected)
 
-    def _getAllExtendedElements(self):
+    def _get_all_extended_elements(self):
         result = []
-        for cl in self.classPath:
+        for cl in self.class_path:
             for extendedElement in cl.extended:
-                if not extendedElement in result:
+                if extendedElement not in result:
                     result.append(extendedElement)
         return result
 
-    def _getDefaultValueClassPath(self):
+    def _get_default_value_class_path(self):
         result = []
-        for extendedElement in self._getAllExtendedElements():
-            if not isCMetaclass(extendedElement):
+        for extendedElement in self._get_all_extended_elements():
+            if not is_cmetaclass(extendedElement):
                 raise CException(f"default values can only be used on a stereotype that extends metaclasses")
-            for mcl in extendedElement.classPath:
-                if not mcl in result:
+            for mcl in extendedElement.class_path:
+                if mcl not in result:
                     result.append(mcl)
         return result
 
     @property
-    def defaultValues(self):
-        if self._isDeleted:
+    def default_values(self):
+        if self.is_deleted:
             raise CException(f"can't get default values on deleted stereotype")
-        classPath = self._getDefaultValueClassPath()
-        return _getValues(classPath, self._defaultValues)
+        class_path = self._get_default_value_class_path()
+        return get_var_values(class_path, self.default_values_)
 
-    @defaultValues.setter
-    def defaultValues(self, newValues):
-        if self._isDeleted:
+    @default_values.setter
+    def default_values(self, new_values):
+        if self.is_deleted:
             raise CException(f"can't set default values on deleted stereotype")
-        classPath = self._getDefaultValueClassPath()
-        if len(classPath) == 0:
+        class_path = self._get_default_value_class_path()
+        if len(class_path) == 0:
             raise CException(f"default values can only be used on a stereotype that extends metaclasses")
-        _setValues(self, newValues, ValueKind.DEFAULT_VALUE)
+        set_var_values(self, new_values, VarValueKind.DEFAULT_VALUE)
 
-    def getDefaultValue(self, attributeName, classifier = None):
-        if self._isDeleted:
-            raise CException(f"can't get default value '{attributeName!s}' on deleted stereotype")
-        classPath = self._getDefaultValueClassPath()
-        if len(classPath) == 0:
+    def get_default_value(self, attribute_name, classifier=None):
+        if self.is_deleted:
+            raise CException(f"can't get default value '{attribute_name!s}' on deleted stereotype")
+        class_path = self._get_default_value_class_path()
+        if len(class_path) == 0:
             raise CException(f"default values can only be used on a stereotype that extends metaclasses")
-        return _getValue(self, classPath, self._defaultValues, attributeName, ValueKind.DEFAULT_VALUE, classifier)
-             
-    def deleteDefaultValue(self, attributeName, classifier = None):
-        if self._isDeleted:
-            raise CException(f"can't delete default value '{attributeName!s}' on deleted stereotype")
-        classPath = self._getDefaultValueClassPath()
-        if len(classPath) == 0:
-            raise CException(f"default values can only be used on a stereotype that extends metaclasses")
-        return _deleteValue(self, classPath, self._defaultValues, attributeName, ValueKind.DEFAULT_VALUE, classifier)
+        return get_var_value(self, class_path, self.default_values_, attribute_name, VarValueKind.DEFAULT_VALUE,
+                             classifier)
 
-    def setDefaultValue(self, attributeName, value, classifier = None):
-        if self._isDeleted:
-            raise CException(f"can't set default value '{attributeName!s}' on deleted stereotype")
-        classPath = self._getDefaultValueClassPath()
-        if len(classPath) == 0:
+    def delete_default_value(self, attribute_name, classifier=None):
+        if self.is_deleted:
+            raise CException(f"can't delete default value '{attribute_name!s}' on deleted stereotype")
+        class_path = self._get_default_value_class_path()
+        if len(class_path) == 0:
             raise CException(f"default values can only be used on a stereotype that extends metaclasses")
-        _setValue(self, classPath, self._defaultValues, attributeName, value, ValueKind.DEFAULT_VALUE, classifier)
+        return delete_var_value(self, class_path, self.default_values_, attribute_name, VarValueKind.DEFAULT_VALUE,
+                                classifier)
+
+    def set_default_value(self, attribute_name, value, classifier=None):
+        if self.is_deleted:
+            raise CException(f"can't set default value '{attribute_name!s}' on deleted stereotype")
+        class_path = self._get_default_value_class_path()
+        if len(class_path) == 0:
+            raise CException(f"default values can only be used on a stereotype that extends metaclasses")
+        set_var_value(self, class_path, self.default_values_, attribute_name, value, VarValueKind.DEFAULT_VALUE,
+                      classifier)

@@ -5,7 +5,7 @@ from nose.tools import ok_, eq_
 from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
 
-from codeableModels import CMetaclass, CStereotype, CClass, CObject, CAttribute, CException, CEnum
+from codeable_models import CMetaclass, CStereotype, CClass, CObject, CAttribute, CException, CEnum
 
 class TestStereotypeInheritance():
     def setUp(self):
@@ -15,8 +15,8 @@ class TestStereotypeInheritance():
         t = CStereotype("T")
         eq_(set(t.superclasses), set())
         eq_(set(t.subclasses), set())
-        eq_(set(t.allSuperclasses), set())
-        eq_(set(t.allSubclasses), set())
+        eq_(set(t.all_superclasses), set())
+        eq_(set(t.all_subclasses), set())
 
     def testStereotypeSuperclassesEmptyInput(self):
         m1 = CStereotype("M1", superclasses = [])
@@ -38,33 +38,33 @@ class TestStereotypeInheritance():
 
         eq_(set(t.superclasses), set())
         eq_(set(t.subclasses), set([m1, m2, b3]))
-        eq_(set(t.allSuperclasses), set())
-        eq_(set(t.allSubclasses), set([m1, m2, b1, b2, b3]))
+        eq_(set(t.all_superclasses), set())
+        eq_(set(t.all_subclasses), set([m1, m2, b1, b2, b3]))
 
         eq_(set(m1.superclasses), set([t]))
         eq_(set(m1.subclasses), set([b1, b2]))
-        eq_(set(m1.allSuperclasses), set([t]))
-        eq_(set(m1.allSubclasses), set([b1, b2]))
+        eq_(set(m1.all_superclasses), set([t]))
+        eq_(set(m1.all_subclasses), set([b1, b2]))
 
         eq_(set(m2.superclasses), set([t]))
         eq_(set(m2.subclasses), set())
-        eq_(set(m2.allSuperclasses), set([t]))
-        eq_(set(m2.allSubclasses), set())
+        eq_(set(m2.all_superclasses), set([t]))
+        eq_(set(m2.all_subclasses), set())
 
         eq_(set(b1.superclasses), set([m1]))
         eq_(set(b1.subclasses), set())
-        eq_(set(b1.allSuperclasses), set([t, m1]))
-        eq_(set(b1.allSubclasses), set())
+        eq_(set(b1.all_superclasses), set([t, m1]))
+        eq_(set(b1.all_subclasses), set())
 
         eq_(set(b2.superclasses), set([m1]))
         eq_(set(b2.subclasses), set())
-        eq_(set(b2.allSuperclasses), set([t, m1]))
-        eq_(set(b2.allSubclasses), set())
+        eq_(set(b2.all_superclasses), set([t, m1]))
+        eq_(set(b2.all_subclasses), set())
 
         eq_(set(b3.superclasses), set([t]))
         eq_(set(b3.subclasses), set())
-        eq_(set(b3.allSuperclasses), set([t]))
-        eq_(set(b3.allSubclasses), set())
+        eq_(set(b3.all_superclasses), set([t]))
+        eq_(set(b3.all_subclasses), set())
 
     def testStereotypeInheritanceDoubleAssignment(self):
         m = CMetaclass("M")
@@ -74,7 +74,7 @@ class TestStereotypeInheritance():
             exceptionExpected_()
         except CException as e: 
             eq_("'T' is already a superclass of 'S1'", e.value)
-        s1 = m.getStereotype("S1")
+        s1 = m.get_stereotype("S1")
         eq_(s1.name, "S1")
         eq_(set(s1.superclasses), set([t]))
 
@@ -91,33 +91,33 @@ class TestStereotypeInheritance():
         eq_(t.name, None)
         eq_(set(t.superclasses), set())
         eq_(set(t.subclasses), set())
-        eq_(set(t.allSuperclasses), set())
-        eq_(set(t.allSubclasses), set())
+        eq_(set(t.all_superclasses), set())
+        eq_(set(t.all_subclasses), set())
 
         eq_(set(m1.superclasses), set())
         eq_(set(m1.subclasses), set([b1, b2]))
-        eq_(set(m1.allSuperclasses), set())
-        eq_(set(m1.allSubclasses), set([b1, b2]))
+        eq_(set(m1.all_superclasses), set())
+        eq_(set(m1.all_subclasses), set([b1, b2]))
 
         eq_(set(m2.superclasses), set())
         eq_(set(m2.subclasses), set())
-        eq_(set(m2.allSuperclasses), set())
-        eq_(set(m2.allSubclasses), set())
+        eq_(set(m2.all_superclasses), set())
+        eq_(set(m2.all_subclasses), set())
 
         eq_(set(b1.superclasses), set([m1]))
         eq_(set(b1.subclasses), set())
-        eq_(set(b1.allSuperclasses), set([m1]))
-        eq_(set(b1.allSubclasses), set())
+        eq_(set(b1.all_superclasses), set([m1]))
+        eq_(set(b1.all_subclasses), set())
 
         eq_(set(b2.superclasses), set([m1]))
         eq_(set(b2.subclasses), set())
-        eq_(set(b2.allSuperclasses), set([m1]))
-        eq_(set(b2.allSubclasses), set())
+        eq_(set(b2.all_superclasses), set([m1]))
+        eq_(set(b2.all_subclasses), set())
 
         eq_(set(b3.superclasses), set())
         eq_(set(b3.subclasses), set())
-        eq_(set(b3.allSuperclasses), set())
-        eq_(set(b3.allSubclasses), set())
+        eq_(set(b3.all_superclasses), set())
+        eq_(set(b3.all_subclasses), set())
 
     def testStereotypeInheritanceDeleteInnerClass(self):
         t = CStereotype("T")
@@ -131,33 +131,33 @@ class TestStereotypeInheritance():
 
         eq_(set(t.superclasses), set())
         eq_(set(t.subclasses), set([m2, b3]))
-        eq_(set(t.allSuperclasses), set())
-        eq_(set(t.allSubclasses), set([m2, b3]))
+        eq_(set(t.all_superclasses), set())
+        eq_(set(t.all_subclasses), set([m2, b3]))
 
         eq_(set(m1.superclasses), set())
         eq_(set(m1.subclasses), set())
-        eq_(set(m1.allSuperclasses), set())
-        eq_(set(m1.allSubclasses), set())
+        eq_(set(m1.all_superclasses), set())
+        eq_(set(m1.all_subclasses), set())
 
         eq_(set(m2.superclasses), set([t]))
         eq_(set(m2.subclasses), set())
-        eq_(set(m2.allSuperclasses), set([t]))
-        eq_(set(m2.allSubclasses), set())
+        eq_(set(m2.all_superclasses), set([t]))
+        eq_(set(m2.all_subclasses), set())
 
         eq_(set(b1.superclasses), set())
         eq_(set(b1.subclasses), set())
-        eq_(set(b1.allSuperclasses), set())
-        eq_(set(b1.allSubclasses), set())
+        eq_(set(b1.all_superclasses), set())
+        eq_(set(b1.all_subclasses), set())
 
         eq_(set(b2.superclasses), set())
         eq_(set(b2.subclasses), set())
-        eq_(set(b2.allSuperclasses), set())
-        eq_(set(b2.allSubclasses), set())
+        eq_(set(b2.all_superclasses), set())
+        eq_(set(b2.all_subclasses), set())
 
         eq_(set(b3.superclasses), set([t]))
         eq_(set(b3.subclasses), set())
-        eq_(set(b3.allSuperclasses), set([t]))
-        eq_(set(b3.allSubclasses), set())
+        eq_(set(b3.all_superclasses), set([t]))
+        eq_(set(b3.all_subclasses), set())
 
     def testStereotypeSuperclassesReassignment(self):
         t = CStereotype("T")
@@ -173,33 +173,33 @@ class TestStereotypeInheritance():
 
         eq_(set(t.superclasses), set())
         eq_(set(t.subclasses), set([m2, b3]))
-        eq_(set(t.allSuperclasses), set())
-        eq_(set(t.allSubclasses), set([m2, b3]))
+        eq_(set(t.all_superclasses), set())
+        eq_(set(t.all_subclasses), set([m2, b3]))
 
         eq_(set(m1.superclasses), set())
         eq_(set(m1.subclasses), set())
-        eq_(set(m1.allSuperclasses), set())
-        eq_(set(m1.allSubclasses), set())
+        eq_(set(m1.all_superclasses), set())
+        eq_(set(m1.all_subclasses), set())
 
         eq_(set(m2.superclasses), set([t]))
         eq_(set(m2.subclasses), set())
-        eq_(set(m2.allSuperclasses), set([t]))
-        eq_(set(m2.allSubclasses), set())
+        eq_(set(m2.all_superclasses), set([t]))
+        eq_(set(m2.all_subclasses), set())
 
         eq_(set(b1.superclasses), set())
         eq_(set(b1.subclasses), set())
-        eq_(set(b1.allSuperclasses), set())
-        eq_(set(b1.allSubclasses), set())
+        eq_(set(b1.all_superclasses), set())
+        eq_(set(b1.all_subclasses), set())
 
         eq_(set(b2.superclasses), set())
         eq_(set(b2.subclasses), set())
-        eq_(set(b2.allSuperclasses), set())
-        eq_(set(b2.allSubclasses), set())
+        eq_(set(b2.all_superclasses), set())
+        eq_(set(b2.all_subclasses), set())
 
         eq_(set(b3.superclasses), set([t]))
         eq_(set(b3.subclasses), set())
-        eq_(set(b3.allSuperclasses), set([t]))
-        eq_(set(b3.allSubclasses), set())
+        eq_(set(b3.all_superclasses), set([t]))
+        eq_(set(b3.all_subclasses), set())
 
     def testStereotypeMultipleInheritance(self):
         t1 = CStereotype("T1")
@@ -213,43 +213,43 @@ class TestStereotypeInheritance():
 
         eq_(set(t1.superclasses), set())
         eq_(set(t1.subclasses), set([m1]))
-        eq_(set(t1.allSuperclasses), set())
-        eq_(set(t1.allSubclasses), set([m1, b1, b2, b3]))
+        eq_(set(t1.all_superclasses), set())
+        eq_(set(t1.all_subclasses), set([m1, b1, b2, b3]))
 
         eq_(set(t2.superclasses), set())
         eq_(set(t2.subclasses), set([m2]))
-        eq_(set(t2.allSuperclasses), set())
-        eq_(set(t2.allSubclasses), set([m2, b3, b2]))
+        eq_(set(t2.all_superclasses), set())
+        eq_(set(t2.all_subclasses), set([m2, b3, b2]))
 
         eq_(set(t3.superclasses), set())
         eq_(set(t3.subclasses), set([m2, m1]))
-        eq_(set(t3.allSuperclasses), set())
-        eq_(set(t3.allSubclasses), set([m2, m1, b1, b2, b3]))
+        eq_(set(t3.all_superclasses), set())
+        eq_(set(t3.all_subclasses), set([m2, m1, b1, b2, b3]))
 
         eq_(set(m1.superclasses), set([t1, t3]))
         eq_(set(m1.subclasses), set([b1, b2, b3]))
-        eq_(set(m1.allSuperclasses), set([t1, t3]))
-        eq_(set(m1.allSubclasses), set([b1, b2, b3]))
+        eq_(set(m1.all_superclasses), set([t1, t3]))
+        eq_(set(m1.all_subclasses), set([b1, b2, b3]))
 
         eq_(set(m2.superclasses), set([t2, t3]))
         eq_(set(m2.subclasses), set([b2, b3]))
-        eq_(set(m2.allSuperclasses), set([t2, t3]))
-        eq_(set(m2.allSubclasses), set([b2, b3]))
+        eq_(set(m2.all_superclasses), set([t2, t3]))
+        eq_(set(m2.all_subclasses), set([b2, b3]))
 
         eq_(set(b1.superclasses), set([m1]))
         eq_(set(b1.subclasses), set())
-        eq_(set(b1.allSuperclasses), set([m1, t1, t3]))
-        eq_(set(b1.allSubclasses), set())
+        eq_(set(b1.all_superclasses), set([m1, t1, t3]))
+        eq_(set(b1.all_subclasses), set())
 
         eq_(set(b2.superclasses), set([m1, m2]))
         eq_(set(b2.subclasses), set())
-        eq_(set(b2.allSuperclasses), set([m1, m2, t1, t2, t3]))
-        eq_(set(b2.allSubclasses), set())
+        eq_(set(b2.all_superclasses), set([m1, m2, t1, t2, t3]))
+        eq_(set(b2.all_subclasses), set())
 
         eq_(set(b3.superclasses), set([m1, m2]))
         eq_(set(b3.subclasses), set())
-        eq_(set(b3.allSuperclasses), set([m1, m2, t1, t2, t3]))
-        eq_(set(b3.allSubclasses), set())       
+        eq_(set(b3.all_superclasses), set([m1, m2, t1, t2, t3]))
+        eq_(set(b3.all_subclasses), set())
 
     def testStereotypeAsWrongTypeOfSuperclass(self):
         t = CStereotype("S") 
@@ -257,12 +257,12 @@ class TestStereotypeInheritance():
             CMetaclass("M", superclasses = [t])
             exceptionExpected_()
         except CException as e: 
-            ok_(re.match("^cannot add superclass 'S' to 'M': not of type([ <a-zA-Z.']+)CMetaclass'>$", e.value))
+            ok_(re.match("^cannot add superclass 'S' to 'M': not of type([_ <a-zA-Z.']+)CMetaclass'>$", e.value))
         try:
             CClass(CMetaclass(), "C", superclasses = [t])
             exceptionExpected_()
         except CException as e: 
-            ok_(re.match("^cannot add superclass 'S' to 'C': not of type([ <a-zA-Z.']+)CClass'>$", e.value))
+            ok_(re.match("^cannot add superclass 'S' to 'C': not of type([_ <a-zA-Z.']+)CClass'>$", e.value))
 
     def testExtendedClassesOfInheritingStereotypes_SuperclassHasNone(self):
         m1 = CMetaclass()
@@ -339,20 +339,20 @@ class TestStereotypeInheritance():
         c4 = CStereotype("C4", superclasses = [c2])
         c5 = CStereotype("C5", superclasses = [])
 
-        eq_(c1.hasSuperclass(c2), False)
-        eq_(c5.hasSuperclass(c2), False)
-        eq_(c1.hasSuperclass(None), False)
-        eq_(c5.hasSuperclass(None), False)
-        eq_(c2.hasSuperclass(c1), True)
-        eq_(c3.hasSuperclass(c2), True)
-        eq_(c3.hasSuperclass(c2), True)  
-        eq_(c4.hasSuperclass(c2), True)
-        eq_(c3.hasSubclass(c2), False)
-        eq_(c3.hasSubclass(None), False)
-        eq_(c5.hasSubclass(c2), False)
-        eq_(c5.hasSubclass(None), False)
-        eq_(c1.hasSubclass(c3), True)
-        eq_(c1.hasSubclass(c2), True)
+        eq_(c1.has_superclass(c2), False)
+        eq_(c5.has_superclass(c2), False)
+        eq_(c1.has_superclass(None), False)
+        eq_(c5.has_superclass(None), False)
+        eq_(c2.has_superclass(c1), True)
+        eq_(c3.has_superclass(c2), True)
+        eq_(c3.has_superclass(c2), True)
+        eq_(c4.has_superclass(c2), True)
+        eq_(c3.has_subclass(c2), False)
+        eq_(c3.has_subclass(None), False)
+        eq_(c5.has_subclass(c2), False)
+        eq_(c5.has_subclass(None), False)
+        eq_(c1.has_subclass(c3), True)
+        eq_(c1.has_subclass(c2), True)
 
     def testStereotypeUnknownNonPositionalArgument(self):
         t = CStereotype("T")
@@ -360,7 +360,7 @@ class TestStereotypeInheritance():
             CStereotype("ST", superclass = t)
             exceptionExpected_()
         except CException as e: 
-            eq_("unknown keyword argument 'superclass', should be one of: ['extended', 'defaultValues', 'attributes', 'superclasses', 'bundles']", e.value)
+            eq_("unknown keyword argument 'superclass', should be one of: ['extended', 'default_values', 'attributes', 'superclasses', 'bundles']", e.value)
 
     def testSuperStereotypesThatAreDeleted(self):
         s1 = CStereotype("S1")

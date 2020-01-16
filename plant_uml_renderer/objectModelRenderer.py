@@ -2,10 +2,10 @@
 # import shutil
 # from subprocess import call
 from codeable_models import CException
-from codeable_models.internal.commons import isCEnum, isCClassifier, setKeywordArgs, isCClass, isCObject
+from codeable_models.internal.commons import is_cenum, is_cclassifier, set_keyword_args, is_cclass, is_cobject
 # from enum import Enum 
-# from codeableModels import CNamedElement
-from plantUMLRenderer.modelRenderer import RenderingContext, ModelRenderer
+# from codeable_models import CNamedElement
+from plant_uml_renderer.modelRenderer import RenderingContext, ModelRenderer
 
 class ObjectRenderingContext(RenderingContext):
     def __init__(self):
@@ -21,12 +21,12 @@ class ObjectModelRenderer(ModelRenderer):
         objName = object.name
         if objName == None:
             objName = ""
-        if isCClass(object):
-            object = object.classObject
+        if is_cclass(object):
+            object = object.class_object
 
         sterotypeString = ""
-        if object._classObjectClass != None:
-            sterotypeString = self.renderStereotypes(object._classObjectClass, object._classObjectClass.stereotypeInstances)
+        if object.class_object_class_ != None:
+            sterotypeString = self.renderStereotypes(object.class_object_class_, object.class_object_class_.stereotype_instances)
 
         clName = object.classifier.name
         if clName == None:
@@ -51,7 +51,7 @@ class ObjectModelRenderer(ModelRenderer):
         elif association.composition:
             arrow = " *-- "
 
-        sterotypeString = self.renderStereotypes(link, link.stereotypeInstances)
+        sterotypeString = self.renderStereotypes(link, link.stereotype_instances)
 
         label = ""
         if sterotypeString != "":
@@ -69,18 +69,18 @@ class ObjectModelRenderer(ModelRenderer):
         context.addLine(self.getNodeID(context, link.source) + arrow + self.getNodeID(context, link.target) + label)
 
     def renderLinks(self, context, obj, objList):
-        for classifier in obj.classifier.classPath:
+        for classifier in obj.classifier.class_path:
             for association in classifier.associations:
-                links = [l for l in obj.linkObjects if l.association == association]
+                links = [l for l in obj.link_objects if l.association == association]
                 for link in links:
                     if link in context.excludedLinks:
                         continue
                     source = link.source
-                    if isCClass(source):
-                        source = source.classObject
+                    if is_cclass(source):
+                        source = source.class_object
                     target = link.target
-                    if isCClass(target):
-                        target = target.classObject
+                    if is_cclass(target):
+                        target = target.class_object
                     if source != obj:
                         # only render links outgoing from this object
                         continue
@@ -92,10 +92,10 @@ class ObjectModelRenderer(ModelRenderer):
     def renderObjects(self, context, objects):
         objList = []
         for obj in objects:
-            if isCClass(obj):
+            if is_cclass(obj):
                 # use class objects and not classes in this renderer
-                objList.extend([obj._classObject])
-            elif isCObject(obj):
+                objList.extend([obj.class_object_])
+            elif is_cobject(obj):
                 objList.extend([obj])
             else:
                 raise CException(f"'{obj!s}' handed to object renderer is no an object or class'")
@@ -106,8 +106,8 @@ class ObjectModelRenderer(ModelRenderer):
 
     def renderObjectModel(self, objectList, **kwargs):
         context = ObjectRenderingContext()
-        setKeywordArgs(context, 
-            ["renderAttributeValues", "renderEmptyAttributes", "renderAssociationNamesWhenNoLabelIsGiven", "excludedLinks"], **kwargs)
+        set_keyword_args(context,
+                         ["renderAttributeValues", "renderEmptyAttributes", "renderAssociationNamesWhenNoLabelIsGiven", "excludedLinks"], **kwargs)
         self.renderStartGraph(context)
         self.renderObjects(context, objectList)
         self.renderEndGraph(context)

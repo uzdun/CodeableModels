@@ -3,7 +3,7 @@ from nose.tools import ok_, eq_
 from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
 
-from codeableModels import CStereotype, CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CAssociation, CBundle
+from codeable_models import CStereotype, CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CAssociation, CBundle
 
 class TestStereotypesOnMetaclasses():
     def setUp(self):
@@ -72,7 +72,7 @@ class TestStereotypesOnMetaclasses():
         eq_(s3.superclasses, [])
         eq_(s2.subclasses, [])
         eq_(s3.attributes, [])
-        eq_(s3.attributeNames, [])
+        eq_(s3.attribute_names, [])
         eq_(s3.extended, [])
         eq_(s3.name, None)
         eq_(s3.bundles, [])

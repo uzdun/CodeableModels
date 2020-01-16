@@ -3,7 +3,7 @@ from nose.tools import ok_, eq_
 from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
 
-from codeableModels import CBundle, CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
+from codeable_models import CBundle, CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
 
 class TestMetaclass():
     def testCreationOfOneMetaclass(self):
@@ -34,7 +34,7 @@ class TestMetaclass():
         eq_(m3.superclasses, [])
         eq_(m2.subclasses, [])
         eq_(m3.attributes, [])
-        eq_(m3.attributeNames, [])
+        eq_(m3.attribute_names, [])
         eq_(m3.stereotypes, [])
         eq_(m3.classes, [])
         eq_(m3.name, None)
@@ -57,29 +57,29 @@ class TestMetaclass():
         
     def testGetClassesByName(self):
         m1 = CMetaclass()
-        eq_(set(m1.getClasses("CL1")), set())
+        eq_(set(m1.get_classes("CL1")), set())
         c1 = CClass(m1, "CL1")
         eq_(m1.classes, [c1])
-        eq_(set(m1.getClasses("CL1")), set([c1]))
+        eq_(set(m1.get_classes("CL1")), set([c1]))
         c2 = CClass(m1, "CL1")
-        eq_(set(m1.getClasses("CL1")), set([c1, c2]))
+        eq_(set(m1.get_classes("CL1")), set([c1, c2]))
         ok_(c1 != c2)
         c3 = CClass(m1, "CL1")
-        eq_(set(m1.getClasses("CL1")), set([c1, c2, c3]))
-        eq_(m1.getClass("CL1"), c1)
+        eq_(set(m1.get_classes("CL1")), set([c1, c2, c3]))
+        eq_(m1.get_class("CL1"), c1)
 
     def testGetStereotypesByName(self):
         m1 = CMetaclass()
-        eq_(set(m1.getStereotypes("S1")), set())
+        eq_(set(m1.get_stereotypes("S1")), set())
         s1 = CStereotype("S1", extended = m1)
         eq_(m1.stereotypes, [s1])
-        eq_(set(m1.getStereotypes("S1")), set([s1]))
+        eq_(set(m1.get_stereotypes("S1")), set([s1]))
         s2 = CStereotype("S1", extended = m1)
-        eq_(set(m1.getStereotypes("S1")), set([s1, s2]))
+        eq_(set(m1.get_stereotypes("S1")), set([s1, s2]))
         ok_(s1 != s2)
         s3 = CStereotype("S1", extended = m1)
-        eq_(set(m1.getStereotypes("S1")), set([s1, s2, s3]))
-        eq_(m1.getStereotype("S1"), s1)
+        eq_(set(m1.get_stereotypes("S1")), set([s1, s2, s3]))
+        eq_(m1.get_stereotype("S1"), s1)
 
     def testStereotypesThatAreDeleted(self):
         s1 = CStereotype("S1")
@@ -100,15 +100,15 @@ class TestMetaclass():
     def testGetConnectedElements_WrongKeywordArg(self):
         m1 = CMetaclass("m1")
         try:
-            m1.getConnectedElements(a = "m1")
+            m1.get_connected_elements(a ="m1")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "unknown keyword argument 'a', should be one of: ['addStereotypes', 'processStereotypes', 'addBundles', 'processBundles', 'stopElementsInclusive', 'stopElementsExclusive']")
+            eq_(e.value, "unknown keyword argument 'a', should be one of: ['add_stereotypes', 'process_stereotypes', 'add_bundles', 'process_bundles', 'stop_elements_inclusive', 'stop_elements_exclusive']")
 
 
     def testGetConnectedElementsEmpty(self):
         m1 = CMetaclass("m1")
-        eq_(set(m1.getConnectedElements()), set([m1]))
+        eq_(set(m1.get_connected_elements()), set([m1]))
 
     m1 = CMetaclass("m1")
     m2 = CMetaclass("m2", superclasses = m1)
@@ -138,54 +138,54 @@ class TestMetaclass():
     allTestElts = [m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, b1, b2, bsub, m14, s1, s2]
 
     @parameterized.expand([
-        (allTestElts, {"processStereotypes": True, "processBundles": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14])),
-        (allTestElts, {"processStereotypes": True, "processBundles": True, "addStereotypes": True, "addBundles": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, b1, b2, bsub, s1, s2])),
-        (allTestElts, {"processStereotypes": True, "processBundles": True, "addBundles": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, b1, b2, bsub])),
-        (allTestElts, {"processStereotypes": True, "processBundles": True, "addStereotypes": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, s1, s2])),
-        ([m1], {"processBundles": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13])),
-        ([m1], {"processBundles": True, "addStereotypes": True, "addBundles": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, b1, b2, bsub, s1, s2])),
-        ([m1], {"processBundles": True, "addBundles": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, b1, b2, bsub])),
-        ([m1], {"processBundles": True, "addStereotypes": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, s1, s2])),
-        ([m7], {"processStereotypes": True}, set([m7, m8, m9, m14])),
-        ([m7], {"processStereotypes": True, "addStereotypes": True, "addBundles": True}, set([m7, m8, m9, m14, b1, b2, s1, s2])),
-        ([m7], {"processStereotypes": True, "addBundles": True}, set([m7, m8, m9, m14, b1, b2])),
-        ([m7], {"processStereotypes": True, "addStereotypes": True}, set([m7, m8, m9, m14, s1, s2])),
+        (allTestElts, {"process_stereotypes": True, "process_bundles": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14])),
+        (allTestElts, {"process_stereotypes": True, "process_bundles": True, "add_stereotypes": True, "add_bundles": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, b1, b2, bsub, s1, s2])),
+        (allTestElts, {"process_stereotypes": True, "process_bundles": True, "add_bundles": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, b1, b2, bsub])),
+        (allTestElts, {"process_stereotypes": True, "process_bundles": True, "add_stereotypes": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, s1, s2])),
+        ([m1], {"process_bundles": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13])),
+        ([m1], {"process_bundles": True, "add_stereotypes": True, "add_bundles": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, b1, b2, bsub, s1, s2])),
+        ([m1], {"process_bundles": True, "add_bundles": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, b1, b2, bsub])),
+        ([m1], {"process_bundles": True, "add_stereotypes": True}, set([m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, s1, s2])),
+        ([m7], {"process_stereotypes": True}, set([m7, m8, m9, m14])),
+        ([m7], {"process_stereotypes": True, "add_stereotypes": True, "add_bundles": True}, set([m7, m8, m9, m14, b1, b2, s1, s2])),
+        ([m7], {"process_stereotypes": True, "add_bundles": True}, set([m7, m8, m9, m14, b1, b2])),
+        ([m7], {"process_stereotypes": True, "add_stereotypes": True}, set([m7, m8, m9, m14, s1, s2])),
         ([m7], {}, set([m7, m8, m9])),
-        ([m7], {"addStereotypes": True, "addBundles": True}, set([m7, m8, m9, b1, b2, s1, s2])),
-        ([m7], {"addBundles": True}, set([m7, m8, m9, b1, b2])),
-        ([m7], {"addStereotypes": True}, set([m7, m8, m9, s1, s2]))])
+        ([m7], {"add_stereotypes": True, "add_bundles": True}, set([m7, m8, m9, b1, b2, s1, s2])),
+        ([m7], {"add_bundles": True}, set([m7, m8, m9, b1, b2])),
+        ([m7], {"add_stereotypes": True}, set([m7, m8, m9, s1, s2]))])
     def testGetConnectedElements(self, testElements, kwargsDict, connectedElementsResult):
         for elt in testElements:
-             eq_(set(elt.getConnectedElements(**kwargsDict)), connectedElementsResult)
+             eq_(set(elt.get_connected_elements(**kwargsDict)), connectedElementsResult)
 
-    def testGetConnectedElements_StopElementsInclusiveWrongTypes(self):
+    def testGetConnectedElements_stop_elements_inclusiveWrongTypes(self):
         m1 = CMetaclass("m1")
         try:
-            m1.getConnectedElements(stopElementsInclusive = "m1")
+            m1.get_connected_elements(stop_elements_inclusive ="m1")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "expected one element or a list of stop elements, but got: 'm1'")
         try:
-            m1.getConnectedElements(stopElementsInclusive = ["m1"])
+            m1.get_connected_elements(stop_elements_inclusive = ["m1"])
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "expected one element or a list of stop elements, but got: '['m1']' with element of wrong type: 'm1'")
 
     @parameterized.expand([
-        ([m1], {"stopElementsExclusive" : [m1]}, set()),
-        ([m1], {"stopElementsInclusive" : [m3, m6]}, set([m1, m2, m3, m4, m5, m6])),
-        ([m1], {"stopElementsExclusive" : [m3, m6]}, set([m1, m2, m4, m5])),
-        ([m1], {"stopElementsInclusive" : [m3, m6], "stopElementsExclusive" : [m3]}, set([m1, m2, m4, m5, m6])),
-        ([m7], {"stopElementsInclusive" : [b2, s2], "stopElementsExclusive" : [b1], "processStereotypes": True, "processBundles": True, "addStereotypes": True, "addBundles": True}, set([m7, b2, s2, m8, m9])),
-        ([m7], {"stopElementsExclusive" : [b1, b2, s2], "processStereotypes": True, "processBundles": True, "addStereotypes": True, "addBundles": True}, set([m7, m8, m9])),
-        ([b2], {"stopElementsInclusive" : [b1, m8, m9], "stopElementsExclusive" : [s1, s2], "processStereotypes": True, "processBundles": True, "addStereotypes": True, "addBundles": True}, set([m7, m10, m11, m12, m8, m9, b1, b2])),
-        ([b2], {"stopElementsInclusive" : [b1, m8, m9], "stopElementsExclusive" : [s1, s2], "processStereotypes": True, "processBundles": True}, set([m7, m10, m11, m12, m8, m9])),
-        ([s1], {"stopElementsInclusive" : [m14, m7], "processStereotypes": True, "processBundles": True, "addStereotypes": True, "addBundles": True}, set([s1, s2, m7, m14])),
-        ([s1], {"stopElementsInclusive" : [m14, m7], "processStereotypes": True, "processBundles": True}, set([m7, m14]))
+        ([m1], {"stop_elements_exclusive" : [m1]}, set()),
+        ([m1], {"stop_elements_inclusive" : [m3, m6]}, set([m1, m2, m3, m4, m5, m6])),
+        ([m1], {"stop_elements_exclusive" : [m3, m6]}, set([m1, m2, m4, m5])),
+        ([m1], {"stop_elements_inclusive" : [m3, m6], "stop_elements_exclusive" : [m3]}, set([m1, m2, m4, m5, m6])),
+        ([m7], {"stop_elements_inclusive" : [b2, s2], "stop_elements_exclusive" : [b1], "process_stereotypes": True, "process_bundles": True, "add_stereotypes": True, "add_bundles": True}, set([m7, b2, s2, m8, m9])),
+        ([m7], {"stop_elements_exclusive" : [b1, b2, s2], "process_stereotypes": True, "process_bundles": True, "add_stereotypes": True, "add_bundles": True}, set([m7, m8, m9])),
+        ([b2], {"stop_elements_inclusive" : [b1, m8, m9], "stop_elements_exclusive" : [s1, s2], "process_stereotypes": True, "process_bundles": True, "add_stereotypes": True, "add_bundles": True}, set([m7, m10, m11, m12, m8, m9, b1, b2])),
+        ([b2], {"stop_elements_inclusive" : [b1, m8, m9], "stop_elements_exclusive" : [s1, s2], "process_stereotypes": True, "process_bundles": True}, set([m7, m10, m11, m12, m8, m9])),
+        ([s1], {"stop_elements_inclusive" : [m14, m7], "process_stereotypes": True, "process_bundles": True, "add_stereotypes": True, "add_bundles": True}, set([s1, s2, m7, m14])),
+        ([s1], {"stop_elements_inclusive" : [m14, m7], "process_stereotypes": True, "process_bundles": True}, set([m7, m14]))
     ])
-    def testGetConnectedElements_StopElementsInclusive(self, testElements, kwargsDict, connectedElementsResult):
+    def testGetConnectedElements_stop_elements_inclusive(self, testElements, kwargsDict, connectedElementsResult):
         for elt in testElements:
-             eq_(set(elt.getConnectedElements(**kwargsDict)), connectedElementsResult)
+             eq_(set(elt.get_connected_elements(**kwargsDict)), connectedElementsResult)
 
 
 if __name__ == "__main__":

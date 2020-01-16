@@ -4,7 +4,7 @@ from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
 import re
 
-from codeableModels import CMetaclass, CClass, CObject, CAttribute, CException, CEnum
+from codeable_models import CMetaclass, CClass, CObject, CAttribute, CException, CEnum
 
 
 class TestMetaClassAttributes():
@@ -14,12 +14,12 @@ class TestMetaClassAttributes():
     def testPrimitiveEmptyInput(self):
         cl = CMetaclass("MCL", attributes = {})
         eq_(len(cl.attributes), 0)
-        eq_(len(cl.attributeNames), 0)
+        eq_(len(cl.attribute_names), 0)
 
     def testPrimitiveNoneInput(self):
         cl = CMetaclass("MCL", attributes = None)
         eq_(len(cl.attributes), 0)
-        eq_(len(cl.attributeNames), 0)
+        eq_(len(cl.attribute_names), 0)
 
     def testPrimitiveTypeAttributes(self):
         cl = CMetaclass("MCL", attributes = {
@@ -29,17 +29,17 @@ class TestMetaClassAttributes():
                 "string": "abc",
                 "list": ["a", "b"]})
         eq_(len(cl.attributes), 5)
-        eq_(len(cl.attributeNames), 5)
+        eq_(len(cl.attribute_names), 5)
 
-        ok_(set(["isBoolean", "intVal", "floatVal", "string", "list"]).issubset(cl.attributeNames))
+        ok_(set(["isBoolean", "intVal", "floatVal", "string", "list"]).issubset(cl.attribute_names))
 
-        a1 = cl.getAttribute("isBoolean")
-        a2 = cl.getAttribute("intVal") 
-        a3 = cl.getAttribute("floatVal")
-        a4 = cl.getAttribute("string")
-        a5 = cl.getAttribute("list")
+        a1 = cl.get_attribute("isBoolean")
+        a2 = cl.get_attribute("intVal")
+        a3 = cl.get_attribute("floatVal")
+        a4 = cl.get_attribute("string")
+        a5 = cl.get_attribute("list")
         ok_(set([a1, a2, a3, a4]).issubset(cl.attributes))
-        eq_(None, cl.getAttribute("X"))
+        eq_(None, cl.get_attribute("X"))
 
         eq_(a1.type, bool)
         eq_(a2.type, int)
@@ -67,7 +67,7 @@ class TestMetaClassAttributes():
 
     def testAttributeGetNameAndClassifier(self):
         m = CMetaclass("M", attributes = {"isBoolean": True})
-        a = m.getAttribute("isBoolean")
+        a = m.get_attribute("isBoolean")
         eq_(a.name, "isBoolean")
         eq_(a.classifier, m)
         m.delete()
@@ -76,11 +76,11 @@ class TestMetaClassAttributes():
 
     def testPrimitiveAttributesNoDefault(self):
         self.mcl.attributes = {"a": bool, "b": int, "c": str, "d": float, "e": list}
-        a1 = self.mcl.getAttribute("a")
-        a2 = self.mcl.getAttribute("b") 
-        a3 = self.mcl.getAttribute("c")
-        a4 = self.mcl.getAttribute("d")
-        a5 = self.mcl.getAttribute("e")
+        a1 = self.mcl.get_attribute("a")
+        a2 = self.mcl.get_attribute("b")
+        a3 = self.mcl.get_attribute("c")
+        a4 = self.mcl.get_attribute("d")
+        a5 = self.mcl.get_attribute("e")
         ok_(set([a1, a2, a3, a4, a5]).issubset(self.mcl.attributes))
         eq_(a1.default, None)
         eq_(a1.type, bool)
@@ -94,9 +94,9 @@ class TestMetaClassAttributes():
         eq_(a5.type, list)
 
     def testGetAttributeNotFound(self):
-        eq_(self.mcl.getAttribute("x"), None)
+        eq_(self.mcl.get_attribute("x"), None)
         self.mcl.attributes = {"a": bool, "b": int, "c": str, "d": float}
-        eq_(self.mcl.getAttribute("x"), None)
+        eq_(self.mcl.get_attribute("x"), None)
 
     def testSameNamedArgumentsCAttributes(self):
         a1 = CAttribute(default = "")
@@ -104,20 +104,20 @@ class TestMetaClassAttributes():
         n1 = "a"
         self.mcl.attributes = {n1: a1, "a": a2}
         eq_(set(self.mcl.attributes), {a2})
-        eq_(self.mcl.attributeNames, ["a"])
+        eq_(self.mcl.attribute_names, ["a"])
         
     def testSameNamedArgumentsDefaults(self):
         n1 = "a"
         self.mcl.attributes = {n1: "", "a": 1}
         ok_(len(self.mcl.attributes), 1)
-        eq_(self.mcl.getAttribute("a").default, 1)
-        eq_(self.mcl.attributeNames, ["a"])
+        eq_(self.mcl.get_attribute("a").default, 1)
+        eq_(self.mcl.attribute_names, ["a"])
 
     def testObjectTypeAttribute(self):
         attrType = CClass(self.mcl, "AttrType")
         attrValue = CObject(attrType, "attrValue")
         self.mcl.attributes = {"attrTypeObj" : attrValue}
-        objAttr = self.mcl.getAttribute("attrTypeObj")
+        objAttr = self.mcl.get_attribute("attrTypeObj")
         attributes = self.mcl.attributes
         eq_(set(attributes), {objAttr})
 
@@ -125,23 +125,23 @@ class TestMetaClassAttributes():
         self.mcl.attributes = {"attrTypeObj" : objAttr, "isBoolean" : boolAttr}
         attributes = self.mcl.attributes
         eq_(set(attributes), {objAttr, boolAttr})
-        eq_(self.mcl.attributeNames, ["attrTypeObj", "isBoolean"])
-        objAttr = self.mcl.getAttribute("attrTypeObj")
+        eq_(self.mcl.attribute_names, ["attrTypeObj", "isBoolean"])
+        objAttr = self.mcl.get_attribute("attrTypeObj")
         eq_(objAttr.type, attrType)
         default = objAttr.default
         ok_(isinstance(default, CObject))
         eq_(default, attrValue)
 
         self.mcl.attributes = {"attrTypeObj" : attrValue, "isBoolean" : boolAttr}
-        eq_(self.mcl.attributeNames, ["attrTypeObj", "isBoolean"])
+        eq_(self.mcl.attribute_names, ["attrTypeObj", "isBoolean"])
         # using the CObject in attributes causes a new CAttribute to be created != objAttr
-        neq_(self.mcl.getAttribute("attrTypeObj"), objAttr)
+        neq_(self.mcl.get_attribute("attrTypeObj"), objAttr)
 
     def testClassTypeAttribute(self):
         attrType = CMetaclass("AttrType")
         attrValue = CClass(attrType, "attrValue")
         self.mcl.attributes = {"attrTypeCl" : attrType}
-        clAttr = self.mcl.getAttribute("attrTypeCl")
+        clAttr = self.mcl.get_attribute("attrTypeCl")
         clAttr.default = attrValue
         attributes = self.mcl.attributes
         eq_(set(attributes), {clAttr})
@@ -150,17 +150,17 @@ class TestMetaClassAttributes():
         self.mcl.attributes = {"attrTypeCl" : clAttr, "isBoolean" : boolAttr}
         attributes = self.mcl.attributes
         eq_(set(attributes), {clAttr, boolAttr})
-        eq_(self.mcl.attributeNames, ["attrTypeCl", "isBoolean"])
-        clAttr = self.mcl.getAttribute("attrTypeCl")
+        eq_(self.mcl.attribute_names, ["attrTypeCl", "isBoolean"])
+        clAttr = self.mcl.get_attribute("attrTypeCl")
         eq_(clAttr.type, attrType)
         default = clAttr.default
         ok_(isinstance(default, CClass))
         eq_(default, attrValue)
 
         self.mcl.attributes = {"attrTypeCl" : attrValue, "isBoolean" : boolAttr}
-        eq_(self.mcl.attributeNames, ["attrTypeCl", "isBoolean"])
+        eq_(self.mcl.attribute_names, ["attrTypeCl", "isBoolean"])
         # using the CClass in attributes causes a new CAttribute to be created != clAttr
-        neq_(self.mcl.getAttribute("attrTypeCl"), clAttr)
+        neq_(self.mcl.get_attribute("attrTypeCl"), clAttr)
 
     def testUseEnumTypeAttribute(self):
         enumValues = ["A", "B", "C"]
@@ -172,8 +172,8 @@ class TestMetaClassAttributes():
         ok_(isinstance(ea1.type, CEnum))
 
         self.mcl.attributes = {"letters1": ea1, "isBool": True, "letters2": ea2}
-        boolAttr = self.mcl.getAttribute("isBool")
-        l1 = self.mcl.getAttribute("letters1")
+        boolAttr = self.mcl.get_attribute("isBool")
+        l1 = self.mcl.get_attribute("letters1")
         eq_(set(self.mcl.attributes), {l1, ea2, boolAttr})
         eq_(l1.default, "A")
         eq_(ea2.default, None)
@@ -189,8 +189,8 @@ class TestMetaClassAttributes():
     def testSetAttributeDefaultValue(self):
         enumObj = CEnum("ABCEnum", values = ["A", "B", "C"])
         self.mcl.attributes = {"letters": enumObj, "b" : bool}
-        l = self.mcl.getAttribute("letters")
-        b = self.mcl.getAttribute("b")
+        l = self.mcl.get_attribute("letters")
+        b = self.mcl.get_attribute("b")
         eq_(l.default, None)
         eq_(b.default, None)
         l.default = "B"
@@ -206,8 +206,8 @@ class TestMetaClassAttributes():
         obj_b = CObject(cl_b, "obj_b")
 
         self.mcl.attributes = {"a": cl_a, "b": obj_b}
-        a = self.mcl.getAttribute("a")
-        b = self.mcl.getAttribute("b")
+        a = self.mcl.get_attribute("a")
+        b = self.mcl.get_attribute("b")
         eq_(a.type, cl_a)
         eq_(a.default, None)
         eq_(b.type, cl_b)
@@ -232,7 +232,7 @@ class TestMetaClassAttributes():
         (testClass, testMetaclass)])
     def testAttributeTypeCheck(self, type, wrongDefault):
         self.mcl.attributes = {"a": type}
-        attr = self.mcl.getAttribute("a")
+        attr = self.mcl.get_attribute("a")
         try:
             attr.default = wrongDefault
             exceptionExpected_()
@@ -268,7 +268,7 @@ class TestMetaClassAttributes():
 
     def testTypeObjectAttributeClassIsNone(self):
         m = CMetaclass("M", attributes = {"ac": None})
-        ac = m.getAttribute("ac")
+        ac = m.get_attribute("ac")
         eq_(ac.default, None)
         eq_(ac.type, None)
 

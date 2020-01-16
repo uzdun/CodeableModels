@@ -26,7 +26,7 @@ For instance, in this case `ecommerceMicroservicesViews` is defined as follows w
 class connected to all other classes that should be rendered: 
 
 ```
-ecommerceMicroservices = CBundle("ecommerceMicroservices", elements = mobileApp.classObject.getConnectedElements())
+ecommerceMicroservices = CBundle("ecommerceMicroservices", elements = mobileApp.class_object.getConnectedElements())
 
 ecommerceMicroservicesViews = [
     ecommerceMicroservices, {}]

@@ -1,22 +1,22 @@
-from codeable_models import CClass, CMetaclass, CBundle, CStereotype
+from codeable_models import CMetaclass, CBundle, CStereotype
 
 # Technology and technology type
 technology = CMetaclass("Technology")
-technologyType = CStereotype("Technology Type", extended = technology)
+technology_type = CStereotype("Technology Type", extended=technology)
 
-programmingLanguageTechType = CStereotype("Programming Language", superclasses = technologyType)
-pythonTechType = CStereotype("Python", superclasses = programmingLanguageTechType)
-javascriptTechType = CStereotype("Javascript", superclasses = programmingLanguageTechType)
-javaTechType = CStereotype("Java", superclasses = programmingLanguageTechType)
-goTechType = CStereotype("Go", superclasses = programmingLanguageTechType)
+programming_language_tech_type = CStereotype("Programming Language", superclasses=technology_type)
+python_tech_type = CStereotype("Python", superclasses=programming_language_tech_type)
+javascript_tech_type = CStereotype("Javascript", superclasses=programming_language_tech_type)
+java_tech_type = CStereotype("Java", superclasses=programming_language_tech_type)
+go_tech_type = CStereotype("Go", superclasses=programming_language_tech_type)
 
-webFrameworkTechType = CStereotype("Web Framework", superclasses = technologyType)
-expressTechType = CStereotype("Express", superclasses = technologyType)
+web_framework_tech_type = CStereotype("Web Framework", superclasses=technology_type)
+express_tech_type = CStereotype("Express", superclasses=technology_type)
 
-messagingMiddlewareTechType = CStereotype("Messaging Middleware", superclasses = technologyType)
-amqpTechType = CStereotype("AMQP", superclasses = messagingMiddlewareTechType)
+messaging_middleware_tech_type = CStereotype("Messaging Middleware", superclasses=technology_type)
+amqp_tech_type = CStereotype("AMQP", superclasses=messaging_middleware_tech_type)
 
 _all = CBundle("_all",
-               elements = technology.get_connected_elements(add_stereotypes = True))
-technologyMetamodelViews = [
+               elements=technology.get_connected_elements(add_stereotypes=True))
+technology_metamodel_views = [
     _all, {}]

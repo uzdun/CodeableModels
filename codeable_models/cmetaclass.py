@@ -1,100 +1,103 @@
 from codeable_models.cclassifier import CClassifier
 from codeable_models.cexception import CException
-from codeable_models.internal.commons import checkIsCClass, setKeywordArgs, checkIsCStereotype, isCStereotype, checkNamedElementIsNotDeleted
+from codeable_models.internal.commons import check_is_cclass
 from codeable_models.internal.stereotype_holders import CStereotypesHolder
+
 
 class CMetaclass(CClassifier):
     def __init__(self, name=None, **kwargs):
-        self._classes = []
-        self._stereotypesHolder = CStereotypesHolder(self)
+        self.classes_ = []
+        self.stereotypes_holder = CStereotypesHolder(self)
         super().__init__(name, **kwargs)
 
-    def _initKeywordArgs(self, legalKeywordArgs = None, **kwargs):
-        if legalKeywordArgs == None:
-            legalKeywordArgs = [] 
-        legalKeywordArgs.append("stereotypes")
-        super()._initKeywordArgs(legalKeywordArgs, **kwargs)
+    def _init_keyword_args(self, legal_keyword_args=None, **kwargs):
+        if legal_keyword_args is None:
+            legal_keyword_args = []
+        legal_keyword_args.append("stereotypes")
+        super()._init_keyword_args(legal_keyword_args, **kwargs)
 
     @property
     def classes(self):
-        return list(self._classes)
+        return list(self.classes_)
 
     @property
-    def allClasses(self):
-        allClasses = list(self._classes)
-        for scl in self.allSubclasses:
-            for cl in scl._classes:
-                allClasses.append(cl)
-        return allClasses
+    def all_classes(self):
+        all_classes = list(self.classes_)
+        for scl in self.all_subclasses:
+            for cl in scl.classes_:
+                all_classes.append(cl)
+        return all_classes
 
-    def getClasses(self, name):
+    def get_classes(self, name):
         return list(cl for cl in self.classes if cl.name == name)
-    def getClass(self, name):
-        l = self.getClasses(name)
-        return None if len(l) == 0 else l[0]
 
-    def getStereotypes(self, name):
+    def get_class(self, name):
+        classes = self.get_classes(name)
+        return None if len(classes) == 0 else classes[0]
+
+    def get_stereotypes(self, name):
         return list(cl for cl in self.stereotypes if cl.name == name)
-    def getStereotype(self, name):
-        l = self.getStereotypes(name)
-        return None if len(l) == 0 else l[0]
-    
-    def _addClass(self, cl):
-        checkIsCClass(cl)
-        if cl in self._classes:
+
+    def get_stereotype(self, name):
+        stereotypes = self.get_stereotypes(name)
+        return None if len(stereotypes) == 0 else stereotypes[0]
+
+    def add_class(self, cl):
+        check_is_cclass(cl)
+        if cl in self.classes_:
             raise CException(f"class '{cl!s}' is already a class of the metaclass '{self!s}'")
-        self._classes.append(cl)
-    
-    def _removeClass(self, cl):
-        if not cl in self._classes:
+        self.classes_.append(cl)
+
+    def remove_class(self, cl):
+        if cl not in self.classes_:
             raise CException(f"can't remove class instance '{cl!s}' from metaclass '{self!s}': not a class instance")
-        self._classes.remove(cl)
+        self.classes_.remove(cl)
 
     def delete(self):
-        if self._isDeleted == True:
+        if self.is_deleted:
             return
-        classesToDelete = list(self._classes)
-        for cl in classesToDelete:
+        classes_to_delete = list(self.classes_)
+        for cl in classes_to_delete:
             cl.delete()
-        self._classes = []
-        for s in self._stereotypesHolder._stereotypes:
-            s._extended.remove(self)
-        self._stereotypesHolder._stereotypes = []
+        self.classes_ = []
+        for s in self.stereotypes_holder.stereotypes_:
+            s.extended_.remove(self)
+        self.stereotypes_holder.stereotypes_ = []
         super().delete()
-        
+
     @property
     def stereotypes(self):
-        return self._stereotypesHolder.stereotypes
-    
+        return self.stereotypes_holder.stereotypes
+
     @stereotypes.setter
     def stereotypes(self, elements):
-        self._stereotypesHolder.stereotypes = elements
+        self.stereotypes_holder.stereotypes = elements
 
-    def _updateDefaultValuesOfClassifier(self, attribute = None):
-        for i in self.allClasses:
-            attrItems = self._attributes.items()
-            if attribute != None:
-                attrItems = {attribute._name: attribute}.items()
-            for attrName, attr in attrItems:
-                if attr.default != None:
-                    if i.getValue(attrName, self) == None:
-                        i.setValue(attrName, attr.default, self)
+    def update_default_values_of_classifier(self, attribute=None):
+        for i in self.all_classes:
+            attr_items = self.attributes_.items()
+            if attribute is not None:
+                attr_items = {attribute.name_: attribute}.items()
+            for attrName, attr in attr_items:
+                if attr.default is not None:
+                    if i.get_value(attrName, self) is None:
+                        i.set_value(attrName, attr.default, self)
 
-    def _removeAttributeValuesOfClassifier(self, attributesToKeep):
-        for i in self.allClasses:
-            for attrName in self.attributeNames:
-                if not attrName in attributesToKeep:
-                    i.deleteValue(attrName, self)
+    def _remove_attribute_values_of_classifier(self, attributes_to_keep):
+        for i in self.all_classes:
+            for attrName in self.attribute_names:
+                if attrName not in attributes_to_keep:
+                    i.delete_value(attrName, self)
 
-    def association(self, target, descriptor = None, **kwargs):
+    def association(self, target, descriptor=None, **kwargs):
         if not isinstance(target, CMetaclass):
             raise CException(f"metaclass '{self!s}' is not compatible with association target '{target!s}'")
         return super(CMetaclass, self).association(target, descriptor, **kwargs)
 
-    def _computeConnected(self, context):
-        super()._computeConnected(context)
+    def compute_connected(self, context):
+        super().compute_connected(context)
         connected = []
         for s in self.stereotypes:
-            if not s in context.stopElementsExclusive:
+            if s not in context.stop_elements_exclusive:
                 connected.append(s)
-        self._appendConnected(context, connected)
+        self.append_connected(context, connected)

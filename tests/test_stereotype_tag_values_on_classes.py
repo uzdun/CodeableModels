@@ -3,14 +3,14 @@ from nose.tools import ok_, eq_
 from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
 
-from codeableModels import CMetaclass, CStereotype, CClass, CObject, CAttribute, CException, CEnum
+from codeable_models import CMetaclass, CStereotype, CClass, CObject, CAttribute, CException, CEnum
 
 class TestStereotypeTagValuesOnClasses():
     def setUp(self):
         self.mcl = CMetaclass("MCL")
         self.st = CStereotype("ST")
         self.mcl.stereotypes = self.st
-        self.cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
+        self.cl = CClass(self.mcl, "C", stereotype_instances = self.st)
 
     def testTaggedValuesOnPrimitiveTypeAttributes(self):
         s = CStereotype("S", attributes = {
@@ -20,59 +20,59 @@ class TestStereotypeTagValuesOnClasses():
                 "string": "abc",
                 "list": ["a", "b"]})
         self.mcl.stereotypes = s
-        cl = CClass(self.mcl, "C", stereotypeInstances = s)
+        cl = CClass(self.mcl, "C", stereotype_instances = s)
 
-        eq_(cl.getTaggedValue("isBoolean"), True)
-        eq_(cl.getTaggedValue("intVal"), 1)
-        eq_(cl.getTaggedValue("floatVal"), 1.1)
-        eq_(cl.getTaggedValue("string"), "abc")
-        eq_(cl.getTaggedValue("list"), ["a", "b"])
+        eq_(cl.get_tagged_value("isBoolean"), True)
+        eq_(cl.get_tagged_value("intVal"), 1)
+        eq_(cl.get_tagged_value("floatVal"), 1.1)
+        eq_(cl.get_tagged_value("string"), "abc")
+        eq_(cl.get_tagged_value("list"), ["a", "b"])
 
-        cl.setTaggedValue("isBoolean", False)
-        cl.setTaggedValue("intVal", 2)
-        cl.setTaggedValue("floatVal", 2.1)
-        cl.setTaggedValue("string", "y")
+        cl.set_tagged_value("isBoolean", False)
+        cl.set_tagged_value("intVal", 2)
+        cl.set_tagged_value("floatVal", 2.1)
+        cl.set_tagged_value("string", "y")
 
-        eq_(cl.getTaggedValue("isBoolean"), False)
-        eq_(cl.getTaggedValue("intVal"), 2)
-        eq_(cl.getTaggedValue("floatVal"), 2.1)
-        eq_(cl.getTaggedValue("string"), "y")
+        eq_(cl.get_tagged_value("isBoolean"), False)
+        eq_(cl.get_tagged_value("intVal"), 2)
+        eq_(cl.get_tagged_value("floatVal"), 2.1)
+        eq_(cl.get_tagged_value("string"), "y")
 
-        cl.setTaggedValue("list", [])
-        eq_(cl.getTaggedValue("list"), [])
-        cl.setTaggedValue("list", [1, 2, 3])
-        eq_(cl.getTaggedValue("list"), [1, 2, 3])
+        cl.set_tagged_value("list", [])
+        eq_(cl.get_tagged_value("list"), [])
+        cl.set_tagged_value("list", [1, 2, 3])
+        eq_(cl.get_tagged_value("list"), [1, 2, 3])
 
     def testAttributeOfTaggedValueUnknown(self):
         try:
-            self.cl.getTaggedValue("x")
+            self.cl.get_tagged_value("x")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'x' unknown for 'C'")
 
         self.mcl.attributes =  {"isBoolean": True, "intVal": 1}
         try:
-            self.cl.setTaggedValue("x", 1)
+            self.cl.set_tagged_value("x", 1)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'x' unknown for 'C'")
 
     def testIntegersAsFloatTaggedValues(self):
         self.st.attributes = {"floatVal": float}
-        self.cl.setTaggedValue("floatVal", 15)
-        eq_(self.cl.getTaggedValue("floatVal"), 15)
+        self.cl.set_tagged_value("floatVal", 15)
+        eq_(self.cl.get_tagged_value("floatVal"), 15)
 
     def testObjectTypeAttributeTaggedValues(self):
         attrType = CClass(self.mcl, "AttrType")
         attrValue = CObject(attrType, "attrValue")
         self.st.attributes = {"attrTypeObj" : attrValue}
-        objAttr = self.st.getAttribute("attrTypeObj")
+        objAttr = self.st.get_attribute("attrTypeObj")
         eq_(objAttr.type, attrType)
-        eq_(self.cl.getTaggedValue("attrTypeObj"), attrValue)
+        eq_(self.cl.get_tagged_value("attrTypeObj"), attrValue)
 
         nonAttrValue = CObject(CClass(self.mcl), "nonAttrValue")
         try:
-            self.cl.setTaggedValue("attrTypeObj", nonAttrValue)
+            self.cl.set_tagged_value("attrTypeObj", nonAttrValue)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "type of 'nonAttrValue' is not matching type of attribute 'attrTypeObj'")
@@ -81,14 +81,14 @@ class TestStereotypeTagValuesOnClasses():
         attrType = CMetaclass("AttrType")
         attrValue = CClass(attrType, "attrValue")
         self.st.attributes = {"attrTypeCl" : attrType}
-        clAttr = self.st.getAttribute("attrTypeCl")
+        clAttr = self.st.get_attribute("attrTypeCl")
         clAttr.default = attrValue
         eq_(clAttr.type, attrType)
-        eq_(self.cl.getTaggedValue("attrTypeCl"), attrValue)
+        eq_(self.cl.get_tagged_value("attrTypeCl"), attrValue)
 
         nonAttrValue = CClass(CMetaclass("MX"), "nonAttrValue")
         try:
-            self.cl.setTaggedValue("attrTypeCl", nonAttrValue)
+            self.cl.set_tagged_value("attrTypeCl", nonAttrValue)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "type of 'nonAttrValue' is not matching type of attribute 'attrTypeCl'")
@@ -99,8 +99,8 @@ class TestStereotypeTagValuesOnClasses():
         self.st.attributes = {
             "attrTypeObj1" : attrType, "attrTypeObj2" : attrValue
         }
-        eq_(self.cl.getTaggedValue("attrTypeObj1"), None)
-        eq_(self.cl.getTaggedValue("attrTypeObj2"), attrValue)
+        eq_(self.cl.get_tagged_value("attrTypeObj1"), None)
+        eq_(self.cl.get_tagged_value("attrTypeObj2"), attrValue)
 
     def testObjectAttributeTaggedValueOfSuperclassType(self):
         attrSuperType = CClass(self.mcl, "AttrSuperType") 
@@ -109,10 +109,10 @@ class TestStereotypeTagValuesOnClasses():
         self.st.attributes = {
             "attrTypeObj1" : attrSuperType, "attrTypeObj2" : attrValue
         }
-        self.cl.setTaggedValue("attrTypeObj1", attrValue)
-        self.cl.setTaggedValue("attrTypeObj2", attrValue)
-        eq_(self.cl.getTaggedValue("attrTypeObj1"), attrValue)
-        eq_(self.cl.getTaggedValue("attrTypeObj2"), attrValue)
+        self.cl.set_tagged_value("attrTypeObj1", attrValue)
+        self.cl.set_tagged_value("attrTypeObj2", attrValue)
+        eq_(self.cl.get_tagged_value("attrTypeObj1"), attrValue)
+        eq_(self.cl.get_tagged_value("attrTypeObj2"), attrValue)
 
     def testTaggedValuesOnAttributesWithNoDefaultValues(self):
         attrType = CClass(self.mcl, "AttrType")
@@ -126,9 +126,9 @@ class TestStereotypeTagValuesOnClasses():
                 "C": attrType,
                 "e": enumType})
         mcl = CMetaclass("M", stereotypes = st)
-        cl = CClass(mcl, "C", stereotypeInstances = st)
+        cl = CClass(mcl, "C", stereotype_instances = st)
         for n in ["b", "i", "f", "s", "l", "C", "e"]:
-            eq_(cl.getTaggedValue(n), None)
+            eq_(cl.get_tagged_value(n), None)
 
     def testTaggedValuesDefinedInConstructor(self):
         objValType = CClass(CMetaclass())
@@ -142,18 +142,18 @@ class TestStereotypeTagValuesOnClasses():
                 "list": ["a", "b"],
                 "obj": objValType})
         mcl = CMetaclass("M", stereotypes = st)
-        cl = CClass(mcl, "C", stereotypeInstances = st, taggedValues = {
+        cl = CClass(mcl, "C", stereotype_instances = st, tagged_values = {
             "isBoolean": False, "intVal": 2, "floatVal": 2.1, 
             "string": "y", "list": [], "obj": objVal})
 
-        eq_(cl.getTaggedValue("isBoolean"), False)
-        eq_(cl.getTaggedValue("intVal"), 2)
-        eq_(cl.getTaggedValue("floatVal"), 2.1)
-        eq_(cl.getTaggedValue("string"), "y")
-        eq_(cl.getTaggedValue("list"), [])
-        eq_(cl.getTaggedValue("obj"), objVal)
+        eq_(cl.get_tagged_value("isBoolean"), False)
+        eq_(cl.get_tagged_value("intVal"), 2)
+        eq_(cl.get_tagged_value("floatVal"), 2.1)
+        eq_(cl.get_tagged_value("string"), "y")
+        eq_(cl.get_tagged_value("list"), [])
+        eq_(cl.get_tagged_value("obj"), objVal)
 
-        eq_(cl.taggedValues, {"isBoolean": False, "intVal": 2, "floatVal": 2.1, 
+        eq_(cl.tagged_values, {"isBoolean": False, "intVal": 2, "floatVal": 2.1,
             "string": "y", "list": [], "obj": objVal})
 
     def testTaggedValuesSetterOverwrite(self):
@@ -161,15 +161,15 @@ class TestStereotypeTagValuesOnClasses():
                 "isBoolean": True, 
                 "intVal": 1})
         mcl = CMetaclass("M", stereotypes = st)
-        cl = CClass(mcl, "C", stereotypeInstances = st, taggedValues = {
+        cl = CClass(mcl, "C", stereotype_instances = st, tagged_values = {
             "isBoolean": False, "intVal": 2})
-        cl.taggedValues = {"isBoolean": True, "intVal": 20}
-        eq_(cl.getTaggedValue("isBoolean"), True)
-        eq_(cl.getTaggedValue("intVal"), 20)
-        eq_(cl.taggedValues, {'isBoolean': True, 'intVal': 20})
-        cl.taggedValues = {}
+        cl.tagged_values = {"isBoolean": True, "intVal": 20}
+        eq_(cl.get_tagged_value("isBoolean"), True)
+        eq_(cl.get_tagged_value("intVal"), 20)
+        eq_(cl.tagged_values, {'isBoolean': True, 'intVal': 20})
+        cl.tagged_values = {}
         # tagged values should not delete existing values
-        eq_(cl.taggedValues, {"isBoolean": True, "intVal": 20})
+        eq_(cl.tagged_values, {"isBoolean": True, "intVal": 20})
 
     def testTaggedValuesSetterWithSuperclass(self):
         sst = CStereotype("SST", attributes = {
@@ -178,24 +178,24 @@ class TestStereotypeTagValuesOnClasses():
                 "isBoolean": True, 
                 "intVal": 1})
         mcl = CMetaclass("M", stereotypes = st)
-        cl = CClass(mcl, "C", stereotypeInstances = st, taggedValues = {
+        cl = CClass(mcl, "C", stereotype_instances = st, tagged_values = {
             "isBoolean": False})
-        eq_(cl.taggedValues, {"isBoolean": False, "intVal": 1, "intVal2": 30})
-        cl.setTaggedValue("intVal", 12, sst)
-        cl.setTaggedValue("intVal", 15, st)
-        cl.setTaggedValue("intVal2", 16, sst)
-        eq_(cl.taggedValues, {"isBoolean": False, "intVal": 15, "intVal2": 16})
-        eq_(cl.getTaggedValue("intVal", sst), 12)
-        eq_(cl.getTaggedValue("intVal", st), 15)
+        eq_(cl.tagged_values, {"isBoolean": False, "intVal": 1, "intVal2": 30})
+        cl.set_tagged_value("intVal", 12, sst)
+        cl.set_tagged_value("intVal", 15, st)
+        cl.set_tagged_value("intVal2", 16, sst)
+        eq_(cl.tagged_values, {"isBoolean": False, "intVal": 15, "intVal2": 16})
+        eq_(cl.get_tagged_value("intVal", sst), 12)
+        eq_(cl.get_tagged_value("intVal", st), 15)
 
     def testTaggedValuesSetterMalformedDescription(self):
         st = CStereotype("S", attributes = {
                 "isBoolean": True, 
                 "intVal": 1})
         mcl = CMetaclass("M", stereotypes = st)
-        cl = CClass(mcl, "C", stereotypeInstances = st)
+        cl = CClass(mcl, "C", stereotype_instances = st)
         try:
-            cl.taggedValues = [1, 2, 3]
+            cl.tagged_values = [1, 2, 3]
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "malformed tagged values description: '[1, 2, 3]'")
@@ -205,16 +205,16 @@ class TestStereotypeTagValuesOnClasses():
         self.st.attributes = {
                 "e1": enumType,
                 "e2": enumType}
-        e2 = self.st.getAttribute("e2")
+        e2 = self.st.get_attribute("e2")
         e2.default = "A"
-        eq_(self.cl.getTaggedValue("e1"), None)
-        eq_(self.cl.getTaggedValue("e2"), "A")
-        self.cl.setTaggedValue("e1", "B")
-        self.cl.setTaggedValue("e2", "C")
-        eq_(self.cl.getTaggedValue("e1"), "B")
-        eq_(self.cl.getTaggedValue("e2"), "C")
+        eq_(self.cl.get_tagged_value("e1"), None)
+        eq_(self.cl.get_tagged_value("e2"), "A")
+        self.cl.set_tagged_value("e1", "B")
+        self.cl.set_tagged_value("e2", "C")
+        eq_(self.cl.get_tagged_value("e1"), "B")
+        eq_(self.cl.get_tagged_value("e2"), "C")
         try:
-            self.cl.setTaggedValue("e1", "X")
+            self.cl.set_tagged_value("e1", "X")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "value 'X' is not element of enumeration")
@@ -224,61 +224,61 @@ class TestStereotypeTagValuesOnClasses():
         self.st.attributes = {
                 "e1": enumType,
                 "e2": enumType}
-        e2 = self.st.getAttribute("e2")
+        e2 = self.st.get_attribute("e2")
         e2.default = "A"
-        eq_(self.cl.getTaggedValue("e1"), None)
-        eq_(self.cl.getTaggedValue("e2"), "A")
+        eq_(self.cl.get_tagged_value("e1"), None)
+        eq_(self.cl.get_tagged_value("e2"), "A")
 
     def testAttributeValueTypeCheckBool1(self):
         self.st.attributes = {"t": bool}
-        cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
+        cl = CClass(self.mcl, "C", stereotype_instances = self.st)
         try:
-            cl.setTaggedValue("t", self.mcl)
+            cl.set_tagged_value("t", self.mcl)
             exceptionExpected_()
         except CException as e: 
             eq_(f"value for attribute 't' is not a known attribute type", e.value)
 
     def testAttributeValueTypeCheckBool2(self):
         self.st.attributes = {"t": bool}
-        cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
+        cl = CClass(self.mcl, "C", stereotype_instances = self.st)
         try:
-            cl.setTaggedValue("t", 1)
+            cl.set_tagged_value("t", 1)
             exceptionExpected_()
         except CException as e: 
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
 
     def testAttributeValueTypeCheckInt(self):
         self.st.attributes = {"t": int}
-        cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
+        cl = CClass(self.mcl, "C", stereotype_instances = self.st)
         try:
-            cl.setTaggedValue("t", True)
+            cl.set_tagged_value("t", True)
             exceptionExpected_()
         except CException as e: 
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
 
     def testAttributeValueTypeCheckFloat(self):
         self.st.attributes = {"t": float}
-        cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
+        cl = CClass(self.mcl, "C", stereotype_instances = self.st)
         try:
-            cl.setTaggedValue("t", True)
+            cl.set_tagged_value("t", True)
             exceptionExpected_()
         except CException as e: 
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
 
     def testAttributeValueTypeCheckStr(self):
         self.st.attributes = {"t": str}
-        cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
+        cl = CClass(self.mcl, "C", stereotype_instances = self.st)
         try:
-            cl.setTaggedValue("t", True)
+            cl.set_tagged_value("t", True)
             exceptionExpected_()
         except CException as e: 
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
 
     def testAttributeValueTypeCheckList(self):
         self.st.attributes = {"t": list}
-        cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
+        cl = CClass(self.mcl, "C", stereotype_instances = self.st)
         try:
-            cl.setTaggedValue("t", True)
+            cl.set_tagged_value("t", True)
             exceptionExpected_()
         except CException as e: 
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
@@ -286,9 +286,9 @@ class TestStereotypeTagValuesOnClasses():
     def testAttributeValueTypeCheckObject(self):
         attrType = CClass(CMetaclass(), "AttrType")
         self.st.attributes = {"t": attrType}
-        cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
+        cl = CClass(self.mcl, "C", stereotype_instances = self.st)
         try:
-            cl.setTaggedValue("t", True)
+            cl.set_tagged_value("t", True)
             exceptionExpected_()
         except CException as e: 
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
@@ -296,9 +296,9 @@ class TestStereotypeTagValuesOnClasses():
     def testAttributeValueTypeCheckEnum(self):
         enumType = CEnum("EnumT", values = ["A", "B", "C"]) 
         self.st.attributes = {"t": enumType}
-        cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
+        cl = CClass(self.mcl, "C", stereotype_instances = self.st)
         try:
-            cl.setTaggedValue("t", True)
+            cl.set_tagged_value("t", True)
             exceptionExpected_()
         except CException as e: 
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
@@ -307,18 +307,18 @@ class TestStereotypeTagValuesOnClasses():
         self.st.attributes = {
                 "isBoolean": True, 
                 "intVal": 15}
-        cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
-        eq_(cl.getTaggedValue("intVal"), 15)
+        cl = CClass(self.mcl, "C", stereotype_instances = self.st)
+        eq_(cl.get_tagged_value("intVal"), 15)
         self.st.attributes = {
                 "isBoolean": False}
-        eq_(cl.getTaggedValue("isBoolean"), True)
+        eq_(cl.get_tagged_value("isBoolean"), True)
         try:
-            cl.getTaggedValue("intVal")
+            cl.get_tagged_value("intVal")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'intVal' unknown for 'C'") 
         try:
-            cl.setTaggedValue("intVal", 1)
+            cl.set_tagged_value("intVal", 1)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'intVal' unknown for 'C'") 
@@ -328,14 +328,14 @@ class TestStereotypeTagValuesOnClasses():
                 "isBoolean": bool, 
                 "intVal": int}
         self.st.attributes = {"isBoolean": bool}
-        eq_(self.cl.getTaggedValue("isBoolean"), None)
+        eq_(self.cl.get_tagged_value("isBoolean"), None)
         try:
-            self.cl.getTaggedValue("intVal")
+            self.cl.get_tagged_value("intVal")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'intVal' unknown for 'C'")    
         try:
-            self.cl.setTaggedValue("intVal", 1)
+            self.cl.set_tagged_value("intVal", 1)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'intVal' unknown for 'C'") 
@@ -344,39 +344,39 @@ class TestStereotypeTagValuesOnClasses():
         self.st.attributes = {
                 "isBoolean": True, 
                 "intVal": 15}
-        cl = CClass(self.mcl, "C", stereotypeInstances = self.st)
-        eq_(cl.getTaggedValue("intVal"), 15)
+        cl = CClass(self.mcl, "C", stereotype_instances = self.st)
+        eq_(cl.get_tagged_value("intVal"), 15)
         try:
-            cl.getTaggedValue("floatVal")
+            cl.get_tagged_value("floatVal")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'floatVal' unknown for 'C'")        
-        cl.setTaggedValue("intVal", 18)
+        cl.set_tagged_value("intVal", 18)
         self.st.attributes = {
                 "isBoolean": False, 
                 "intVal": 19, 
                 "floatVal": 25.1}
-        eq_(cl.getTaggedValue("isBoolean"), True)
-        eq_(cl.getTaggedValue("floatVal"), 25.1)
-        eq_(cl.getTaggedValue("intVal"), 18)
-        cl.setTaggedValue("floatVal", 1.2)
-        eq_(cl.getTaggedValue("floatVal"), 1.2)
+        eq_(cl.get_tagged_value("isBoolean"), True)
+        eq_(cl.get_tagged_value("floatVal"), 25.1)
+        eq_(cl.get_tagged_value("intVal"), 18)
+        cl.set_tagged_value("floatVal", 1.2)
+        eq_(cl.get_tagged_value("floatVal"), 1.2)
 
     def testAttributesOverwriteNoDefaults(self):
         self.st.attributes = {
                 "isBoolean": bool, 
                 "intVal": int}
-        eq_(self.cl.getTaggedValue("isBoolean"), None)   
-        self.cl.setTaggedValue("isBoolean", False)
+        eq_(self.cl.get_tagged_value("isBoolean"), None)
+        self.cl.set_tagged_value("isBoolean", False)
         self.st.attributes = {
                 "isBoolean": bool, 
                 "intVal": int, 
                 "floatVal": float}
-        eq_(self.cl.getTaggedValue("isBoolean"), False)
-        eq_(self.cl.getTaggedValue("floatVal"), None)
-        eq_(self.cl.getTaggedValue("intVal"), None)
-        self.cl.setTaggedValue("floatVal", 1.2)
-        eq_(self.cl.getTaggedValue("floatVal"), 1.2)
+        eq_(self.cl.get_tagged_value("isBoolean"), False)
+        eq_(self.cl.get_tagged_value("floatVal"), None)
+        eq_(self.cl.get_tagged_value("intVal"), None)
+        self.cl.set_tagged_value("floatVal", 1.2)
+        eq_(self.cl.get_tagged_value("floatVal"), 1.2)
 
     def testAttributesDeletedOnSubclass(self):
         self.st.attributes = {
@@ -385,19 +385,19 @@ class TestStereotypeTagValuesOnClasses():
         st2 = CStereotype("S2", attributes = {
                 "isBoolean": False}, superclasses = self.st)
         mcl = CMetaclass("M", stereotypes = st2)
-        cl = CClass(mcl, "C", stereotypeInstances = st2)
+        cl = CClass(mcl, "C", stereotype_instances = st2)
 
-        eq_(cl.getTaggedValue("isBoolean"), False)
-        eq_(cl.getTaggedValue("isBoolean", self.st), True)   
-        eq_(cl.getTaggedValue("isBoolean", st2), False)   
+        eq_(cl.get_tagged_value("isBoolean"), False)
+        eq_(cl.get_tagged_value("isBoolean", self.st), True)
+        eq_(cl.get_tagged_value("isBoolean", st2), False)
 
         st2.attributes = {}
 
-        eq_(cl.getTaggedValue("isBoolean"), True)
-        eq_(cl.getTaggedValue("intVal"), 1)
-        eq_(cl.getTaggedValue("isBoolean", self.st), True)
+        eq_(cl.get_tagged_value("isBoolean"), True)
+        eq_(cl.get_tagged_value("intVal"), 1)
+        eq_(cl.get_tagged_value("isBoolean", self.st), True)
         try:
-            cl.getTaggedValue("isBoolean", st2) 
+            cl.get_tagged_value("isBoolean", st2)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'isBoolean' unknown for 'S2'")
@@ -409,19 +409,19 @@ class TestStereotypeTagValuesOnClasses():
         st2 = CStereotype("S2", attributes = {
                 "isBoolean": bool}, superclasses = self.st)
         mcl = CMetaclass("M", stereotypes = st2)
-        cl = CClass(mcl, "C", stereotypeInstances = st2)
+        cl = CClass(mcl, "C", stereotype_instances = st2)
 
-        eq_(cl.getTaggedValue("isBoolean"), None)
-        eq_(cl.getTaggedValue("isBoolean", self.st), None)   
-        eq_(cl.getTaggedValue("isBoolean", st2), None)   
+        eq_(cl.get_tagged_value("isBoolean"), None)
+        eq_(cl.get_tagged_value("isBoolean", self.st), None)
+        eq_(cl.get_tagged_value("isBoolean", st2), None)
 
         st2.attributes = {}
 
-        eq_(cl.getTaggedValue("isBoolean"), None)
-        eq_(cl.getTaggedValue("intVal"), None)
-        eq_(cl.getTaggedValue("isBoolean", self.st), None)
+        eq_(cl.get_tagged_value("isBoolean"), None)
+        eq_(cl.get_tagged_value("intVal"), None)
+        eq_(cl.get_tagged_value("isBoolean", self.st), None)
         try:
-            cl.getTaggedValue("isBoolean", st2) 
+            cl.get_tagged_value("isBoolean", st2)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'isBoolean' unknown for 'S2'")
@@ -433,19 +433,19 @@ class TestStereotypeTagValuesOnClasses():
         st2 = CStereotype("S2", attributes = {
                 "isBoolean": True})
         mcl = CMetaclass("M", stereotypes = self.st)
-        cl = CClass(mcl, "C", stereotypeInstances = self.st)
+        cl = CClass(mcl, "C", stereotype_instances = self.st)
 
-        cl.setTaggedValue("isBoolean", False)
+        cl.set_tagged_value("isBoolean", False)
 
         try:
-            cl.setTaggedValue("isBoolean", False, st2)
+            cl.set_tagged_value("isBoolean", False, st2)
         except CException as e: 
             eq_(e.value, "stereotype 'S2' is not a stereotype of element")
 
-        eq_(cl.getTaggedValue("isBoolean"), False)
+        eq_(cl.get_tagged_value("isBoolean"), False)
 
         try:
-            cl.getTaggedValue("isBoolean", st2)
+            cl.get_tagged_value("isBoolean", st2)
         except CException as e: 
             eq_(e.value, "stereotype 'S2' is not a stereotype of element")
 
@@ -463,26 +463,26 @@ class TestStereotypeTagValuesOnClasses():
         sc.attributes = {"i3" : 3}
 
         mcl = CMetaclass("M", stereotypes = sc)
-        cl = CClass(mcl, "C", stereotypeInstances = sc)
+        cl = CClass(mcl, "C", stereotype_instances = sc)
 
         for name, value in {"i0" : 0, "i1" : 1, "i2" : 2, "i3" : 3}.items():
-            eq_(cl.getTaggedValue(name), value)
+            eq_(cl.get_tagged_value(name), value)
 
-        eq_(cl.getTaggedValue("i0", t1), 0)
-        eq_(cl.getTaggedValue("i1", t2), 1)
-        eq_(cl.getTaggedValue("i2", c), 2)
-        eq_(cl.getTaggedValue("i3", sc), 3)
-
-        for name, value in {"i0" : 10, "i1" : 11, "i2" : 12, "i3" : 13}.items():
-            cl.setTaggedValue(name, value)
+        eq_(cl.get_tagged_value("i0", t1), 0)
+        eq_(cl.get_tagged_value("i1", t2), 1)
+        eq_(cl.get_tagged_value("i2", c), 2)
+        eq_(cl.get_tagged_value("i3", sc), 3)
 
         for name, value in {"i0" : 10, "i1" : 11, "i2" : 12, "i3" : 13}.items():
-            eq_(cl.getTaggedValue(name), value)
+            cl.set_tagged_value(name, value)
 
-        eq_(cl.getTaggedValue("i0", t1), 10)
-        eq_(cl.getTaggedValue("i1", t2), 11)
-        eq_(cl.getTaggedValue("i2", c), 12)
-        eq_(cl.getTaggedValue("i3", sc), 13)
+        for name, value in {"i0" : 10, "i1" : 11, "i2" : 12, "i3" : 13}.items():
+            eq_(cl.get_tagged_value(name), value)
+
+        eq_(cl.get_tagged_value("i0", t1), 10)
+        eq_(cl.get_tagged_value("i1", t2), 11)
+        eq_(cl.get_tagged_value("i2", c), 12)
+        eq_(cl.get_tagged_value("i3", sc), 13)
 
     def testAttributeValuesInheritanceAfterDeleteSuperclass(self):
         t1 = CStereotype("T1")
@@ -496,51 +496,51 @@ class TestStereotypeTagValuesOnClasses():
         sc.attributes = {"i3" : 3}
 
         mcl = CMetaclass("M", stereotypes = sc)
-        cl = CClass(mcl, "C", stereotypeInstances = sc)
+        cl = CClass(mcl, "C", stereotype_instances = sc)
 
         t2.delete()
 
         for name, value in {"i0" : 0, "i2" : 2, "i3" : 3}.items():
-            eq_(cl.getTaggedValue(name), value)
+            eq_(cl.get_tagged_value(name), value)
         try:
-            cl.getTaggedValue("i1")
+            cl.get_tagged_value("i1")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'i1' unknown for 'C'")
 
-        eq_(cl.getTaggedValue("i0", t1), 0)
+        eq_(cl.get_tagged_value("i0", t1), 0)
         try:
-            cl.getTaggedValue("i1", t2)
+            cl.get_tagged_value("i1", t2)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'i1' unknown for ''")
-        eq_(cl.getTaggedValue("i2", c), 2)
-        eq_(cl.getTaggedValue("i3", sc), 3)
+        eq_(cl.get_tagged_value("i2", c), 2)
+        eq_(cl.get_tagged_value("i3", sc), 3)
 
         for name, value in {"i0" : 10, "i2" : 12, "i3" : 13}.items():
-            cl.setTaggedValue(name, value)
+            cl.set_tagged_value(name, value)
         try:
-            cl.setTaggedValue("i1", 11)
+            cl.set_tagged_value("i1", 11)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'i1' unknown for 'C'")
 
         for name, value in {"i0" : 10, "i2" : 12, "i3" : 13}.items():
-            eq_(cl.getTaggedValue(name), value)
+            eq_(cl.get_tagged_value(name), value)
         try:
-            cl.getTaggedValue("i1")
+            cl.get_tagged_value("i1")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'i1' unknown for 'C'")
 
-        eq_(cl.getTaggedValue("i0", t1), 10)
+        eq_(cl.get_tagged_value("i0", t1), 10)
         try:
-            cl.getTaggedValue("i1", t2)
+            cl.get_tagged_value("i1", t2)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'i1' unknown for ''")
-        eq_(cl.getTaggedValue("i2", c), 12)
-        eq_(cl.getTaggedValue("i3", sc), 13)
+        eq_(cl.get_tagged_value("i2", c), 12)
+        eq_(cl.get_tagged_value("i3", sc), 13)
 
 
     def testAttributeValuesSameNameInheritance(self):
@@ -555,51 +555,51 @@ class TestStereotypeTagValuesOnClasses():
         sc.attributes = {"i" : 3}
 
         mcl = CMetaclass("M", stereotypes = t1)
-        cl1 = CClass(mcl, "C", stereotypeInstances = sc)
-        cl2 = CClass(mcl, "C", stereotypeInstances = c)
-        cl3 = CClass(mcl, "C", stereotypeInstances = t1)
+        cl1 = CClass(mcl, "C", stereotype_instances = sc)
+        cl2 = CClass(mcl, "C", stereotype_instances = c)
+        cl3 = CClass(mcl, "C", stereotype_instances = t1)
 
-        eq_(cl1.getTaggedValue("i"), 3) 
-        eq_(cl2.getTaggedValue("i"), 2) 
-        eq_(cl3.getTaggedValue("i"), 0)
+        eq_(cl1.get_tagged_value("i"), 3)
+        eq_(cl2.get_tagged_value("i"), 2)
+        eq_(cl3.get_tagged_value("i"), 0)
 
-        eq_(cl1.getTaggedValue("i", sc), 3) 
-        eq_(cl1.getTaggedValue("i", c), 2)
-        eq_(cl1.getTaggedValue("i", t2), 1)
-        eq_(cl1.getTaggedValue("i", t1), 0)
-        eq_(cl2.getTaggedValue("i", c), 2)
-        eq_(cl2.getTaggedValue("i", t2), 1)
-        eq_(cl2.getTaggedValue("i", t1), 0)
-        eq_(cl3.getTaggedValue("i", t1), 0)
+        eq_(cl1.get_tagged_value("i", sc), 3)
+        eq_(cl1.get_tagged_value("i", c), 2)
+        eq_(cl1.get_tagged_value("i", t2), 1)
+        eq_(cl1.get_tagged_value("i", t1), 0)
+        eq_(cl2.get_tagged_value("i", c), 2)
+        eq_(cl2.get_tagged_value("i", t2), 1)
+        eq_(cl2.get_tagged_value("i", t1), 0)
+        eq_(cl3.get_tagged_value("i", t1), 0)
         
-        cl1.setTaggedValue("i", 10)
-        cl2.setTaggedValue("i", 11)
-        cl3.setTaggedValue("i", 12)
+        cl1.set_tagged_value("i", 10)
+        cl2.set_tagged_value("i", 11)
+        cl3.set_tagged_value("i", 12)
 
-        eq_(cl1.getTaggedValue("i"), 10) 
-        eq_(cl2.getTaggedValue("i"), 11) 
-        eq_(cl3.getTaggedValue("i"), 12)
+        eq_(cl1.get_tagged_value("i"), 10)
+        eq_(cl2.get_tagged_value("i"), 11)
+        eq_(cl3.get_tagged_value("i"), 12)
 
-        eq_(cl1.getTaggedValue("i", sc), 10) 
-        eq_(cl1.getTaggedValue("i", c), 2)
-        eq_(cl1.getTaggedValue("i", t2), 1)
-        eq_(cl1.getTaggedValue("i", t1), 0)
-        eq_(cl2.getTaggedValue("i", c), 11)
-        eq_(cl2.getTaggedValue("i", t2), 1)
-        eq_(cl2.getTaggedValue("i", t1), 0)
-        eq_(cl3.getTaggedValue("i", t1), 12)
+        eq_(cl1.get_tagged_value("i", sc), 10)
+        eq_(cl1.get_tagged_value("i", c), 2)
+        eq_(cl1.get_tagged_value("i", t2), 1)
+        eq_(cl1.get_tagged_value("i", t1), 0)
+        eq_(cl2.get_tagged_value("i", c), 11)
+        eq_(cl2.get_tagged_value("i", t2), 1)
+        eq_(cl2.get_tagged_value("i", t1), 0)
+        eq_(cl3.get_tagged_value("i", t1), 12)
 
-        cl1.setTaggedValue("i", 130, sc)
-        cl1.setTaggedValue("i", 100, t1)
-        cl1.setTaggedValue("i", 110, t2)
-        cl1.setTaggedValue("i", 120, c)   
+        cl1.set_tagged_value("i", 130, sc)
+        cl1.set_tagged_value("i", 100, t1)
+        cl1.set_tagged_value("i", 110, t2)
+        cl1.set_tagged_value("i", 120, c)
 
-        eq_(cl1.getTaggedValue("i"), 130) 
+        eq_(cl1.get_tagged_value("i"), 130)
 
-        eq_(cl1.getTaggedValue("i", sc), 130) 
-        eq_(cl1.getTaggedValue("i", c), 120)
-        eq_(cl1.getTaggedValue("i", t2), 110)
-        eq_(cl1.getTaggedValue("i", t1), 100)
+        eq_(cl1.get_tagged_value("i", sc), 130)
+        eq_(cl1.get_tagged_value("i", c), 120)
+        eq_(cl1.get_tagged_value("i", t2), 110)
+        eq_(cl1.get_tagged_value("i", t1), 100)
 
 
     def testTaggedValuesInheritanceMultipleStereotypes(self):
@@ -613,7 +613,7 @@ class TestStereotypeTagValuesOnClasses():
         subc = CStereotype("SubC", superclasses = [stc])
 
         mcl = CMetaclass("M", stereotypes = [t1, stc])
-        cl = CClass(mcl, "C", stereotypeInstances = [suba, subb, subc])
+        cl = CClass(mcl, "C", stereotype_instances = [suba, subb, subc])
 
         t1.attributes = {"i0" : 0} 
         t2.attributes = {"i1" : 1}
@@ -624,59 +624,59 @@ class TestStereotypeTagValuesOnClasses():
         stc.attributes = {"i6" : 6}
         subc.attributes = {"i7" : 7}
 
-        eq_(cl.getTaggedValue("i0"), 0)
-        eq_(cl.getTaggedValue("i1"), 1)
-        eq_(cl.getTaggedValue("i2"), 2)
-        eq_(cl.getTaggedValue("i3"), 3)
-        eq_(cl.getTaggedValue("i4"), 4)
-        eq_(cl.getTaggedValue("i5"), 5)
-        eq_(cl.getTaggedValue("i6"), 6)
-        eq_(cl.getTaggedValue("i7"), 7)
+        eq_(cl.get_tagged_value("i0"), 0)
+        eq_(cl.get_tagged_value("i1"), 1)
+        eq_(cl.get_tagged_value("i2"), 2)
+        eq_(cl.get_tagged_value("i3"), 3)
+        eq_(cl.get_tagged_value("i4"), 4)
+        eq_(cl.get_tagged_value("i5"), 5)
+        eq_(cl.get_tagged_value("i6"), 6)
+        eq_(cl.get_tagged_value("i7"), 7)
 
-        eq_(cl.getTaggedValue("i0", t1), 0)
-        eq_(cl.getTaggedValue("i1", t2), 1)
-        eq_(cl.getTaggedValue("i2", sta), 2)
-        eq_(cl.getTaggedValue("i3", suba), 3)
-        eq_(cl.getTaggedValue("i4", stb), 4)
-        eq_(cl.getTaggedValue("i5", subb), 5)
-        eq_(cl.getTaggedValue("i6", stc), 6)
-        eq_(cl.getTaggedValue("i7", subc), 7)
+        eq_(cl.get_tagged_value("i0", t1), 0)
+        eq_(cl.get_tagged_value("i1", t2), 1)
+        eq_(cl.get_tagged_value("i2", sta), 2)
+        eq_(cl.get_tagged_value("i3", suba), 3)
+        eq_(cl.get_tagged_value("i4", stb), 4)
+        eq_(cl.get_tagged_value("i5", subb), 5)
+        eq_(cl.get_tagged_value("i6", stc), 6)
+        eq_(cl.get_tagged_value("i7", subc), 7)
 
-        cl.setTaggedValue("i0", 10)
-        cl.setTaggedValue("i1", 11)
-        cl.setTaggedValue("i2", 12)
-        cl.setTaggedValue("i3", 13)
-        cl.setTaggedValue("i4", 14)
-        cl.setTaggedValue("i5", 15)
-        cl.setTaggedValue("i6", 16)
-        cl.setTaggedValue("i7", 17)
+        cl.set_tagged_value("i0", 10)
+        cl.set_tagged_value("i1", 11)
+        cl.set_tagged_value("i2", 12)
+        cl.set_tagged_value("i3", 13)
+        cl.set_tagged_value("i4", 14)
+        cl.set_tagged_value("i5", 15)
+        cl.set_tagged_value("i6", 16)
+        cl.set_tagged_value("i7", 17)
 
-        eq_(cl.getTaggedValue("i0"), 10)
-        eq_(cl.getTaggedValue("i1"), 11)
-        eq_(cl.getTaggedValue("i2"), 12)
-        eq_(cl.getTaggedValue("i3"), 13)
-        eq_(cl.getTaggedValue("i4"), 14)
-        eq_(cl.getTaggedValue("i5"), 15)
-        eq_(cl.getTaggedValue("i6"), 16)
-        eq_(cl.getTaggedValue("i7"), 17)
+        eq_(cl.get_tagged_value("i0"), 10)
+        eq_(cl.get_tagged_value("i1"), 11)
+        eq_(cl.get_tagged_value("i2"), 12)
+        eq_(cl.get_tagged_value("i3"), 13)
+        eq_(cl.get_tagged_value("i4"), 14)
+        eq_(cl.get_tagged_value("i5"), 15)
+        eq_(cl.get_tagged_value("i6"), 16)
+        eq_(cl.get_tagged_value("i7"), 17)
 
-        cl.setTaggedValue("i0", 210, t1)
-        cl.setTaggedValue("i1", 211, t2)
-        cl.setTaggedValue("i2", 212, sta)
-        cl.setTaggedValue("i3", 213, suba)
-        cl.setTaggedValue("i4", 214, stb)
-        cl.setTaggedValue("i5", 215, subb)
-        cl.setTaggedValue("i6", 216, stc)
-        cl.setTaggedValue("i7", 217, subc)
+        cl.set_tagged_value("i0", 210, t1)
+        cl.set_tagged_value("i1", 211, t2)
+        cl.set_tagged_value("i2", 212, sta)
+        cl.set_tagged_value("i3", 213, suba)
+        cl.set_tagged_value("i4", 214, stb)
+        cl.set_tagged_value("i5", 215, subb)
+        cl.set_tagged_value("i6", 216, stc)
+        cl.set_tagged_value("i7", 217, subc)
 
-        eq_(cl.getTaggedValue("i0"), 210)
-        eq_(cl.getTaggedValue("i1"), 211)
-        eq_(cl.getTaggedValue("i2"), 212)
-        eq_(cl.getTaggedValue("i3"), 213)
-        eq_(cl.getTaggedValue("i4"), 214)
-        eq_(cl.getTaggedValue("i5"), 215)
-        eq_(cl.getTaggedValue("i6"), 216)
-        eq_(cl.getTaggedValue("i7"), 217)
+        eq_(cl.get_tagged_value("i0"), 210)
+        eq_(cl.get_tagged_value("i1"), 211)
+        eq_(cl.get_tagged_value("i2"), 212)
+        eq_(cl.get_tagged_value("i3"), 213)
+        eq_(cl.get_tagged_value("i4"), 214)
+        eq_(cl.get_tagged_value("i5"), 215)
+        eq_(cl.get_tagged_value("i6"), 216)
+        eq_(cl.get_tagged_value("i7"), 217)
 
     def testDeleteTaggedValues(self):
         s = CStereotype("S", attributes = {
@@ -686,11 +686,11 @@ class TestStereotypeTagValuesOnClasses():
                 "string": "abc",
                 "list": ["a", "b"]})
         self.mcl.stereotypes = s
-        cl = CClass(self.mcl, "C", stereotypeInstances = s)
-        cl.deleteTaggedValue("isBoolean")
-        cl.deleteTaggedValue("intVal")
-        valueOfList = cl.deleteTaggedValue("list")
-        eq_(cl.taggedValues, {'floatVal': 1.1, 'string': 'abc'})
+        cl = CClass(self.mcl, "C", stereotype_instances = s)
+        cl.delete_tagged_value("isBoolean")
+        cl.delete_tagged_value("intVal")
+        valueOfList = cl.delete_tagged_value("list")
+        eq_(cl.tagged_values, {'floatVal': 1.1, 'string': 'abc'})
         eq_(valueOfList, ['a', 'b'])
 
     def testDeleteTaggedValuesWithSuperclass(self):
@@ -701,67 +701,67 @@ class TestStereotypeTagValuesOnClasses():
                 "intVal": 1})
         self.mcl.stereotypes = st
         
-        cl = CClass(self.mcl, "C", stereotypeInstances = st, taggedValues = {
+        cl = CClass(self.mcl, "C", stereotype_instances = st, tagged_values = {
             "isBoolean": False})
-        cl.deleteTaggedValue("isBoolean")
-        cl.deleteTaggedValue("intVal2")
-        eq_(cl.taggedValues, {"intVal": 1})
+        cl.delete_tagged_value("isBoolean")
+        cl.delete_tagged_value("intVal2")
+        eq_(cl.tagged_values, {"intVal": 1})
 
-        cl.setTaggedValue("intVal", 2, sst)
-        cl.setTaggedValue("intVal", 3, st)
-        eq_(cl.taggedValues, {"intVal": 3})
-        cl.deleteTaggedValue("intVal")
-        eq_(cl.taggedValues, {"intVal": 2})
+        cl.set_tagged_value("intVal", 2, sst)
+        cl.set_tagged_value("intVal", 3, st)
+        eq_(cl.tagged_values, {"intVal": 3})
+        cl.delete_tagged_value("intVal")
+        eq_(cl.tagged_values, {"intVal": 2})
 
-        cl.setTaggedValue("intVal", 2, sst)
-        cl.setTaggedValue("intVal", 3, st)
-        cl.deleteTaggedValue("intVal", st)
-        eq_(cl.taggedValues, {"intVal": 2})
+        cl.set_tagged_value("intVal", 2, sst)
+        cl.set_tagged_value("intVal", 3, st)
+        cl.delete_tagged_value("intVal", st)
+        eq_(cl.tagged_values, {"intVal": 2})
 
-        cl.setTaggedValue("intVal", 2, sst)
-        cl.setTaggedValue("intVal", 3, st)
-        cl.deleteTaggedValue("intVal", sst)
-        eq_(cl.taggedValues, {"intVal": 3})
+        cl.set_tagged_value("intVal", 2, sst)
+        cl.set_tagged_value("intVal", 3, st)
+        cl.delete_tagged_value("intVal", sst)
+        eq_(cl.tagged_values, {"intVal": 3})
 
     def testTaggedValuesExceptionalCases(self):
         s = CStereotype("S", attributes = {"b": True})
         self.mcl.stereotypes = s
-        cl1 = CClass(self.mcl, "C", stereotypeInstances = s)
+        cl1 = CClass(self.mcl, "C", stereotype_instances = s)
         cl1.delete()
 
         try:
-            cl1.getTaggedValue("b")                
+            cl1.get_tagged_value("b")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "can't get tagged value 'b' on deleted class")
 
         try:
-            cl1.setTaggedValue("b", 1)                
+            cl1.set_tagged_value("b", 1)
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "can't set tagged value 'b' on deleted class")
 
         try:
-            cl1.deleteTaggedValue("b")                
+            cl1.delete_tagged_value("b")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value,"can't delete tagged value 'b' on deleted class")
 
         try:
-            cl1.taggedValues = {"b": 1}                
+            cl1.tagged_values = {"b": 1}
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "can't set tagged values on deleted class")
 
         try:
-            cl1.taggedValues                
+            cl1.tagged_values
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "can't get tagged values on deleted class")
 
-        cl = CClass(self.mcl, "C", stereotypeInstances = s)
+        cl = CClass(self.mcl, "C", stereotype_instances = s)
         try:
-            cl.deleteTaggedValue("x")
+            cl.delete_tagged_value("x")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "tagged value 'x' unknown for 'C'")

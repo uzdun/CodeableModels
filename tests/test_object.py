@@ -3,7 +3,7 @@ from nose.tools import ok_, eq_
 from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
 
-from codeableModels import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CBundle, addLinks
+from codeable_models import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CBundle, add_links
 
 class TestObject():
     def setUp(self):
@@ -53,7 +53,7 @@ class TestObject():
         o1 = CObject(self.cl, "o1")
         o2 = CObject(self.cl, "o2")
         o3 = CObject(self.cl, "o3")
-        o3.setValue("i", 7)
+        o3.set_value("i", 7)
 
         o1.delete()
         eq_(set(self.cl.objects), set([o2, o3]))
@@ -65,7 +65,7 @@ class TestObject():
         eq_(o3.name, None)
         eq_(o3.bundles, [])
         try:
-            o3.getValue("i")
+            o3.get_value("i")
             exceptionExpected_()
         except CException as e: 
             eq_("can't get value 'i' on deleted object", e.value)
@@ -168,14 +168,14 @@ class TestObject():
     def testGetConnectedElements_WrongKeywordArg(self):
         o1 = CObject(self.cl, "o1")
         try:
-            o1.getConnectedElements(a = "o1")
+            o1.get_connected_elements(a ="o1")
             exceptionExpected_()
         except CException as e: 
-            eq_(e.value, "unknown keyword argument 'a', should be one of: ['addBundles', 'processBundles', 'stopElementsInclusive', 'stopElementsExclusive']")
+            eq_(e.value, "unknown keyword argument 'a', should be one of: ['add_bundles', 'process_bundles', 'stop_elements_inclusive', 'stop_elements_exclusive']")
 
     def testGetConnectedElementsEmpty(self):
         o1 = CObject(self.cl, "o1")
-        eq_(set(o1.getConnectedElements()), set([o1]))
+        eq_(set(o1.get_connected_elements()), set([o1]))
 
     mcl = CMetaclass("MCL")
     cl1 = CClass(mcl, "C")
@@ -186,19 +186,19 @@ class TestObject():
     o3 = CObject(cl2, "o3")
     o4 = CObject(cl2, "o4")
     o5 = CObject(cl2, "o5")
-    addLinks({o1: [o2, o3, o4, o5]})
+    add_links({o1: [o2, o3, o4, o5]})
     o6 = CObject(cl2, "o6")
-    addLinks({o6: o1})
+    add_links({o6: o1})
     o7 = CObject(cl1, "o7")
     o8 = CObject(cl2, "o8")
     o9 = CObject(cl2, "o9")
-    addLinks({o7: [o8, o9]})
+    add_links({o7: [o8, o9]})
     o10 = CObject(cl1, "o10")
     o11 = CObject(cl2, "o11")
-    addLinks({o10: o11})
+    add_links({o10: o11})
     o12 = CObject(cl1, "o12")
     o13 = CObject(cl2, "o13")
-    addLinks({o12: o11})
+    add_links({o12: o11})
     bsub = CBundle("bsub", elements = [o13])
     b1 = CBundle("b1", elements = [o1, o2, o3, bsub, o7])
     b2 = CBundle("b2", elements = [o7, o10, o11, o12])
@@ -206,41 +206,41 @@ class TestObject():
     allTestElts = [o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13, b1, b2, bsub]
 
     @parameterized.expand([
-        (allTestElts, {"processBundles": True}, set([o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13])),
-        (allTestElts, {"processBundles": True, "addBundles": True}, set([o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13, b1, b2, bsub])),
-        ([o1], {"processBundles": True}, set([o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13])),
-        ([o1], {"processBundles": True, "addBundles": True}, set([o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13, b1, b2, bsub])),
+        (allTestElts, {"process_bundles": True}, set([o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13])),
+        (allTestElts, {"process_bundles": True, "add_bundles": True}, set([o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13, b1, b2, bsub])),
+        ([o1], {"process_bundles": True}, set([o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13])),
+        ([o1], {"process_bundles": True, "add_bundles": True}, set([o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11, o12, o13, b1, b2, bsub])),
         ([o7], {}, set([o7, o8, o9])),
-        ([o7], {"addBundles": True}, set([o7, o8, o9, b1, b2])),
+        ([o7], {"add_bundles": True}, set([o7, o8, o9, b1, b2])),
     ])
     def testGetConnectedElements(self, testElements, kwargsDict, connectedElementsResult):
         for elt in testElements:
-             eq_(set(elt.getConnectedElements(**kwargsDict)), connectedElementsResult)
+             eq_(set(elt.get_connected_elements(**kwargsDict)), connectedElementsResult)
 
-    def testGetConnectedElements_StopElementsInclusiveWrongTypes(self):
+    def testGetConnectedElements_stop_elements_inclusiveWrongTypes(self):
         o1 = CObject(self.cl, "o1")
         try:
-            o1.getConnectedElements(stopElementsInclusive = "o1")
+            o1.get_connected_elements(stop_elements_inclusive ="o1")
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "expected one element or a list of stop elements, but got: 'o1'")
         try:
-            o1.getConnectedElements(stopElementsInclusive = ["o1"])
+            o1.get_connected_elements(stop_elements_inclusive = ["o1"])
             exceptionExpected_()
         except CException as e: 
             eq_(e.value, "expected one element or a list of stop elements, but got: '['o1']' with element of wrong type: 'o1'")
 
     @parameterized.expand([
-        ([o1], {"stopElementsExclusive" : [o1]}, set()),
-        ([o1], {"stopElementsInclusive" : [o3, o6]}, set([o1, o2, o3, o4, o5, o6])),
-        ([o1], {"stopElementsExclusive" : [o3, o6]}, set([o1, o2, o4, o5])),
-        ([o1], {"stopElementsInclusive" : [o3, o6], "stopElementsExclusive" : [o3]}, set([o1, o2, o4, o5, o6])),
-        ([o7], {"stopElementsInclusive" : [b2], "stopElementsExclusive" : [b1], "processBundles": True, "addBundles": True}, set([o7, b2, o8, o9])),
-        ([o7], {"stopElementsExclusive" : [b1, b2], "processBundles": True, "addBundles": True}, set([o7, o8, o9])),
+        ([o1], {"stop_elements_exclusive" : [o1]}, set()),
+        ([o1], {"stop_elements_inclusive" : [o3, o6]}, set([o1, o2, o3, o4, o5, o6])),
+        ([o1], {"stop_elements_exclusive" : [o3, o6]}, set([o1, o2, o4, o5])),
+        ([o1], {"stop_elements_inclusive" : [o3, o6], "stop_elements_exclusive" : [o3]}, set([o1, o2, o4, o5, o6])),
+        ([o7], {"stop_elements_inclusive" : [b2], "stop_elements_exclusive" : [b1], "process_bundles": True, "add_bundles": True}, set([o7, b2, o8, o9])),
+        ([o7], {"stop_elements_exclusive" : [b1, b2], "process_bundles": True, "add_bundles": True}, set([o7, o8, o9])),
     ])
-    def testGetConnectedElements_StopElementsInclusive(self, testElements, kwargsDict, connectedElementsResult):
+    def testGetConnectedElements_stop_elements_inclusive(self, testElements, kwargsDict, connectedElementsResult):
         for elt in testElements:
-             eq_(set(elt.getConnectedElements(**kwargsDict)), connectedElementsResult)
+             eq_(set(elt.get_connected_elements(**kwargsDict)), connectedElementsResult)
 
 
 if __name__ == "__main__":
