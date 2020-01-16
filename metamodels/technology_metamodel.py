@@ -1,4 +1,4 @@
-from codeableModels import CClass, CMetaclass, CBundle, CStereotype
+from codeable_models import CClass, CMetaclass, CBundle, CStereotype
 
 # Technology and technology type
 technology = CMetaclass("Technology")
@@ -16,7 +16,7 @@ expressTechType = CStereotype("Express", superclasses = technologyType)
 messagingMiddlewareTechType = CStereotype("Messaging Middleware", superclasses = technologyType)
 amqpTechType = CStereotype("AMQP", superclasses = messagingMiddlewareTechType)
 
-_all = CBundle("_all", 
-    elements = technology.getConnectedElements(addStereotypes = True))
+_all = CBundle("_all",
+               elements = technology.get_connected_elements(add_stereotypes = True))
 technologyMetamodelViews = [
     _all, {}]

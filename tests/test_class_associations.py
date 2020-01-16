@@ -3,7 +3,7 @@ from nose.tools import ok_, eq_
 from testCommons import neq_, exceptionExpected_
 from parameterized import parameterized
 
-from codeableModels import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
+from codeable_models import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
 
 class TestClassAssociations():
     
@@ -17,32 +17,32 @@ class TestClassAssociations():
 
     def getAllAssociationsOfMetaclass(self):
         associations = []
-        for c in self.mcl.allClasses:
-            for a in c.allAssociations:
+        for c in self.mcl.all_classes:
+            for a in c.all_associations:
                 if not a in associations:
                     associations.append(a)
         return associations
 
     def testAssociationCreation(self):
-        a1 = self.c1.association(self.c2, multiplicity = "1", roleName = "t",  
-                sourceMultiplicity = "*", sourceRoleName = "i")
+        a1 = self.c1.association(self.c2, multiplicity = "1", role_name = "t",
+                source_multiplicity = "*", source_role_name = "i")
         a2 = self.c1.association(self.c2, "[o]*->[s]1")
         a3 = self.c1.association(self.c3, "[a] 0..1 <*>- [n]*")
-        a4 = self.c1.association(self.c3, multiplicity = "*", roleName = "e",  
-                sourceMultiplicity = "0..1", sourceRoleName = "a", composition = True)
-        a5 = self.c4.association(self.c3, multiplicity = "*", roleName = "n",  
-                sourceMultiplicity = "0..1", sourceRoleName = "a", aggregation = True)
+        a4 = self.c1.association(self.c3, multiplicity = "*", role_name = "e",
+                source_multiplicity = "0..1", source_role_name = "a", composition = True)
+        a5 = self.c4.association(self.c3, multiplicity = "*", role_name = "n",
+                source_multiplicity = "0..1", source_role_name = "a", aggregation = True)
         a6 = self.c3.association(self.c2, '[a] 3 <>- [e]*')
 
         eq_(len(self.getAllAssociationsOfMetaclass()), 6)
 
-        eq_(self.c1.associations[0].roleName, "t")
-        eq_(a5.roleName, "n")
-        eq_(a2.roleName, "s")
+        eq_(self.c1.associations[0].role_name, "t")
+        eq_(a5.role_name, "n")
+        eq_(a2.role_name, "s")
         eq_(a1.multiplicity, "1")
-        eq_(a1.sourceMultiplicity, "*")
-        eq_(a4.sourceMultiplicity, "0..1")
-        eq_(a6.sourceMultiplicity, "3")
+        eq_(a1.source_multiplicity, "*")
+        eq_(a4.source_multiplicity, "0..1")
+        eq_(a6.source_multiplicity, "3")
 
         eq_(a1.composition, False)
         eq_(a1.aggregation, False)
@@ -62,64 +62,64 @@ class TestClassAssociations():
         m1 = CMetaclass("M1")
         s1 = CStereotype("S1")
         try:
-            a1 = self.c1.association(s1, multiplicity = "1", roleName = "t",  
-                sourceMultiplicity = "*", sourceRoleName = "i")
+            a1 = self.c1.association(s1, multiplicity = "1", role_name = "t",
+                source_multiplicity = "*", source_role_name = "i")
             exceptionExpected_()
         except CException as e: 
             eq_("class 'C1' is not compatible with association target 'S1'", e.value)
 
         try:
-            a1 = self.c1.association(m1, multiplicity = "1", roleName = "t",  
-                sourceMultiplicity = "*", sourceRoleName = "i")
+            a1 = self.c1.association(m1, multiplicity = "1", role_name = "t",
+                source_multiplicity = "*", source_role_name = "i")
             exceptionExpected_()
         except CException as e: 
             eq_("class 'C1' is not compatible with association target 'M1'", e.value)
 
-    def testGetAssociationByRoleName(self):
-        a1 = self.c1.association(self.c2, multiplicity = "1", roleName = "t",  
-                sourceMultiplicity = "*", sourceRoleName = "i")
-        a2 = self.c1.association(self.c2, multiplicity = "1", roleName = "s",  
-                sourceMultiplicity = "*", sourceRoleName = "o")
-        a3 = self.c1.association(self.c3, multiplicity = "*", roleName = "n",  
-                sourceMultiplicity = "0..1", sourceRoleName = "a", composition = True)
+    def testGetAssociationByrole_name(self):
+        a1 = self.c1.association(self.c2, multiplicity = "1", role_name = "t",
+                source_multiplicity = "*", source_role_name = "i")
+        a2 = self.c1.association(self.c2, multiplicity = "1", role_name = "s",
+                source_multiplicity = "*", source_role_name = "o")
+        a3 = self.c1.association(self.c3, multiplicity = "*", role_name = "n",
+                source_multiplicity = "0..1", source_role_name = "a", composition = True)
 
-        a_2 = next(a for a in self.c1.associations if a.roleName == "s")
+        a_2 = next(a for a in self.c1.associations if a.role_name == "s")
         eq_(a_2.multiplicity, "1")
-        eq_(a_2.sourceRoleName, "o")
-        eq_(a_2.sourceMultiplicity, "*")
+        eq_(a_2.source_role_name, "o")
+        eq_(a_2.source_multiplicity, "*")
 
     def testGetAssociationByName(self):
-        a1 = self.c1.association(self.c2, name = "n1", multiplicity = "1", roleName = "t",  
-                sourceMultiplicity = "*", sourceRoleName = "i")
-        a2 = self.c1.association(self.c2, name = "n2", multiplicity = "1", roleName = "s",  
-                sourceMultiplicity = "*", sourceRoleName = "o")
+        a1 = self.c1.association(self.c2, name = "n1", multiplicity = "1", role_name = "t",
+                source_multiplicity = "*", source_role_name = "i")
+        a2 = self.c1.association(self.c2, name = "n2", multiplicity = "1", role_name = "s",
+                source_multiplicity = "*", source_role_name = "o")
         a3 = self.c1.association(self.c3, "n3: [a] 0..1 <*>- [n] *")
 
         a_2 = next(a for a in self.c1.associations if a.name == "n2")
         eq_(a_2.multiplicity, "1")
-        eq_(a_2.sourceRoleName, "o")
-        eq_(a_2.sourceMultiplicity, "*")
+        eq_(a_2.source_role_name, "o")
+        eq_(a_2.source_multiplicity, "*")
 
         a_3 = next(a for a in self.c1.associations if a.name == "n3")
         eq_(a_3.multiplicity, "*")
-        eq_(a_3.roleName, "n")
-        eq_(a_3.sourceMultiplicity, "0..1")
-        eq_(a_3.sourceRoleName, "a")
+        eq_(a_3.role_name, "n")
+        eq_(a_3.source_multiplicity, "0..1")
+        eq_(a_3.source_role_name, "a")
         eq_(a_3.composition, True)     
 
     def testGetAssociations(self):
-        a1 = self.c1.association(self.c2, multiplicity = "1", roleName = "t",  
-                sourceMultiplicity = "*", sourceRoleName = "i")
-        a2 = self.c1.association(self.c2, multiplicity = "1", roleName = "s",  
-                sourceMultiplicity = "*", sourceRoleName = "o")
-        a3 = self.c1.association(self.c3, multiplicity = "*", roleName = "n",  
-                sourceMultiplicity = "0..1", sourceRoleName = "a", composition = True)
-        a4 = self.c1.association(self.c3, multiplicity = "*", roleName = "e",  
-                sourceMultiplicity = "0..1", sourceRoleName = "a", composition = True)
-        a5 = self.c4.association(self.c3, multiplicity = "*", roleName = "n",  
-                sourceMultiplicity = "0..1", sourceRoleName = "a", aggregation = True)
-        a6 = self.c3.association(self.c2, multiplicity = "*", roleName = "e",  
-                sourceMultiplicity = "3", sourceRoleName = "a", aggregation = True)
+        a1 = self.c1.association(self.c2, multiplicity = "1", role_name = "t",
+                source_multiplicity = "*", source_role_name = "i")
+        a2 = self.c1.association(self.c2, multiplicity = "1", role_name = "s",
+                source_multiplicity = "*", source_role_name = "o")
+        a3 = self.c1.association(self.c3, multiplicity = "*", role_name = "n",
+                source_multiplicity = "0..1", source_role_name = "a", composition = True)
+        a4 = self.c1.association(self.c3, multiplicity = "*", role_name = "e",
+                source_multiplicity = "0..1", source_role_name = "a", composition = True)
+        a5 = self.c4.association(self.c3, multiplicity = "*", role_name = "n",
+                source_multiplicity = "0..1", source_role_name = "a", aggregation = True)
+        a6 = self.c3.association(self.c2, multiplicity = "*", role_name = "e",
+                source_multiplicity = "3", source_role_name = "a", aggregation = True)
         eq_(self.c1.associations, [a1, a2, a3, a4])
         eq_(self.c2.associations, [a1, a2, a6])
         eq_(self.c3.associations, [a3, a4, a5, a6])
@@ -127,20 +127,20 @@ class TestClassAssociations():
         eq_(self.c5.associations, [])
 
     def testDeleteAssociations(self):
-        a1 = self.c1.association(self.c2, multiplicity = "1", roleName = "t",  
-                sourceMultiplicity = "*", sourceRoleName = "i")
-        a2 = self.c1.association(self.c2, multiplicity = "1", roleName = "s",  
-                sourceMultiplicity = "*", sourceRoleName = "o")
-        a3 = self.c1.association(self.c3, multiplicity = "*", roleName = "n",  
-                sourceMultiplicity = "0..1", sourceRoleName = "a", composition = True)
-        a4 = self.c1.association(self.c3, multiplicity = "*", roleName = "e",  
-                sourceMultiplicity = "0..1", sourceRoleName = "a", composition = True)
-        a5 = self.c4.association(self.c3, multiplicity = "*", roleName = "n",  
-                sourceMultiplicity = "0..1", sourceRoleName = "a", aggregation = True)
-        a6 = self.c3.association(self.c2, multiplicity = "*", roleName = "e",  
-                sourceMultiplicity = "3", sourceRoleName = "a", aggregation = True)
-        a7 = self.c1.association(self.c1, multiplicity = "*", roleName = "x",  
-                sourceMultiplicity = "3", sourceRoleName = "y")
+        a1 = self.c1.association(self.c2, multiplicity = "1", role_name = "t",
+                source_multiplicity = "*", source_role_name = "i")
+        a2 = self.c1.association(self.c2, multiplicity = "1", role_name = "s",
+                source_multiplicity = "*", source_role_name = "o")
+        a3 = self.c1.association(self.c3, multiplicity = "*", role_name = "n",
+                source_multiplicity = "0..1", source_role_name = "a", composition = True)
+        a4 = self.c1.association(self.c3, multiplicity = "*", role_name = "e",
+                source_multiplicity = "0..1", source_role_name = "a", composition = True)
+        a5 = self.c4.association(self.c3, multiplicity = "*", role_name = "n",
+                source_multiplicity = "0..1", source_role_name = "a", aggregation = True)
+        a6 = self.c3.association(self.c2, multiplicity = "*", role_name = "e",
+                source_multiplicity = "3", source_role_name = "a", aggregation = True)
+        a7 = self.c1.association(self.c1, multiplicity = "*", role_name = "x",
+                source_multiplicity = "3", source_role_name = "y")
 
         eq_(len(self.getAllAssociationsOfMetaclass()), 7)
 
@@ -157,20 +157,20 @@ class TestClassAssociations():
 
 
     def testDeleteClassAndGetAssociations(self):
-        a1 = self.c1.association(self.c2, multiplicity = "1", roleName = "t",  
-                sourceMultiplicity = "*", sourceRoleName = "i")
-        a2 = self.c1.association(self.c2, multiplicity = "1", roleName = "s",  
-                sourceMultiplicity = "*", sourceRoleName = "o")
-        a3 = self.c1.association(self.c3, multiplicity = "*", roleName = "n",  
-                sourceMultiplicity = "0..1", sourceRoleName = "a", composition = True)
-        a4 = self.c1.association(self.c3, multiplicity = "*", roleName = "e",  
-                sourceMultiplicity = "0..1", sourceRoleName = "a", composition = True)
-        a5 = self.c4.association(self.c3, multiplicity = "*", roleName = "n",  
-                sourceMultiplicity = "0..1", sourceRoleName = "a", aggregation = True)
-        a6 = self.c3.association(self.c2, multiplicity = "*", roleName = "e",  
-                sourceMultiplicity = "3", sourceRoleName = "a", aggregation = True)
-        a7 = self.c1.association(self.c1, multiplicity = "*", roleName = "x",  
-                sourceMultiplicity = "3", sourceRoleName = "y")
+        a1 = self.c1.association(self.c2, multiplicity = "1", role_name = "t",
+                source_multiplicity = "*", source_role_name = "i")
+        a2 = self.c1.association(self.c2, multiplicity = "1", role_name = "s",
+                source_multiplicity = "*", source_role_name = "o")
+        a3 = self.c1.association(self.c3, multiplicity = "*", role_name = "n",
+                source_multiplicity = "0..1", source_role_name = "a", composition = True)
+        a4 = self.c1.association(self.c3, multiplicity = "*", role_name = "e",
+                source_multiplicity = "0..1", source_role_name = "a", composition = True)
+        a5 = self.c4.association(self.c3, multiplicity = "*", role_name = "n",
+                source_multiplicity = "0..1", source_role_name = "a", aggregation = True)
+        a6 = self.c3.association(self.c2, multiplicity = "*", role_name = "e",
+                source_multiplicity = "3", source_role_name = "a", aggregation = True)
+        a7 = self.c1.association(self.c1, multiplicity = "*", role_name = "x",
+                source_multiplicity = "3", source_role_name = "y")
 
         eq_(len(self.getAllAssociationsOfMetaclass()), 7)
 
@@ -189,8 +189,8 @@ class TestClassAssociations():
         s = CClass(self.mcl, "S")
         d = CClass(self.mcl, "D", superclasses = s)
         a = s.association(d, "is next: [prior s] * -> [next d] *")
-        eq_(d.allAssociations, [a])
-        eq_(s.allAssociations, [a])
+        eq_(d.all_associations, [a])
+        eq_(s.all_associations, [a])
 
         
 if __name__ == "__main__":

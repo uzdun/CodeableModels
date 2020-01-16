@@ -1,20 +1,20 @@
-from codeableModels import CClass, CMetaclass, CBundle, CStereotype
+from codeable_models import CClass, CMetaclass, CBundle, CStereotype
 from metamodels.componentMetamodel import *
 
 # Component types
-service = CStereotype("Service", superclasses = componentType)
-database = CStereotype("Database", superclasses = componentType)
-pubSubComponent = CStereotype("Pub/Sub Component", superclasses = componentType)
-messageBroker = CStereotype("Message Broker", superclasses = componentType)
+service = CStereotype("Service", superclasses = component_type)
+database = CStereotype("Database", superclasses = component_type)
+pubSubComponent = CStereotype("Pub/Sub Component", superclasses = component_type)
+messageBroker = CStereotype("Message Broker", superclasses = component_type)
 # a component that provides event sourcing, could be e.g. on a pub/sub component as an additional function
 # or on a component listening to events
-eventSourcing = CStereotype("Event Sourcing", superclasses = componentType)
+eventSourcing = CStereotype("Event Sourcing", superclasses = component_type)
 # stream-processing platforms like Kafka process events and messages, and keep a persistent distributed
 # log of those, which can be used for eventSourcing; thus they combine abilities of all of those
 streamProcessing = CStereotype("Stream Processing", superclasses = [pubSubComponent, messageBroker, eventSourcing])
 
-externalComponent = CStereotype("External Component", superclasses = componentType)
-facade = CStereotype("Facade", superclasses = componentType)
+externalComponent = CStereotype("External Component", superclasses = component_type)
+facade = CStereotype("Facade", superclasses = component_type)
 
 client = CStereotype("Client", superclasses = externalComponent)
 webUI = CStereotype("Web UI", superclasses = facade)
@@ -30,21 +30,21 @@ memcachedDB = CStereotype("MemcachedDB", superclasses = database)
 redisDB = CStereotype("RedisDB", superclasses = database)
 eventStore = CStereotype("Event Store", superclasses = database)
 
-monitoringComponent = CStereotype("Monitoring", superclasses = componentType)
-tracingComponent = CStereotype("Tracing", superclasses = componentType)
-loggingComponent = CStereotype("Logging", superclasses = componentType)
+monitoringComponent = CStereotype("Monitoring", superclasses = component_type)
+tracingComponent = CStereotype("Tracing", superclasses = component_type)
+loggingComponent = CStereotype("Logging", superclasses = component_type)
 
-orchestrator = CStereotype("Orchestrator", superclasses = componentType)
+orchestrator = CStereotype("Orchestrator", superclasses = component_type)
 sagaOrchestrator = CStereotype("Saga Orchestrator", superclasses = orchestrator,
                                attributes = {"sagas": list})
 
 # Connector types
-directed = CStereotype("Directed", superclasses = connectorType)
+directed = CStereotype("Directed", superclasses = connector_type)
 
 # use synchronousConnector especially if connector implies asynchronous communication (as in messaging), but is used synchronously
-synchronousConnector = CStereotype("Synchronous", superclasses = connectorType) 
+synchronousConnector = CStereotype("Synchronous", superclasses = connector_type)
 # use asynchronousConnector especially if connector implies synchronous communication (as in restfulHTTP), but is used asynchronously
-asynchronousConnector = CStereotype("Asynchronous", superclasses = connectorType) 
+asynchronousConnector = CStereotype("Asynchronous", superclasses = connector_type)
 # use both syncAsyncConnector, if both forms are mixed (or leave unspecified)
 syncAsyncConnector = CStereotype("Synchronous + Asynchronous", superclasses = [synchronousConnector, asynchronousConnector]) 
 
@@ -52,17 +52,17 @@ callback = CStereotype("Callback", superclasses = asynchronousConnector)
 polling = CStereotype("Polling", superclasses = asynchronousConnector)
 oneway = CStereotype("One Way", superclasses = asynchronousConnector)
 
-indirectRelationViaAPI = CStereotype("Indirect Relation via API", superclasses = connectorType)
+indirectRelationViaAPI = CStereotype("Indirect Relation via API", superclasses = connector_type)
 
-inMemoryConnector = CStereotype("In-Memory Connector", superclasses = connectorType)
-databaseConnector = CStereotype("Database Connector", superclasses = connectorType,
+inMemoryConnector = CStereotype("In-Memory Connector", superclasses = connector_type)
+databaseConnector = CStereotype("Database Connector", superclasses = connector_type,
                                 attributes = {"read": list, "write": list, "read + write": list})
-serviceConnector = CStereotype("Service Connector", superclasses = connectorType)
-webConnector = CStereotype("Web Connector", superclasses = connectorType)
-looselyCoupledConnector = CStereotype("Loosely Coupled Connector", superclasses = connectorType)
-ldap = CStereotype("LDAP", superclasses = connectorType)
-memcachedConnector = CStereotype("Memcached Connector", superclasses = connectorType)
-messaging = CStereotype("Messaging", superclasses = connectorType)
+serviceConnector = CStereotype("Service Connector", superclasses = connector_type)
+webConnector = CStereotype("Web Connector", superclasses = connector_type)
+looselyCoupledConnector = CStereotype("Loosely Coupled Connector", superclasses = connector_type)
+ldap = CStereotype("LDAP", superclasses = connector_type)
+memcachedConnector = CStereotype("Memcached Connector", superclasses = connector_type)
+messaging = CStereotype("Messaging", superclasses = connector_type)
 eventBasedConnector = CStereotype("Event-Based Connector", superclasses = looselyCoupledConnector)
 
 publisher = CStereotype("Publisher", superclasses = eventBasedConnector,
@@ -93,14 +93,14 @@ http = CStereotype("HTTP", superclasses = webConnector)
 https = CStereotype("HTTPS", superclasses = webConnector)
 http2 = CStereotype("HTTP/2", superclasses = webConnector)
 
-linkedToMiddlewareHandler = CStereotype("Linked to Middleware Handler", superclasses = connectorType,
+linkedToMiddlewareHandler = CStereotype("Linked to Middleware Handler", superclasses = connector_type,
                                         attributes = {"handler": str})
 
-_all = CBundle("_all", 
-    elements = component.getConnectedElements(addStereotypes = True) + connectorType.getConnectedElements(addStereotypes = True))
+_all = CBundle("_all",
+               elements =component.get_connected_elements(add_stereotypes = True) + connector_type.get_connected_elements(add_stereotypes = True))
 
-componentStereotypes = CBundle("Component Stereotypes", elements = componentType.getConnectedElements(addStereotypes = True))
-connectorStereotypes = CBundle("Connector Stereotypes", elements = [component] + connectorType.getConnectedElements(addStereotypes = True))
+componentStereotypes = CBundle("Component Stereotypes", elements = component_type.get_connected_elements(add_stereotypes = True))
+connectorStereotypes = CBundle("Connector Stereotypes", elements =[component] + connector_type.get_connected_elements(add_stereotypes = True))
 
 componentMetamodelViews = [
     _all, {},
