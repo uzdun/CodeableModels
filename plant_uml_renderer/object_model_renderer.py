@@ -1,49 +1,50 @@
-# import os
-# import shutil
-# from subprocess import call
 from codeable_models import CException
-from codeable_models.internal.commons import is_cenum, is_cclassifier, set_keyword_args, is_cclass, is_cobject
+from codeable_models.internal.commons import set_keyword_args, is_cclass, is_cobject
 # from enum import Enum 
 # from codeable_models import CNamedElement
-from plant_uml_renderer.modelRenderer import RenderingContext, ModelRenderer
+from plant_uml_renderer.model_renderer import RenderingContext, ModelRenderer
+
 
 class ObjectRenderingContext(RenderingContext):
     def __init__(self):
         super().__init__()
-        self.visitedLinks = set()
-        self.renderAttributeValues = True
-        self.renderEmptyAttributes = False
-        self.renderAssociationNamesWhenNoLabelIsGiven = False
-        self.excludedLinks = []
+        self.visited_links = set()
+        self.render_attribute_values = True
+        self.render_empty_attributes = False
+        self.render_association_names_when_no_label_is_given = False
+        self.excluded_links = []
+
 
 class ObjectModelRenderer(ModelRenderer):
-    def renderObjectNameWithClassifier(self, object):
-        objName = object.name
-        if objName == None:
-            objName = ""
-        if is_cclass(object):
-            object = object.class_object
+    def render_object_name_with_classifier(self, object_):
+        obj_name = object_.name
+        if obj_name is None:
+            obj_name = ""
+        if is_cclass(object_):
+            object_ = object_.class_object
 
-        sterotypeString = ""
-        if object.class_object_class_ != None:
-            sterotypeString = self.renderStereotypes(object.class_object_class_, object.class_object_class_.stereotype_instances)
+        stereotype_string = ""
+        if object_.class_object_class_ is not None:
+            stereotype_string = self.render_stereotypes(object_.class_object_class_,
+                                                        object_.class_object_class_.stereotype_instances)
 
-        clName = object.classifier.name
-        if clName == None:
-            clName = ""
-        objClassString = self.padAndBreakName(" : " + clName)
-        if objName != "":
-            objString = self.padAndBreakName(objName)
-            if len(objString + objClassString) > self.nameBreakLength:
-                objClassString = "\\n" + objClassString
-            objClassString = objString + objClassString
-        return '"' + sterotypeString + objClassString + '"'
+        cl_name = object_.classifier.name
+        if cl_name is None:
+            cl_name = ""
+        obj_class_string = self.pad_and_break_name(" : " + cl_name)
+        if obj_name != "":
+            obj_string = self.pad_and_break_name(obj_name)
+            if len(obj_string + obj_class_string) > self.name_break_length:
+                obj_class_string = "\\n" + obj_class_string
+            obj_class_string = obj_string + obj_class_string
+        return '"' + stereotype_string + obj_class_string + '"'
 
-    def renderObjectSpecification(self, context, obj):
-        context.addLine("class " + self.renderObjectNameWithClassifier(obj) + " as " + self.getNodeID(context, obj) + self.renderAttributeValues(context, obj))
+    def render_object_specification(self, context, obj):
+        context.add_line("class " + self.render_object_name_with_classifier(obj) +
+                         " as " + self.get_node_id(context, obj) + self.render_attribute_values(context, obj))
 
-    def renderLink(self, context, link):
-        association = link.association 
+    def render_link(self, context, link):
+        association = link.association
 
         arrow = " --> "
         if association.aggregation:
@@ -51,29 +52,31 @@ class ObjectModelRenderer(ModelRenderer):
         elif association.composition:
             arrow = " *-- "
 
-        sterotypeString = self.renderStereotypes(link, link.stereotype_instances)
+        stereotype_string = self.render_stereotypes(link, link.stereotype_instances)
 
         label = ""
-        if sterotypeString != "":
-            label = sterotypeString
-        if link.label != None and len(link.label) != 0:
+        if stereotype_string != "":
+            label = stereotype_string
+        if link.label is not None and len(link.label) != 0:
             if len(label) > 0:
                 label = label + " "
             label = label + link.label
-        elif context.renderAssociationNamesWhenNoLabelIsGiven and association.name != None and len(association.name) != 0:
+        elif context.render_association_names_when_no_label_is_given and association.name is not None and len(
+                association.name) != 0:
             if len(label) > 0:
                 label = label + " "
             label = label + association.name
-        label = ": \"" + self.breakName(label) + "\" "
+        label = ": \"" + self.break_name(label) + "\" "
 
-        context.addLine(self.getNodeID(context, link.source) + arrow + self.getNodeID(context, link.target) + label)
+        context.add_line(
+            self.get_node_id(context, link.source) + arrow + self.get_node_id(context, link.target) + label)
 
-    def renderLinks(self, context, obj, objList):
+    def render_links(self, context, obj, obj_list):
         for classifier in obj.classifier.class_path:
             for association in classifier.associations:
                 links = [l for l in obj.link_objects if l.association == association]
                 for link in links:
-                    if link in context.excludedLinks:
+                    if link in context.excluded_links:
                         continue
                     source = link.source
                     if is_cclass(source):
@@ -84,38 +87,37 @@ class ObjectModelRenderer(ModelRenderer):
                     if source != obj:
                         # only render links outgoing from this object
                         continue
-                    if not link in context.visitedLinks:
-                        context.visitedLinks.add(link)
-                        if target in objList:
-                            self.renderLink(context, link)
+                    if link not in context.visited_links:
+                        context.visited_links.add(link)
+                        if target in obj_list:
+                            self.render_link(context, link)
 
-    def renderObjects(self, context, objects):
-        objList = []
+    def render_objects(self, context, objects):
+        obj_list = []
         for obj in objects:
             if is_cclass(obj):
                 # use class objects and not classes in this renderer
-                objList.extend([obj.class_object_])
+                obj_list.extend([obj.class_object_])
             elif is_cobject(obj):
-                objList.extend([obj])
+                obj_list.extend([obj])
             else:
                 raise CException(f"'{obj!s}' handed to object renderer is no an object or class'")
-        for obj in objList:
-            self.renderObjectSpecification(context, obj)
-        for obj in objList:
-            self.renderLinks(context, obj, objList)
+        for obj in obj_list:
+            self.render_object_specification(context, obj)
+        for obj in obj_list:
+            self.render_links(context, obj, obj_list)
 
-    def renderObjectModel(self, objectList, **kwargs):
+    def render_object_model(self, object_list, **kwargs):
         context = ObjectRenderingContext()
         set_keyword_args(context,
-                         ["renderAttributeValues", "renderEmptyAttributes", "renderAssociationNamesWhenNoLabelIsGiven", "excludedLinks"], **kwargs)
-        self.renderStartGraph(context)
-        self.renderObjects(context, objectList)
-        self.renderEndGraph(context)
+                         ["render_attribute_values", "render_empty_attributes",
+                          "render_association_names_when_no_label_is_given",
+                          "excluded_links"], **kwargs)
+        self.render_start_graph(context)
+        self.render_objects(context, object_list)
+        self.render_end_graph(context)
         return context.result
 
-    def renderObjectModelToFile(self, fileNameBase, classList, **kwargs):
-        source = self.renderObjectModel(classList, **kwargs)
-        self.renderToFiles(fileNameBase, source)
-    
-
-
+    def render_object_model_to_file(self, file_name_base, class_list, **kwargs):
+        source = self.render_object_model(class_list, **kwargs)
+        self.render_to_files(file_name_base, source)

@@ -122,7 +122,7 @@ context_relations_type_bundle = CBundle("Decision Category To Contexts Relation 
                                         elements=_bundle_elements)
 
 guidance_meta_model_views = [_all, {},
-                             guidance_meta_model_hierarchy, {"renderAssociations": False},
+                             guidance_meta_model_hierarchy, {"render_associations": False},
                              guidance_meta_model_details, {},
                              domain_meta_model, {},
                              force_impact_type_bundle, {},

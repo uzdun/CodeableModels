@@ -45,7 +45,7 @@ default values are:
 
 ```
 self.directory = "../_generated"
-self.plantUmlJarPath = "../../libs/plantuml.jar"
+self.plant_uml_jar_path = "../../libs/plantuml.jar"
 ```
 
 The directory containing `codeableModels` and `plantUMLRenderer` must be on the PYTHONPATH.
