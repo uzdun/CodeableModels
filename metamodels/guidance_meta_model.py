@@ -47,7 +47,7 @@ can_use = CStereotype("Can Use", superclasses=design_solution_dependency_type)
 can_be_combined_with = CStereotype("Can Be Combined With", superclasses=design_solution_dependency_type)
 can_be_realized_with = CStereotype("Can be Realized With", superclasses=design_solution_dependency_type)
 variant = CStereotype("Variant", superclasses=design_solution_dependency_type)
-isA = CStereotype("Is-a", superclasses=design_solution_dependency_type)
+is_a = CStereotype("Is-a", superclasses=design_solution_dependency_type)
 realizes = CStereotype("Realizes", superclasses=design_solution_dependency_type)
 includes = CStereotype("Includes", superclasses=design_solution_dependency_type)
 alternative_to = CStereotype("Alternative To", superclasses=design_solution_dependency_type)
@@ -62,6 +62,8 @@ solutions_to_next_decisions_relation_type = CStereotype("Solutions To Decisions 
                                                         extended=solutions_to_next_decisions_relation)
 mandatory_next = CStereotype("Mandatory Next", superclasses=solutions_to_next_decisions_relation_type)
 optional_next = CStereotype("Optional Next", superclasses=solutions_to_next_decisions_relation_type)
+# unspecified if the next decision is mandatory or optional
+nextDecision = CStereotype("Next", superclasses=solutions_to_next_decisions_relation_type)
 consider_if_not_decided_yet = CStereotype("Consider If Not Decided Yet",
                                           superclasses=solutions_to_next_decisions_relation_type)
 
