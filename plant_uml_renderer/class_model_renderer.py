@@ -123,9 +123,9 @@ class ClassModelRenderer(ModelRenderer):
         if not context.render_inheritance:
             return
         for cl in class_list:
-            for subClass in cl.subclasses:
-                if subClass in class_list:
-                    context.add_line(self.get_node_id(context, cl) + " <|--- " + self.get_node_id(context, subClass))
+            for sub_class in cl.subclasses:
+                if sub_class in class_list:
+                    context.add_line(self.get_node_id(context, cl) + " <|--- " + self.get_node_id(context, sub_class))
 
     def render_classes(self, context, class_list):
         for cl in class_list:

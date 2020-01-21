@@ -1,12 +1,12 @@
 import nose
-from nose.tools import ok_, eq_
-from testCommons import neq_, exceptionExpected_
-from parameterized import parameterized
+from nose.tools import eq_
 
-from codeable_models import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
+from codeable_models import CMetaclass, CClass, CException
+from tests.testing_commons import exception_expected_
 
-class TestAssociationsEndsDescriptor():
-    def setUp(self):
+
+class TestAssociationsEndsDescriptor:
+    def setup(self):
         self.mcl = CMetaclass("MCL")
         self.c1 = CClass(self.mcl, "C1")
         self.c2 = CClass(self.mcl, "C2")
@@ -14,44 +14,44 @@ class TestAssociationsEndsDescriptor():
         self.c4 = CClass(self.mcl, "C4")
         self.c5 = CClass(self.mcl, "C5")
 
-    def testEndsStringMalformed(self):
+    def test_ends_string_malformed(self):
         try:
-            a1 = self.c1.association(self.c2, '')
-            exceptionExpected_()
+            self.c1.association(self.c2, '')
+            exception_expected_()
         except CException as e:
             eq_("association descriptor malformed: ''", e.value)
         try:
-            a1 = self.c1.association(self.c2, '->->')
-            exceptionExpected_()
+            self.c1.association(self.c2, '->->')
+            exception_expected_()
         except CException as e:
             eq_("malformed multiplicity: ''", e.value)
         try:
-            a1 = self.c1.association(self.c2, 'a->b')
-            exceptionExpected_()
+            self.c1.association(self.c2, 'a->b')
+            exception_expected_()
         except CException as e:
             eq_("malformed multiplicity: 'a'", e.value)
         try:
-            a1 = self.c1.association(self.c2, '[]->[]')
-            exceptionExpected_()
+            self.c1.association(self.c2, '[]->[]')
+            exception_expected_()
         except CException as e:
             eq_("malformed multiplicity: '[]'", e.value)
         try:
-            a1 = self.c1.association(self.c2, '[]1->[]*')
-            exceptionExpected_()
+            self.c1.association(self.c2, '[]1->[]*')
+            exception_expected_()
         except CException as e:
             eq_("malformed multiplicity: '[]1'", e.value)
         try:
-            a1 = self.c1.association(self.c2, '::1->1')
-            exceptionExpected_()
+            self.c1.association(self.c2, '::1->1')
+            exception_expected_()
         except CException as e:
             eq_("malformed multiplicity: ':1'", e.value)
         try:
-            a1 = self.c1.association(self.c2, '1->1:')
-            exceptionExpected_()
+            self.c1.association(self.c2, '1->1:')
+            exception_expected_()
         except CException as e:
             eq_("association descriptor malformed: ''", e.value)
 
-    def testEndsStringAssociation(self):
+    def test_ends_string_association(self):
         a1 = self.c1.association(self.c2, '[a]1->[b]*')
         eq_(a1.role_name, "b")
         eq_(a1.source_role_name, "a")
@@ -84,7 +84,7 @@ class TestAssociationsEndsDescriptor():
         eq_(a1.composition, False)
         eq_(a1.aggregation, False)
 
-    def testEndsStringAggregation(self):
+    def test_ends_string_aggregation(self):
         a1 = self.c1.association(self.c2, '[a]1<>-[b]*')
         eq_(a1.role_name, "b")
         eq_(a1.source_role_name, "a")
@@ -117,7 +117,7 @@ class TestAssociationsEndsDescriptor():
         eq_(a1.composition, False)
         eq_(a1.aggregation, True)
 
-    def testEndsStringComposition(self):
+    def test_ends_string_composition(self):
         a1 = self.c1.association(self.c2, '[a]1<*>-[b]*')
         eq_(a1.role_name, "b")
         eq_(a1.source_role_name, "a")
@@ -150,8 +150,7 @@ class TestAssociationsEndsDescriptor():
         eq_(a1.composition, True)
         eq_(a1.aggregation, False)
 
-
-    def testEndsStringAssociationWithName(self):
+    def test_ends_string_association_with_name(self):
         a1 = self.c1.association(self.c2, ' assoc a : [a]1->[b]*')
         eq_(a1.role_name, "b")
         eq_(a1.source_role_name, "a")
@@ -188,8 +187,7 @@ class TestAssociationsEndsDescriptor():
         eq_(a1.aggregation, False)
         eq_(a1.name, '[ax] -> [bx]')
 
-
-    def testEndsStringAggregationWithName(self):
+    def test_ends_string_aggregation_with_name(self):
         a1 = self.c1.association(self.c2, ' assoc a : [a]1<>-[b]*')
         eq_(a1.role_name, "b")
         eq_(a1.source_role_name, "a")
@@ -225,8 +223,7 @@ class TestAssociationsEndsDescriptor():
         eq_(a1.aggregation, True)
         eq_(a1.name, '[ax] <>- [bx]')
 
-
-    def testEndsStringCompositionWithName(self):
+    def test_ends_string_composition_with_name(self):
         a1 = self.c1.association(self.c2, ' assoc a : [a]1<*>-[b]*')
         eq_(a1.role_name, "b")
         eq_(a1.source_role_name, "a")
@@ -262,6 +259,7 @@ class TestAssociationsEndsDescriptor():
         eq_(a1.composition, True)
         eq_(a1.aggregation, False)
         eq_(a1.name, '[ax] <*>- [bx]')
+
 
 if __name__ == "__main__":
     nose.main()

@@ -1,44 +1,46 @@
-import nose
-from nose.tools import ok_, eq_
-from testCommons import neq_, exceptionExpected_
-from parameterized import parameterized
 import re
 
-from codeable_models import CMetaclass, CClass, CObject, CAttribute, CException, CEnum
+import nose
+from nose.tools import ok_, eq_
+from parameterized import parameterized
 
-class TestClassAttributes():    
-    def setUp(self):
+from codeable_models import CMetaclass, CClass, CObject, CAttribute, CException, CEnum
+from tests.testing_commons import neq_, exception_expected_
+
+
+class TestClassAttributes:
+    def setup(self):
         self.mcl = CMetaclass("MCL")
         self.cl = CClass(self.mcl, "CL")
 
-    def testPrimitiveEmptyInput(self):
-        cl = CClass(self.mcl, "C", attributes = {})
+    def test_primitive_empty_input(self):
+        cl = CClass(self.mcl, "C", attributes={})
         eq_(len(cl.attributes), 0)
         eq_(len(cl.attribute_names), 0)
 
-    def testPrimitiveNoneInput(self):
-        cl = CClass(self.mcl, "C", attributes = None)
+    def test_primitive_none_input(self):
+        cl = CClass(self.mcl, "C", attributes=None)
         eq_(len(cl.attributes), 0)
         eq_(len(cl.attribute_names), 0)
 
-    def testPrimitiveTypeAttributes(self):
-        cl = CClass(self.mcl, "C", attributes = {
-                "isBoolean": True, 
-                "intVal": 1,
-                "floatVal": 1.1,
-                "string": "abc",
-                "list": ["a", "b"]})
+    def test_primitive_type_attributes(self):
+        cl = CClass(self.mcl, "C", attributes={
+            "isBoolean": True,
+            "intVal": 1,
+            "floatVal": 1.1,
+            "string": "abc",
+            "list": ["a", "b"]})
         eq_(len(cl.attributes), 5)
         eq_(len(cl.attribute_names), 5)
 
-        ok_(set(["isBoolean", "intVal", "floatVal", "string", "list"]).issubset(cl.attribute_names))
+        ok_({"isBoolean", "intVal", "floatVal", "string", "list"}.issubset(cl.attribute_names))
 
         a1 = cl.get_attribute("isBoolean")
         a2 = cl.get_attribute("intVal")
         a3 = cl.get_attribute("floatVal")
         a4 = cl.get_attribute("string")
         a5 = cl.get_attribute("list")
-        ok_(set([a1, a2, a3, a4, a5]).issubset(cl.attributes))
+        ok_({a1, a2, a3, a4, a5}.issubset(cl.attributes))
         eq_(None, cl.get_attribute("X"))
 
         eq_(a1.type, bool)
@@ -65,8 +67,8 @@ class TestClassAttributes():
         eq_(d4, "abc")
         eq_(d5, ["a", "b"])
 
-    def testAttributeGetNameAndClassifier(self):
-        cl = CClass(self.mcl, "C", attributes = {"isBoolean": True})
+    def test_attribute_get_name_and_classifier(self):
+        cl = CClass(self.mcl, "C", attributes={"isBoolean": True})
         a = cl.get_attribute("isBoolean")
         eq_(a.name, "isBoolean")
         eq_(a.classifier, cl)
@@ -74,14 +76,14 @@ class TestClassAttributes():
         eq_(a.name, None)
         eq_(a.classifier, None)
 
-    def testPrimitiveAttributesNoDefault(self):
+    def test_primitive_attributes_no_default(self):
         self.cl.attributes = {"a": bool, "b": int, "c": str, "d": float, "e": list}
         a1 = self.cl.get_attribute("a")
         a2 = self.cl.get_attribute("b")
         a3 = self.cl.get_attribute("c")
         a4 = self.cl.get_attribute("d")
         a5 = self.cl.get_attribute("e")
-        ok_(set([a1, a2, a3, a4, a5]).issubset(self.cl.attributes))
+        ok_({a1, a2, a3, a4, a5}.issubset(self.cl.attributes))
         eq_(a1.default, None)
         eq_(a1.type, bool)
         eq_(a2.default, None)
@@ -93,174 +95,174 @@ class TestClassAttributes():
         eq_(a5.default, None)
         eq_(a5.type, list)
 
-    def testGetAttributeNotFound(self):
+    def test_get_attribute_not_found(self):
         eq_(self.cl.get_attribute("x"), None)
         self.cl.attributes = {"a": bool, "b": int, "c": str, "d": float}
         eq_(self.cl.get_attribute("x"), None)
 
-    def testTypeAndDefaultOnAttribute(self):
-        CAttribute(default = "", type = str)
-        CAttribute(type = str, default = "")
+    def test_type_and_default_on_attribute(self):
+        CAttribute(default="", type=str)
+        CAttribute(type=str, default="")
         try:
-            CAttribute(default = 1, type = str)
-            exceptionExpected_()
-        except CException as e: 
+            CAttribute(default=1, type=str)
+            exception_expected_()
+        except CException as e:
             eq_("default value '1' incompatible with attribute's type '<class 'str'>'", e.value)
         try:
-            CAttribute(type = str, default = 1)
-            exceptionExpected_()
-        except CException as e: 
+            CAttribute(type=str, default=1)
+            exception_expected_()
+        except CException as e:
             eq_("default value '1' incompatible with attribute's type '<class 'str'>'", e.value)
-        a5 = CAttribute(type = int)
+        a5 = CAttribute(type=int)
         eq_(a5.default, None)
 
-    def testSameNamedArgumentsCAttributes(self):
-        a1 = CAttribute(default = "")
-        a2 = CAttribute(type = str)
+    def test_same_named_attributes(self):
+        a1 = CAttribute(default="")
+        a2 = CAttribute(type=str)
         n1 = "a"
         self.cl.attributes = {n1: a1, "a": a2}
         eq_(set(self.cl.attributes), {a2})
         eq_(self.cl.attribute_names, ["a"])
-        
-    def testSameNamedArgumentsDefaults(self):
+
+    def test_same_named_arguments_defaults(self):
         n1 = "a"
         self.cl.attributes = {n1: "", "a": 1}
         ok_(len(self.cl.attributes), 1)
         eq_(self.cl.get_attribute("a").default, 1)
         eq_(self.cl.attribute_names, ["a"])
 
-    def testObjectTypeAttribute(self):
-        attrType = CClass(self.mcl, "AttrType")
-        attrValue = CObject(attrType, "attrValue")
-        self.cl.attributes = {"attrTypeObj" : attrValue}
-        objAttr = self.cl.get_attribute("attrTypeObj")
+    def test_object_type_attribute(self):
+        attr_type = CClass(self.mcl, "AttrType")
+        attr_value = CObject(attr_type, "attribute_value")
+        self.cl.attributes = {"attrTypeObj": attr_value}
+        obj_attr = self.cl.get_attribute("attrTypeObj")
         attributes = self.cl.attributes
-        eq_(set(attributes), {objAttr})
+        eq_(set(attributes), {obj_attr})
 
-        boolAttr = CAttribute(default = True)
-        self.cl.attributes = {"attrTypeObj" : objAttr, "isBoolean" : boolAttr}
+        bool_attr = CAttribute(default=True)
+        self.cl.attributes = {"attrTypeObj": obj_attr, "isBoolean": bool_attr}
         attributes = self.cl.attributes
-        eq_(set(attributes), {objAttr, boolAttr})
+        eq_(set(attributes), {obj_attr, bool_attr})
         eq_(self.cl.attribute_names, ["attrTypeObj", "isBoolean"])
-        objAttr = self.cl.get_attribute("attrTypeObj")
-        eq_(objAttr.type, attrType)
-        default = objAttr.default
+        obj_attr = self.cl.get_attribute("attrTypeObj")
+        eq_(obj_attr.type, attr_type)
+        default = obj_attr.default
         ok_(isinstance(default, CObject))
-        eq_(default, attrValue)
+        eq_(default, attr_value)
 
-        self.cl.attributes = {"attrTypeObj" : attrValue, "isBoolean" : boolAttr}
+        self.cl.attributes = {"attrTypeObj": attr_value, "isBoolean": bool_attr}
         eq_(self.cl.attribute_names, ["attrTypeObj", "isBoolean"])
-        # using the CObject in attributes causes a new CAttribute to be created != objAttr
-        neq_(self.cl.get_attribute("attrTypeObj"), objAttr)
-    
-    def testClassTypeAttribute(self):
-        attrType = CMetaclass("AttrType")
-        attrValue = CClass(attrType, "attrValue")
-        self.cl.attributes = {"attrTypeCl" : attrType}
-        clAttr = self.cl.get_attribute("attrTypeCl")
-        clAttr.default = attrValue
-        attributes = self.cl.attributes
-        eq_(set(attributes), {clAttr})
+        # using the CObject in attributes causes a new CAttribute to be created != obj_attr
+        neq_(self.cl.get_attribute("attrTypeObj"), obj_attr)
 
-        boolAttr = CAttribute(default = True)
-        self.cl.attributes = {"attrTypeCl" : clAttr, "isBoolean" : boolAttr}
+    def test_class_type_attribute(self):
+        attr_type = CMetaclass("AttrType")
+        attr_value = CClass(attr_type, "attribute_value")
+        self.cl.attributes = {"attrTypeCl": attr_type}
+        cl_attr = self.cl.get_attribute("attrTypeCl")
+        cl_attr.default = attr_value
         attributes = self.cl.attributes
-        eq_(set(attributes), {clAttr, boolAttr})
+        eq_(set(attributes), {cl_attr})
+
+        bool_attr = CAttribute(default=True)
+        self.cl.attributes = {"attrTypeCl": cl_attr, "isBoolean": bool_attr}
+        attributes = self.cl.attributes
+        eq_(set(attributes), {cl_attr, bool_attr})
         eq_(self.cl.attribute_names, ["attrTypeCl", "isBoolean"])
-        clAttr = self.cl.get_attribute("attrTypeCl")
-        eq_(clAttr.type, attrType)
-        default = clAttr.default
+        cl_attr = self.cl.get_attribute("attrTypeCl")
+        eq_(cl_attr.type, attr_type)
+        default = cl_attr.default
         ok_(isinstance(default, CClass))
-        eq_(default, attrValue)
+        eq_(default, attr_value)
 
-        self.cl.attributes = {"attrTypeCl" : attrValue, "isBoolean" : boolAttr}
+        self.cl.attributes = {"attrTypeCl": attr_value, "isBoolean": bool_attr}
         eq_(self.cl.attribute_names, ["attrTypeCl", "isBoolean"])
-        # using the CClass in attributes causes a new CAttribute to be created != clAttr
-        neq_(self.cl.get_attribute("attrTypeCl"), clAttr)
+        # using the CClass in attributes causes a new CAttribute to be created != cl_attr
+        neq_(self.cl.get_attribute("attrTypeCl"), cl_attr)
 
-    def testEnumGetValues(self):
-        enumValues = ["A", "B", "C"]
-        enumObj = CEnum("ABCEnum", values = enumValues)
-        eq_(["A", "B", "C"], enumObj.values)
-        ok_("A" in enumObj.values)
-        ok_(not("X" in enumObj.values))
-        enumValues = [1, 2, 3]
-        enumObj = CEnum("123Enum", values = enumValues)
-        eq_([1,2,3], enumObj.values)
+    def test_enum_get_values(self):
+        enum_values = ["A", "B", "C"]
+        enum_obj = CEnum("ABCEnum", values=enum_values)
+        eq_(["A", "B", "C"], enum_obj.values)
+        ok_("A" in enum_obj.values)
+        ok_(not ("X" in enum_obj.values))
+        enum_values = [1, 2, 3]
+        enum_obj = CEnum("123Enum", values=enum_values)
+        eq_([1, 2, 3], enum_obj.values)
 
-    def testEnumEmpty(self):
-        enumObj = CEnum("ABCEnum", values = [])
-        eq_(enumObj.values, [])
-        enumObj = CEnum("ABCEnum", values = None)
-        eq_(enumObj.values, [])
+    def test_enum_empty(self):
+        enum_obj = CEnum("ABCEnum", values=[])
+        eq_(enum_obj.values, [])
+        enum_obj = CEnum("ABCEnum", values=None)
+        eq_(enum_obj.values, [])
 
-    def testEnumNoList(self):
-        enumValues = {"A", "B", "C"}
+    def test_enum_no_list(self):
+        enum_values = {"A", "B", "C"}
         try:
-            CEnum("ABCEnum", values = enumValues)
-            exceptionExpected_()
+            CEnum("ABCEnum", values=enum_values)
+            exception_expected_()
         except CException as e:
             ok_(re.match("^an enum needs to be initialized with a list of values, but got:([ {}'CAB,]+)$", e.value))
 
-    def testEnumName(self):
-        enumValues = ["A", "B", "C"]
-        enumObj = CEnum("ABCEnum", values = enumValues)
-        eq_("ABCEnum", enumObj.name)
+    def test_enum_name(self):
+        enum_values = ["A", "B", "C"]
+        enum_obj = CEnum("ABCEnum", values=enum_values)
+        eq_("ABCEnum", enum_obj.name)
 
-    def testDefineEnumTypeAttribute(self):
-        enumValues = ["A", "B", "C"]
-        enumObj = CEnum("ABCEnum", values = enumValues)
-        CAttribute(type = enumObj, default = "A")
-        CAttribute(default = "A", type = enumObj)
+    def test_define_enum_type_attribute(self):
+        enum_values = ["A", "B", "C"]
+        enum_obj = CEnum("ABCEnum", values=enum_values)
+        CAttribute(type=enum_obj, default="A")
+        CAttribute(default="A", type=enum_obj)
         try:
-            CAttribute(type = enumObj, default = "X")
-            exceptionExpected_()
-        except CException as e: 
+            CAttribute(type=enum_obj, default="X")
+            exception_expected_()
+        except CException as e:
             eq_("default value 'X' incompatible with attribute's type 'ABCEnum'", e.value)
         try:
-            CAttribute(default = "X", type = enumObj)        
-            exceptionExpected_()
-        except CException as e: 
+            CAttribute(default="X", type=enum_obj)
+            exception_expected_()
+        except CException as e:
             eq_("default value 'X' incompatible with attribute's type 'ABCEnum'", e.value)
 
-    def testUseEnumTypeAttribute(self):
-        enumValues = ["A", "B", "C"]
-        enumObj = CEnum("ABCEnum", values = enumValues)
-        ea1 = CAttribute(type = enumObj, default = "A")
-        ea2 = CAttribute(type = enumObj)
+    def test_use_enum_type_attribute(self):
+        enum_values = ["A", "B", "C"]
+        enum_obj = CEnum("ABCEnum", values=enum_values)
+        ea1 = CAttribute(type=enum_obj, default="A")
+        ea2 = CAttribute(type=enum_obj)
         self.cl.attributes = {"letters1": ea1, "letters2": ea2}
         eq_(set(self.cl.attributes), {ea1, ea2})
         ok_(isinstance(ea1.type, CEnum))
 
         self.cl.attributes = {"letters1": ea1, "isBool": True, "letters2": ea2}
-        boolAttr = self.cl.get_attribute("isBool")
+        bool_attr = self.cl.get_attribute("isBool")
         l1 = self.cl.get_attribute("letters1")
-        eq_(set(self.cl.attributes), {l1, ea2, boolAttr})
+        eq_(set(self.cl.attributes), {l1, ea2, bool_attr})
         eq_(l1.default, "A")
         eq_(ea2.default, None)
 
-    def testUnknownAttributeType(self):
+    def test_unknown_attribute_type(self):
         try:
-            self.cl.attributes = {"x": CEnum, "b" : bool}
-            exceptionExpected_()
-        except CException as e: 
+            self.cl.attributes = {"x": CEnum, "b": bool}
+            exception_expected_()
+        except CException as e:
             ok_(re.match("^(unknown attribute type: '<class ).*(CEnum'>')$", e.value))
 
-    def testSetAttributeDefaultValue(self):
-        enumObj = CEnum("ABCEnum", values = ["A", "B", "C"])
-        self.cl.attributes = {"letters": enumObj, "b" : bool}
-        l = self.cl.get_attribute("letters")
+    def test_set_attribute_default_value(self):
+        enum_obj = CEnum("ABCEnum", values=["A", "B", "C"])
+        self.cl.attributes = {"letters": enum_obj, "b": bool}
+        letters = self.cl.get_attribute("letters")
         b = self.cl.get_attribute("b")
-        eq_(l.default, None)
+        eq_(letters.default, None)
         eq_(b.default, None)
-        l.default = "B"
+        letters.default = "B"
         b.default = False
-        eq_(l.default, "B")
+        eq_(letters.default, "B")
         eq_(b.default, False)
-        eq_(l.type, enumObj)
+        eq_(letters.type, enum_obj)
         eq_(b.type, bool)
-    
-    def testCClassVsCObject(self):
+
+    def test_cclass_vs_cobject(self):
         cl_a = CClass(self.mcl, "A")
         cl_b = CClass(self.mcl, "B")
         obj_b = CObject(cl_b, "obj_b")
@@ -274,12 +276,12 @@ class TestClassAttributes():
         eq_(b.default, obj_b)
 
     testMetaclass = CMetaclass("A")
-    testEnum = CEnum("AEnum", values = [1,2])
+    testEnum = CEnum("AEnum", values=[1, 2])
     testClass = CClass(testMetaclass, "CL")
 
     @parameterized.expand([
         (bool, testMetaclass),
-        (bool, 1.1), 
+        (bool, 1.1),
         (int, testMetaclass),
         (int, "abc"),
         (float, "1"),
@@ -290,18 +292,18 @@ class TestClassAttributes():
         (testEnum, testMetaclass),
         (testClass, "1"),
         (testClass, testMetaclass)])
-    def testAttributeTypeCheck(self, type, wrongDefault):
-        self.cl.attributes = {"a": type}
+    def test_attribute_type_check(self, type_to_check, wrong_default):
+        self.cl.attributes = {"a": type_to_check}
         attr = self.cl.get_attribute("a")
         try:
-            attr.default = wrongDefault
-            exceptionExpected_()
-        except CException as e: 
-            eq_(f"default value '{wrongDefault!s}' incompatible with attribute's type '{type!s}'", e.value)
+            attr.default = wrong_default
+            exception_expected_()
+        except CException as e:
+            eq_(f"default value '{wrong_default!s}' incompatible with attribute's type '{type_to_check!s}'", e.value)
 
-    def test_DeleteAttributes(self):
+    def test_delete_attributes(self):
         self.cl.attributes = {
-            "isBoolean": True, 
+            "isBoolean": True,
             "intVal": 1,
             "floatVal": 1.1,
             "string": "abc"}
@@ -309,7 +311,7 @@ class TestClassAttributes():
         self.cl.attributes = {}
         eq_(set(self.cl.attributes), set())
         self.cl.attributes = {
-            "isBoolean": True, 
+            "isBoolean": True,
             "intVal": 1,
             "floatVal": 1.1,
             "string": "abc"}
@@ -317,26 +319,26 @@ class TestClassAttributes():
         self.cl.attributes = {}
         eq_(set(self.cl.attributes), set())
 
-    def testTypeObjectAttributeClassIsDeletedInConstructor(self):
-        attrCl = CClass(self.mcl, "AC")
-        attrCl.delete()
+    def test_type_object_attribute_class_is_deleted_in_constructor(self):
+        attr_cl = CClass(self.mcl, "AC")
+        attr_cl.delete()
         try:
-            CClass(self.mcl, "C", attributes = {"ac": attrCl})
-            exceptionExpected_()
-        except CException as e: 
+            CClass(self.mcl, "C", attributes={"ac": attr_cl})
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "cannot access named element that has been deleted")
 
-    def testTypeObjectAttributeClassIsDeletedInTypeMethod(self):
-        attrCl = CClass(self.mcl, "AC")
-        attrCl.delete()
+    def test_type_object_attribute_class_is_deleted_in_type_method(self):
+        attr_cl = CClass(self.mcl, "AC")
+        attr_cl.delete()
         try:
             a = CAttribute()
-            a.type = attrCl
-            exceptionExpected_()
-        except CException as e: 
+            a.type = attr_cl
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "cannot access named element that has been deleted")
 
-    def testSetCAttributeMethodToNone(self):
+    def test_set_cattribute_method_to_none(self):
         # setting the type/default to their default value (None) should work
         a = CAttribute()
         a.type = None
@@ -344,37 +346,33 @@ class TestClassAttributes():
         eq_(a.type, None)
         eq_(a.default, None)
 
-    def testTypeObjectAttributeClassIsNone(self):
-        c = CClass(self.mcl, "C", attributes = {"ac": None})
+    def test_type_object_attribute_class_is_none(self):
+        c = CClass(self.mcl, "C", attributes={"ac": None})
         ac = c.get_attribute("ac")
         eq_(ac.default, None)
         eq_(ac.type, None)
 
-    def testDefaultObjectAttributeIsDeletedInConstructor(self):
-        attrCl = CClass(self.mcl, "AC")
-        defaultObj = CObject(attrCl)
-        defaultObj.delete()
+    def test_default_object_attribute_is_deleted_in_constructor(self):
+        attr_cl = CClass(self.mcl, "AC")
+        default_obj = CObject(attr_cl)
+        default_obj.delete()
         try:
-            CClass(self.mcl, "C", attributes = {"ac": defaultObj})
-            exceptionExpected_()
-        except CException as e: 
+            CClass(self.mcl, "C", attributes={"ac": default_obj})
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "cannot access named element that has been deleted")
 
-    def testDefaultObjectAttributeIsDeletedInDefaultMethod(self):
-        attrCl = CClass(self.mcl, "AC")
-        defaultObj = CObject(attrCl)
-        defaultObj.delete()
+    def test_default_object_attribute_is_deleted_in_default_method(self):
+        attr_cl = CClass(self.mcl, "AC")
+        default_obj = CObject(attr_cl)
+        default_obj.delete()
         try:
             a = CAttribute()
-            a.default = defaultObj
-            exceptionExpected_()
-        except CException as e: 
+            a.default = default_obj
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "cannot access named element that has been deleted")
 
 
 if __name__ == "__main__":
     nose.main()
-
-
-
-

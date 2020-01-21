@@ -1,44 +1,46 @@
-import nose
-from nose.tools import ok_, eq_
-from testCommons import neq_, exceptionExpected_
-from parameterized import parameterized
 import re
 
+import nose
+from nose.tools import ok_, eq_
+from parameterized import parameterized
+
 from codeable_models import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
+from tests.testing_commons import neq_, exception_expected_
 
-class TestStereotypeAttributes():
-    def setUp(self):
+
+class TestStereotypeAttributes:
+    def setup(self):
         self.mcl = CMetaclass("MCL")
-        self.stereotype = CStereotype("S", extended = self.mcl)
+        self.stereotype = CStereotype("S", extended=self.mcl)
 
-    def testPrimitiveEmptyInput(self):
-        cl = CStereotype("S", extended = self.mcl, attributes = {})
+    def test_primitive_empty_input(self):
+        cl = CStereotype("S", extended=self.mcl, attributes={})
         eq_(len(cl.attributes), 0)
         eq_(len(cl.attribute_names), 0)
 
-    def testPrimitiveNoneInput(self):
-        cl = CStereotype("S", extended = self.mcl, attributes = None)
+    def test_primitive_none_input(self):
+        cl = CStereotype("S", extended=self.mcl, attributes=None)
         eq_(len(cl.attributes), 0)
         eq_(len(cl.attribute_names), 0)
 
-    def testPrimitiveTypeAttributes(self):
-        cl = CStereotype("S", extended = self.mcl, attributes = {
-                "isBoolean": True, 
-                "intVal": 1,
-                "floatVal": 1.1,
-                "string": "abc",
-                "list": ["a", "b"]})
+    def test_primitive_type_attributes(self):
+        cl = CStereotype("S", extended=self.mcl, attributes={
+            "isBoolean": True,
+            "intVal": 1,
+            "floatVal": 1.1,
+            "string": "abc",
+            "list": ["a", "b"]})
         eq_(len(cl.attributes), 5)
         eq_(len(cl.attribute_names), 5)
 
-        ok_(set(["isBoolean", "intVal", "floatVal", "string", "list"]).issubset(cl.attribute_names))
+        ok_({"isBoolean", "intVal", "floatVal", "string", "list"}.issubset(cl.attribute_names))
 
         a1 = cl.get_attribute("isBoolean")
         a2 = cl.get_attribute("intVal")
         a3 = cl.get_attribute("floatVal")
         a4 = cl.get_attribute("string")
         a5 = cl.get_attribute("list")
-        ok_(set([a1, a2, a3, a4, a5]).issubset(cl.attributes))
+        ok_({a1, a2, a3, a4, a5}.issubset(cl.attributes))
         eq_(None, cl.get_attribute("X"))
 
         eq_(a1.type, bool)
@@ -65,8 +67,8 @@ class TestStereotypeAttributes():
         eq_(d4, "abc")
         eq_(d5, ["a", "b"])
 
-    def testAttributeGetNameAndClassifier(self):
-        cl = CStereotype("S", attributes = {"isBoolean": True})
+    def test_attribute_get_name_and_classifier(self):
+        cl = CStereotype("S", attributes={"isBoolean": True})
         a = cl.get_attribute("isBoolean")
         eq_(a.name, "isBoolean")
         eq_(a.classifier, cl)
@@ -74,14 +76,14 @@ class TestStereotypeAttributes():
         eq_(a.name, None)
         eq_(a.classifier, None)
 
-    def testPrimitiveAttributesNoDefault(self):
+    def test_primitive_attributes_no_default(self):
         self.stereotype.attributes = {"a": bool, "b": int, "c": str, "d": float, "e": list}
         a1 = self.stereotype.get_attribute("a")
         a2 = self.stereotype.get_attribute("b")
         a3 = self.stereotype.get_attribute("c")
         a4 = self.stereotype.get_attribute("d")
         a5 = self.stereotype.get_attribute("e")
-        ok_(set([a1, a2, a3, a4, a5]).issubset(self.stereotype.attributes))
+        ok_({a1, a2, a3, a4, a5}.issubset(self.stereotype.attributes))
         eq_(a1.default, None)
         eq_(a1.type, bool)
         eq_(a2.default, None)
@@ -93,114 +95,113 @@ class TestStereotypeAttributes():
         eq_(a5.default, None)
         eq_(a5.type, list)
 
-    def testGetAttributeNotFound(self):
+    def test_get_attribute_not_found(self):
         eq_(self.stereotype.get_attribute("x"), None)
         self.stereotype.attributes = {"a": bool, "b": int, "c": str, "d": float}
         eq_(self.stereotype.get_attribute("x"), None)
 
-    def testSameNamedArgumentsCAttributes(self):
-        a1 = CAttribute(default = "")
-        a2 = CAttribute(type = str)
+    def test_same_named_arguments_cattributes(self):
+        a1 = CAttribute(default="")
+        a2 = CAttribute(type=str)
         n1 = "a"
         self.stereotype.attributes = {n1: a1, "a": a2}
         eq_(set(self.stereotype.attributes), {a2})
         eq_(self.stereotype.attribute_names, ["a"])
-        
-    def testSameNamedArgumentsDefaults(self):
+
+    def test_same_named_arguments_defaults(self):
         n1 = "a"
         self.stereotype.attributes = {n1: "", "a": 1}
         ok_(len(self.stereotype.attributes), 1)
         eq_(self.stereotype.get_attribute("a").default, 1)
         eq_(self.stereotype.attribute_names, ["a"])
 
-    def testObjectTypeAttribute(self):
-        attrType = CClass(self.mcl, "AttrType")
-        attrValue = CObject(attrType, "attrValue")
-        self.stereotype.attributes = {"attrTypeObj" : attrValue}
-        objAttr = self.stereotype.get_attribute("attrTypeObj")
+    def test_object_type_attribute(self):
+        attribute_type = CClass(self.mcl, "AttrType")
+        attribute_value = CObject(attribute_type, "attribute_value")
+        self.stereotype.attributes = {"attrTypeObj": attribute_value}
+        object_attribute = self.stereotype.get_attribute("attrTypeObj")
         attributes = self.stereotype.attributes
-        eq_(set(attributes), {objAttr})
+        eq_(set(attributes), {object_attribute})
 
-        boolAttr = CAttribute(default = True)
-        self.stereotype.attributes = {"attrTypeObj" : objAttr, "isBoolean" : boolAttr}
+        bool_attr = CAttribute(default=True)
+        self.stereotype.attributes = {"attrTypeObj": object_attribute, "isBoolean": bool_attr}
         attributes = self.stereotype.attributes
-        eq_(set(attributes), {objAttr, boolAttr})
+        eq_(set(attributes), {object_attribute, bool_attr})
         eq_(self.stereotype.attribute_names, ["attrTypeObj", "isBoolean"])
-        objAttr = self.stereotype.get_attribute("attrTypeObj")
-        eq_(objAttr.type, attrType)
-        default = objAttr.default
+        object_attribute = self.stereotype.get_attribute("attrTypeObj")
+        eq_(object_attribute.type, attribute_type)
+        default = object_attribute.default
         ok_(isinstance(default, CObject))
-        eq_(default, attrValue)
+        eq_(default, attribute_value)
 
-        self.stereotype.attributes = {"attrTypeObj" : attrValue, "isBoolean" : boolAttr}
+        self.stereotype.attributes = {"attrTypeObj": attribute_value, "isBoolean": bool_attr}
         eq_(self.stereotype.attribute_names, ["attrTypeObj", "isBoolean"])
-        # using the CObject in attributes causes a new CAttribute to be created != objAttr
-        neq_(self.stereotype.get_attribute("attrTypeObj"), objAttr)
+        # using the CObject in attributes causes a new CAttribute to be created != object_attribute
+        neq_(self.stereotype.get_attribute("attrTypeObj"), object_attribute)
 
-    def testClassTypeAttribute(self):
-        attrType = CMetaclass("AttrType")
-        attrValue = CClass(attrType, "attrValue")
-        self.stereotype.attributes = {"attrTypeCl" : attrType}
-        clAttr = self.stereotype.get_attribute("attrTypeCl")
-        clAttr.default = attrValue
+    def test_class_type_attribute(self):
+        attribute_type = CMetaclass("AttrType")
+        attribute_value = CClass(attribute_type, "attribute_value")
+        self.stereotype.attributes = {"attrTypeCl": attribute_type}
+        class_attribute = self.stereotype.get_attribute("attrTypeCl")
+        class_attribute.default = attribute_value
         attributes = self.stereotype.attributes
-        eq_(set(attributes), {clAttr})
+        eq_(set(attributes), {class_attribute})
 
-        boolAttr = CAttribute(default = True)
-        self.stereotype.attributes = {"attrTypeCl" : clAttr, "isBoolean" : boolAttr}
+        bool_attr = CAttribute(default=True)
+        self.stereotype.attributes = {"attrTypeCl": class_attribute, "isBoolean": bool_attr}
         attributes = self.stereotype.attributes
-        eq_(set(attributes), {clAttr, boolAttr})
+        eq_(set(attributes), {class_attribute, bool_attr})
         eq_(self.stereotype.attribute_names, ["attrTypeCl", "isBoolean"])
-        clAttr = self.stereotype.get_attribute("attrTypeCl")
-        eq_(clAttr.type, attrType)
-        default = clAttr.default
+        class_attribute = self.stereotype.get_attribute("attrTypeCl")
+        eq_(class_attribute.type, attribute_type)
+        default = class_attribute.default
         ok_(isinstance(default, CClass))
-        eq_(default, attrValue)
+        eq_(default, attribute_value)
 
-        self.stereotype.attributes = {"attrTypeCl" : attrValue, "isBoolean" : boolAttr}
+        self.stereotype.attributes = {"attrTypeCl": attribute_value, "isBoolean": bool_attr}
         eq_(self.stereotype.attribute_names, ["attrTypeCl", "isBoolean"])
-        # using the CClass in attributes causes a new CAttribute to be created != clAttr
-        neq_(self.stereotype.get_attribute("attrTypeCl"), clAttr)
+        # using the CClass in attributes causes a new CAttribute to be created != class_attribute
+        neq_(self.stereotype.get_attribute("attrTypeCl"), class_attribute)
 
-    def testUseEnumTypeAttribute(self):
-        enumValues = ["A", "B", "C"]
-        enumObj = CEnum("ABCEnum", values = enumValues)
-        ea1 = CAttribute(type = enumObj, default = "A")
-        ea2 = CAttribute(type = enumObj)
+    def test_use_enum_type_attribute(self):
+        enum_values = ["A", "B", "C"]
+        enum_obj = CEnum("ABCEnum", values=enum_values)
+        ea1 = CAttribute(type=enum_obj, default="A")
+        ea2 = CAttribute(type=enum_obj)
         self.stereotype.attributes = {"letters1": ea1, "letters2": ea2}
         eq_(set(self.stereotype.attributes), {ea1, ea2})
         ok_(isinstance(ea1.type, CEnum))
 
         self.stereotype.attributes = {"letters1": ea1, "isBool": True, "letters2": ea2}
-        boolAttr = self.stereotype.get_attribute("isBool")
+        bool_attr = self.stereotype.get_attribute("isBool")
         l1 = self.stereotype.get_attribute("letters1")
-        eq_(set(self.stereotype.attributes), {l1, ea2, boolAttr})
+        eq_(set(self.stereotype.attributes), {l1, ea2, bool_attr})
         eq_(l1.default, "A")
         eq_(ea2.default, None)
 
-    def testUnknownAttributeType(self):
+    def test_unknown_attribute_type(self):
         try:
-            self.stereotype.attributes = {"x": CEnum, "b" : bool}
-            exceptionExpected_()
-        except CException as e: 
+            self.stereotype.attributes = {"x": CEnum, "b": bool}
+            exception_expected_()
+        except CException as e:
             ok_(re.match("^(unknown attribute type: '<class ).*(CEnum'>')$", e.value))
 
-
-    def testSetAttributeDefaultValue(self):
-        enumObj = CEnum("ABCEnum", values = ["A", "B", "C"])
-        self.stereotype.attributes = {"letters": enumObj, "b" : bool}
-        l = self.stereotype.get_attribute("letters")
+    def test_set_attribute_default_value(self):
+        enum_obj = CEnum("ABCEnum", values=["A", "B", "C"])
+        self.stereotype.attributes = {"letters": enum_obj, "b": bool}
+        letters = self.stereotype.get_attribute("letters")
         b = self.stereotype.get_attribute("b")
-        eq_(l.default, None)
+        eq_(letters.default, None)
         eq_(b.default, None)
-        l.default = "B"
+        letters.default = "B"
         b.default = False
-        eq_(l.default, "B")
+        eq_(letters.default, "B")
         eq_(b.default, False)
-        eq_(l.type, enumObj)
+        eq_(letters.type, enum_obj)
         eq_(b.type, bool)
-    
-    def testCClassVsCObject(self):
+
+    def test_cclass_vs_cobject(self):
         cl_a = CClass(self.mcl, "A")
         cl_b = CClass(self.mcl, "B")
         obj_b = CObject(cl_b, "obj_b")
@@ -214,12 +215,12 @@ class TestStereotypeAttributes():
         eq_(b.default, obj_b)
 
     testMetaclass = CMetaclass("A")
-    testEnum = CEnum("AEnum", values = [1,2])
+    testEnum = CEnum("AEnum", values=[1, 2])
     testClass = CClass(testMetaclass, "CL")
 
     @parameterized.expand([
         (bool, testMetaclass),
-        (bool, 1.1), 
+        (bool, 1.1),
         (int, testMetaclass),
         (int, "abc"),
         (float, "1"),
@@ -230,18 +231,18 @@ class TestStereotypeAttributes():
         (testEnum, testMetaclass),
         (testClass, "1"),
         (testClass, testMetaclass)])
-    def testAttributeTypeCheck(self, type, wrongDefault):
-        self.stereotype.attributes = {"a": type}
+    def test_attribute_type_check(self, type_to_check, wrong_default):
+        self.stereotype.attributes = {"a": type_to_check}
         attr = self.stereotype.get_attribute("a")
         try:
-            attr.default = wrongDefault
-            exceptionExpected_()
-        except CException as e: 
-            eq_(f"default value '{wrongDefault!s}' incompatible with attribute's type '{type!s}'", e.value)
+            attr.default = wrong_default
+            exception_expected_()
+        except CException as e:
+            eq_(f"default value '{wrong_default!s}' incompatible with attribute's type '{type_to_check!s}'", e.value)
 
-    def test_DeleteAttributes(self):
+    def test_delete_attributes(self):
         self.stereotype.attributes = {
-            "isBoolean": True, 
+            "isBoolean": True,
             "intVal": 1,
             "floatVal": 1.1,
             "string": "abc"}
@@ -249,7 +250,7 @@ class TestStereotypeAttributes():
         self.stereotype.attributes = {}
         eq_(set(self.stereotype.attributes), set())
         self.stereotype.attributes = {
-            "isBoolean": True, 
+            "isBoolean": True,
             "intVal": 1,
             "floatVal": 1.1,
             "string": "abc"}
@@ -257,32 +258,31 @@ class TestStereotypeAttributes():
         self.stereotype.attributes = {}
         eq_(set(self.stereotype.attributes), set())
 
-    def testTypeObjectAttributeClassIsDeletedInConstructor(self):
-        attrCl = CClass(self.mcl, "AC")
-        attrCl.delete()
+    def test_type_object_attribute_class_is_deleted_in_constructor(self):
+        attribute_class = CClass(self.mcl, "AC")
+        attribute_class.delete()
         try:
-            CStereotype("S", attributes = {"ac": attrCl})
-            exceptionExpected_()
-        except CException as e: 
+            CStereotype("S", attributes={"ac": attribute_class})
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "cannot access named element that has been deleted")
 
-    def testTypeObjectAttributeClassIsNone(self):
-        s1 = CStereotype("S", attributes = {"ac": None})
+    def test_type_object_attribute_class_is_none(self):
+        s1 = CStereotype("S", attributes={"ac": None})
         ac = s1.get_attribute("ac")
         eq_(ac.default, None)
         eq_(ac.type, None)
 
-    def testDefaultObjectAttributeIsDeletedInConstructor(self):
-        attrCl = CClass(self.mcl, "AC")
-        defaultObj = CObject(attrCl)
-        defaultObj.delete()
+    def test_default_object_attribute_is_deleted_in_constructor(self):
+        attribute_class = CClass(self.mcl, "AC")
+        default_object = CObject(attribute_class)
+        default_object.delete()
         try:
-            CStereotype("S", attributes = {"ac": defaultObj})
-            exceptionExpected_()
-        except CException as e: 
+            CStereotype("S", attributes={"ac": default_object})
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "cannot access named element that has been deleted")
+
 
 if __name__ == "__main__":
     nose.main()
-
-

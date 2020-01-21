@@ -10,8 +10,9 @@ connectors_relation = component.association(component, "connected to: [source] *
 connector_type = CStereotype("Connector Type", extended=connectors_relation,
                              attributes={"description": str})
 
-_all = CBundle("_all", elements=component.get_connected_elements(add_stereotypes=True) +
-                                connector_type.get_connected_elements(add_stereotypes=True))
+_all_elements = component.get_connected_elements(add_stereotypes=True) + \
+                connector_type.get_connected_elements(add_stereotypes=True)
+_all = CBundle("_all", elements=_all_elements)
 
 componentMetamodelViews = [
     _all, {}]

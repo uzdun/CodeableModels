@@ -1,21 +1,21 @@
 import nose
-from nose.tools import ok_, eq_
-from testCommons import neq_, exceptionExpected_
-from parameterized import parameterized
+from nose.tools import eq_
 
-from codeable_models import CMetaclass, CClass, CObject, CAttribute, CException, CEnum
+from codeable_models import CMetaclass, CClass, CObject, CException, CEnum
+from tests.testing_commons import exception_expected_
 
-class TestClassAttributeValues():
-    def setUp(self):
+
+class TestClassAttributeValues:
+    def setup(self):
         self.mcl = CMetaclass("MCL")
 
-    def testValuesOnPrimitiveTypeAttributes(self):
-        mcl = CMetaclass("M", attributes = {
-                "isBoolean": True, 
-                "intVal": 1,
-                "floatVal": 1.1,
-                "string": "abc",
-                "list": ["a", "b"]})
+    def test_values_on_primitive_type_attributes(self):
+        mcl = CMetaclass("M", attributes={
+            "isBoolean": True,
+            "intVal": 1,
+            "floatVal": 1.1,
+            "string": "abc",
+            "list": ["a", "b"]})
         cl = CClass(mcl, "C")
 
         eq_(cl.get_value("isBoolean"), True)
@@ -39,136 +39,136 @@ class TestClassAttributeValues():
         cl.set_value("list", [1, 2, 3])
         eq_(cl.get_value("list"), [1, 2, 3])
 
-    def testAttributeOfValueUnknown(self):
+    def test_attribute_of_value_unknown(self):
         cl = CClass(self.mcl, "C")
         try:
             cl.get_value("x")
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "attribute 'x' unknown for 'C'")
 
-        self.mcl.attributes =  {"isBoolean": True, "intVal": 1}
+        self.mcl.attributes = {"isBoolean": True, "intVal": 1}
         try:
             cl.set_value("x", 1)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "attribute 'x' unknown for 'C'")
 
-    def testIntegersAsFloats(self):
-        mcl = CMetaclass("C", attributes = {
-                "floatVal": float})
+    def test_integers_as_floats(self):
+        mcl = CMetaclass("C", attributes={
+            "floatVal": float})
         cl = CClass(mcl, "C")
         cl.set_value("floatVal", 15)
         eq_(cl.get_value("floatVal"), 15)
 
-    def testAttributeDefinedAfterInstance(self):
+    def test_attribute_defined_after_instance(self):
         mcl = CMetaclass("C")
         cl = CClass(mcl, "C")
         mcl.attributes = {"floatVal": float}
         cl.set_value("floatVal", 15)
         eq_(cl.get_value("floatVal"), 15)
 
-    def testObjectTypeAttributeValues(self):
-        attrType = CClass(self.mcl, "AttrType")
-        attrValue = CObject(attrType, "attrValue")
-        self.mcl.attributes = {"attrTypeObj" : attrValue}
-        objAttr = self.mcl.get_attribute("attrTypeObj")
-        eq_(objAttr.type, attrType)
+    def test_object_type_attribute_values(self):
+        attr_type = CClass(self.mcl, "AttrType")
+        attr_value = CObject(attr_type, "attribute_value")
+        self.mcl.attributes = {"attrTypeObj": attr_value}
+        obj_attr = self.mcl.get_attribute("attrTypeObj")
+        eq_(obj_attr.type, attr_type)
         cl = CClass(self.mcl, "C")
-        eq_(cl.get_value("attrTypeObj"), attrValue)
+        eq_(cl.get_value("attrTypeObj"), attr_value)
 
-        nonAttrValue = CObject(CClass(self.mcl), "nonAttrValue")
+        non_attr_value = CObject(CClass(self.mcl), "non_attribute_value")
         try:
-            cl.set_value("attrTypeObj", nonAttrValue)
-            exceptionExpected_()
-        except CException as e: 
-            eq_(e.value, "type of 'nonAttrValue' is not matching type of attribute 'attrTypeObj'")
+            cl.set_value("attrTypeObj", non_attr_value)
+            exception_expected_()
+        except CException as e:
+            eq_(e.value, "type of 'non_attribute_value' is not matching type of attribute 'attrTypeObj'")
 
-    def testClassTypeAttributeValues(self):
-        attrType = CMetaclass("AttrType")
-        attrValue = CClass(attrType, "attrValue")
-        self.mcl.attributes = {"attrTypeCl" : attrType}
-        clAttr = self.mcl.get_attribute("attrTypeCl")
-        clAttr.default = attrValue
-        eq_(clAttr.type, attrType)
+    def test_class_type_attribute_values(self):
+        attr_type = CMetaclass("AttrType")
+        attr_value = CClass(attr_type, "attribute_value")
+        self.mcl.attributes = {"attrTypeCl": attr_type}
+        cl_attr = self.mcl.get_attribute("attrTypeCl")
+        cl_attr.default = attr_value
+        eq_(cl_attr.type, attr_type)
         cl = CClass(self.mcl, "C")
-        eq_(cl.get_value("attrTypeCl"), attrValue)
+        eq_(cl.get_value("attrTypeCl"), attr_value)
 
-        nonAttrValue = CClass(CMetaclass("MX"), "nonAttrValue")
+        non_attr_value = CClass(CMetaclass("MX"), "non_attribute_value")
         try:
-            cl.set_value("attrTypeCl", nonAttrValue)
-            exceptionExpected_()
-        except CException as e: 
-            eq_(e.value, "type of 'nonAttrValue' is not matching type of attribute 'attrTypeCl'")
+            cl.set_value("attrTypeCl", non_attr_value)
+            exception_expected_()
+        except CException as e:
+            eq_(e.value, "type of 'non_attribute_value' is not matching type of attribute 'attrTypeCl'")
 
-    def testAddObjectAttributeGetSetValue(self):
-        attrType = CClass(self.mcl, "AttrType")
-        attrValue = CObject(attrType, "attrValue")
+    def test_add_object_attribute_get_set_value(self):
+        attr_type = CClass(self.mcl, "AttrType")
+        attr_value = CObject(attr_type, "attribute_value")
         cl = CClass(self.mcl)
         self.mcl.attributes = {
-            "attrTypeObj1" : attrType, "attrTypeObj2" : attrValue
+            "attrTypeObj1": attr_type, "attrTypeObj2": attr_value
         }
         eq_(cl.get_value("attrTypeObj1"), None)
-        eq_(cl.get_value("attrTypeObj2"), attrValue)
+        eq_(cl.get_value("attrTypeObj2"), attr_value)
 
-    def testObjectAttributeOfSuperclassType(self):
-        attrSuperType = CClass(self.mcl, "AttrSuperType") 
-        attrType = CClass(self.mcl, "AttrType", superclasses = attrSuperType)
-        attrValue = CObject(attrType, "attrValue")
+    def test_object_attribute_of_superclass_type(self):
+        attr_super_type = CClass(self.mcl, "AttrSuperType")
+        attr_type = CClass(self.mcl, "AttrType", superclasses=attr_super_type)
+        attr_value = CObject(attr_type, "attribute_value")
         cl = CClass(self.mcl)
         self.mcl.attributes = {
-            "attrTypeObj1" : attrSuperType, "attrTypeObj2" : attrValue
+            "attrTypeObj1": attr_super_type, "attrTypeObj2": attr_value
         }
-        cl.set_value("attrTypeObj1", attrValue)
-        cl.set_value("attrTypeObj2", attrValue)
-        eq_(cl.get_value("attrTypeObj1"), attrValue)
-        eq_(cl.get_value("attrTypeObj2"), attrValue)
+        cl.set_value("attrTypeObj1", attr_value)
+        cl.set_value("attrTypeObj2", attr_value)
+        eq_(cl.get_value("attrTypeObj1"), attr_value)
+        eq_(cl.get_value("attrTypeObj2"), attr_value)
 
-    def testValuesOnAttributesWithNoDefaultValues(self):
-        attrType = CClass(self.mcl, "AttrType")
-        enumType = CEnum("EnumT", values = ["A", "B", "C"]) 
-        mcl = CMetaclass("M", attributes = {
-                "b": bool, 
-                "i": int,
-                "f": float,
-                "s": str,
-                "l": list,
-                "C": attrType,
-                "e": enumType})
+    def test_values_on_attributes_with_no_default_values(self):
+        attr_type = CClass(self.mcl, "AttrType")
+        enum_type = CEnum("EnumT", values=["A", "B", "C"])
+        mcl = CMetaclass("M", attributes={
+            "b": bool,
+            "i": int,
+            "f": float,
+            "s": str,
+            "l": list,
+            "C": attr_type,
+            "e": enum_type})
         cl = CClass(mcl, "C")
         for n in ["b", "i", "f", "s", "l", "C", "e"]:
             eq_(cl.get_value(n), None)
 
-    def testValuesDefinedInConstructor(self):
-        objValType = CClass(CMetaclass())
-        objVal = CObject(objValType, "objVal")
+    def test_values_defined_in_constructor(self):
+        obj_val_type = CClass(CMetaclass())
+        obj_val = CObject(obj_val_type, "object_value")
 
-        mcl = CMetaclass("M", attributes = {
-                "isBoolean": True, 
-                "intVal": 1,
-                "floatVal": 1.1,
-                "string": "abc",
-                "list": ["a", "b"],
-                "obj": objValType})
-        cl = CClass(mcl, "C", values = {
-            "isBoolean": False, "intVal": 2, "floatVal": 2.1, 
-            "string": "y", "list": [], "obj": objVal})
+        mcl = CMetaclass("M", attributes={
+            "isBoolean": True,
+            "intVal": 1,
+            "floatVal": 1.1,
+            "string": "abc",
+            "list": ["a", "b"],
+            "obj": obj_val_type})
+        cl = CClass(mcl, "C", values={
+            "isBoolean": False, "intVal": 2, "floatVal": 2.1,
+            "string": "y", "list": [], "obj": obj_val})
 
         eq_(cl.get_value("isBoolean"), False)
         eq_(cl.get_value("intVal"), 2)
         eq_(cl.get_value("floatVal"), 2.1)
         eq_(cl.get_value("string"), "y")
         eq_(cl.get_value("list"), [])
-        eq_(cl.get_value("obj"), objVal)
+        eq_(cl.get_value("obj"), obj_val)
 
-        eq_(cl.values, {"isBoolean": False, "intVal": 2, "floatVal": 2.1, 
-            "string": "y", "list": [], "obj": objVal})
+        eq_(cl.values, {"isBoolean": False, "intVal": 2, "floatVal": 2.1,
+                        "string": "y", "list": [], "obj": obj_val})
 
-    def testValuesSetterOverwrite(self):
-        mcl = CMetaclass("M", attributes = {
-                "isBoolean": True, 
-                "intVal": 1})
-        cl = CClass(mcl, "C", values = {
+    def test_values_setter_overwrite(self):
+        mcl = CMetaclass("M", attributes={
+            "isBoolean": True,
+            "intVal": 1})
+        cl = CClass(mcl, "C", values={
             "isBoolean": False, "intVal": 2})
         cl.values = {"isBoolean": True, "intVal": 20}
         eq_(cl.get_value("isBoolean"), True)
@@ -178,38 +178,38 @@ class TestClassAttributeValues():
         # values should not delete existing values
         eq_(cl.values, {"isBoolean": True, "intVal": 20})
 
-    def testValuesSetterWithSuperclass(self):
-        smcl = CMetaclass("SMCL", attributes = {
-                "intVal": 20, "intVal2": 30})
-        mcl = CMetaclass("M", superclasses = smcl, attributes = {
-                "isBoolean": True, 
-                "intVal": 1})
-        cl = CClass(mcl, "C", values = {
+    def test_values_setter_with_superclass(self):
+        mcl_super = CMetaclass("S_MCL", attributes={
+            "intVal": 20, "intVal2": 30})
+        mcl = CMetaclass("M", superclasses=mcl_super, attributes={
+            "isBoolean": True,
+            "intVal": 1})
+        cl = CClass(mcl, "C", values={
             "isBoolean": False})
         eq_(cl.values, {"isBoolean": False, "intVal": 1, "intVal2": 30})
-        cl.set_value("intVal", 12, smcl)
+        cl.set_value("intVal", 12, mcl_super)
         cl.set_value("intVal", 15, mcl)
-        cl.set_value("intVal2", 16, smcl)
+        cl.set_value("intVal2", 16, mcl_super)
         eq_(cl.values, {"isBoolean": False, "intVal": 15, "intVal2": 16})
-        eq_(cl.get_value("intVal", smcl), 12)
+        eq_(cl.get_value("intVal", mcl_super), 12)
         eq_(cl.get_value("intVal", mcl), 15)
 
-    def testValuesSetterMalformedDescription(self):
-        mcl = CMetaclass("M", attributes = {
-                "isBoolean": True, 
-                "intVal": 1})
+    def test_values_setter_malformed_description(self):
+        mcl = CMetaclass("M", attributes={
+            "isBoolean": True,
+            "intVal": 1})
         cl = CClass(mcl, "C")
         try:
             cl.values = [1, 2, 3]
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "malformed attribute values description: '[1, 2, 3]'")
 
-    def testEnumTypeAttributeValues(self):
-        enumType = CEnum("EnumT", values = ["A", "B", "C"]) 
-        mcl = CMetaclass(attributes = {
-                "e1": enumType,
-                "e2": enumType})
+    def test_enum_type_attribute_values(self):
+        enum_type = CEnum("EnumT", values=["A", "B", "C"])
+        mcl = CMetaclass(attributes={
+            "e1": enum_type,
+            "e2": enum_type})
         e2 = mcl.get_attribute("e2")
         e2.default = "A"
         cl = CClass(mcl, "C")
@@ -221,178 +221,178 @@ class TestClassAttributeValues():
         eq_(cl.get_value("e2"), "C")
         try:
             cl.set_value("e1", "X")
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "value 'X' is not element of enumeration")
 
-    def testDefaultInitAfterInstanceCreation(self):
-        enumType = CEnum("EnumT", values = ["A", "B", "C"]) 
-        mcl = CMetaclass(attributes = {
-                "e1": enumType,
-                "e2": enumType})
+    def test_default_init_after_instance_creation(self):
+        enum_type = CEnum("EnumT", values=["A", "B", "C"])
+        mcl = CMetaclass(attributes={
+            "e1": enum_type,
+            "e2": enum_type})
         cl = CClass(mcl, "C")
         e2 = mcl.get_attribute("e2")
         e2.default = "A"
         eq_(cl.get_value("e1"), None)
         eq_(cl.get_value("e2"), "A")
 
-    def testAttributeValueTypeCheckBool1(self):
+    def test_attribute_value_type_check_bool1(self):
         self.mcl.attributes = {"t": bool}
         cl = CClass(self.mcl, "C")
         try:
             cl.set_value("t", self.mcl)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(f"value for attribute 't' is not a known attribute type", e.value)
 
-    def testAttributeValueTypeCheckBool2(self):
+    def test_attribute_value_type_check_bool2(self):
         self.mcl.attributes = {"t": bool}
         cl = CClass(self.mcl, "C")
         try:
             cl.set_value("t", 1)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
 
-    def testAttributeValueTypeCheckInt(self):
+    def test_attribute_value_type_check_int(self):
         self.mcl.attributes = {"t": int}
         cl = CClass(self.mcl, "C")
         try:
             cl.set_value("t", True)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
 
-    def testAttributeValueTypeCheckFloat(self):
+    def test_attribute_value_type_check_float(self):
         self.mcl.attributes = {"t": float}
         cl = CClass(self.mcl, "C")
         try:
             cl.set_value("t", True)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
 
-    def testAttributeValueTypeCheckStr(self):
+    def test_attribute_value_type_check_str(self):
         self.mcl.attributes = {"t": str}
         cl = CClass(self.mcl, "C")
         try:
             cl.set_value("t", True)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
 
-    def testAttributeValueTypeCheckList(self):
+    def test_attribute_value_type_check_list(self):
         self.mcl.attributes = {"t": list}
         cl = CClass(self.mcl, "C")
         try:
             cl.set_value("t", True)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
 
-    def testAttributeValueTypeCheckObject(self):
-        attrType = CMetaclass("AttrType")
-        self.mcl.attributes = {"t": attrType}
+    def test_attribute_value_type_check_object(self):
+        attr_type = CMetaclass("AttrType")
+        self.mcl.attributes = {"t": attr_type}
         cl = CClass(self.mcl, "C")
         try:
             cl.set_value("t", True)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
 
-    def testAttributeValueTypeCheckEnum(self):
-        enumType = CEnum("EnumT", values = ["A", "B", "C"]) 
-        self.mcl.attributes = {"t": enumType}
+    def test_attribute_value_type_check_enum(self):
+        enum_type = CEnum("EnumT", values=["A", "B", "C"])
+        self.mcl.attributes = {"t": enum_type}
         cl = CClass(self.mcl, "C")
         try:
             cl.set_value("t", True)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(f"value type for attribute 't' does not match attribute type", e.value)
 
-    def testAttributeDeleted(self):
-        mcl = CMetaclass(attributes = {
-                "isBoolean": True, 
-                "intVal": 15})
+    def test_attribute_deleted(self):
+        mcl = CMetaclass(attributes={
+            "isBoolean": True,
+            "intVal": 15})
         cl = CClass(mcl, "C")
         eq_(cl.get_value("intVal"), 15)
         mcl.attributes = {
-                "isBoolean": False}
+            "isBoolean": False}
         eq_(cl.get_value("isBoolean"), True)
         try:
             cl.get_value("intVal")
-            exceptionExpected_()
-        except CException as e: 
-            eq_(e.value, "attribute 'intVal' unknown for 'C'") 
+            exception_expected_()
+        except CException as e:
+            eq_(e.value, "attribute 'intVal' unknown for 'C'")
         try:
             cl.set_value("intVal", 1)
-            exceptionExpected_()
-        except CException as e: 
-            eq_(e.value, "attribute 'intVal' unknown for 'C'") 
+            exception_expected_()
+        except CException as e:
+            eq_(e.value, "attribute 'intVal' unknown for 'C'")
 
-    def testAttributeDeletedNoDefault(self):
-        mcl = CMetaclass( attributes = {
-                "isBoolean": bool, 
-                "intVal": int})
+    def test_attribute_deleted_no_default(self):
+        mcl = CMetaclass(attributes={
+            "isBoolean": bool,
+            "intVal": int})
         mcl.attributes = {"isBoolean": bool}
         cl = CClass(mcl, "C")
         eq_(cl.get_value("isBoolean"), None)
         try:
             cl.get_value("intVal")
-            exceptionExpected_()
-        except CException as e: 
-            eq_(e.value, "attribute 'intVal' unknown for 'C'")    
+            exception_expected_()
+        except CException as e:
+            eq_(e.value, "attribute 'intVal' unknown for 'C'")
         try:
             cl.set_value("intVal", 1)
-            exceptionExpected_()
-        except CException as e: 
-            eq_(e.value, "attribute 'intVal' unknown for 'C'") 
+            exception_expected_()
+        except CException as e:
+            eq_(e.value, "attribute 'intVal' unknown for 'C'")
 
-    def testAttributesOverwrite(self):
-        mcl = CMetaclass(attributes = {
-                "isBoolean": True, 
-                "intVal": 15})
+    def test_attributes_overwrite(self):
+        mcl = CMetaclass(attributes={
+            "isBoolean": True,
+            "intVal": 15})
         cl = CClass(mcl, "C")
         eq_(cl.get_value("intVal"), 15)
         try:
             cl.get_value("floatVal")
-            exceptionExpected_()
-        except CException as e: 
-            eq_(e.value, "attribute 'floatVal' unknown for 'C'")        
+            exception_expected_()
+        except CException as e:
+            eq_(e.value, "attribute 'floatVal' unknown for 'C'")
         cl.set_value("intVal", 18)
         mcl.attributes = {
-                "isBoolean": False, 
-                "intVal": 19, 
-                "floatVal": 25.1}
+            "isBoolean": False,
+            "intVal": 19,
+            "floatVal": 25.1}
         eq_(cl.get_value("isBoolean"), True)
         eq_(cl.get_value("floatVal"), 25.1)
         eq_(cl.get_value("intVal"), 18)
         cl.set_value("floatVal", 1.2)
         eq_(cl.get_value("floatVal"), 1.2)
 
-    def testAttributesOverwriteNoDefaults(self):
-        mcl = CMetaclass(attributes = {
-                "isBoolean": bool, 
-                "intVal": int})
+    def test_attributes_overwrite_no_defaults(self):
+        mcl = CMetaclass(attributes={
+            "isBoolean": bool,
+            "intVal": int})
         cl = CClass(mcl, "C")
         eq_(cl.get_value("isBoolean"), None)
         cl.set_value("isBoolean", False)
         mcl.attributes = {
-                "isBoolean": bool, 
-                "intVal": int, 
-                "floatVal": float}
+            "isBoolean": bool,
+            "intVal": int,
+            "floatVal": float}
         eq_(cl.get_value("isBoolean"), False)
         eq_(cl.get_value("floatVal"), None)
         eq_(cl.get_value("intVal"), None)
         cl.set_value("floatVal", 1.2)
         eq_(cl.get_value("floatVal"), 1.2)
 
-    def testAttributesDeletedOnSubclass(self):
-        mcl = CMetaclass("M", attributes = {
-                "isBoolean": True, 
-                "intVal": 1})
-        mcl2 = CMetaclass("M2", attributes = {
-                "isBoolean": False}, superclasses = mcl)
+    def test_attributes_deleted_on_subclass(self):
+        mcl = CMetaclass("M", attributes={
+            "isBoolean": True,
+            "intVal": 1})
+        mcl2 = CMetaclass("M2", attributes={
+            "isBoolean": False}, superclasses=mcl)
 
         cl = CClass(mcl2, "C")
 
@@ -407,16 +407,16 @@ class TestClassAttributeValues():
         eq_(cl.get_value("isBoolean", mcl), True)
         try:
             cl.get_value("isBoolean", mcl2)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "attribute 'isBoolean' unknown for 'M2'")
 
-    def testAttributesDeletedOnSubclassNoDefaults(self):
-        mcl = CMetaclass("M", attributes = {
-                "isBoolean": bool, 
-                "intVal": int})
-        mcl2 = CMetaclass("M2", attributes = {
-                "isBoolean": bool}, superclasses = mcl)
+    def test_attributes_deleted_on_subclass_no_defaults(self):
+        mcl = CMetaclass("M", attributes={
+            "isBoolean": bool,
+            "intVal": int})
+        mcl2 = CMetaclass("M2", attributes={
+            "isBoolean": bool}, superclasses=mcl)
 
         cl = CClass(mcl2, "C")
 
@@ -431,25 +431,24 @@ class TestClassAttributeValues():
         eq_(cl.get_value("isBoolean", mcl), None)
         try:
             cl.get_value("isBoolean", mcl2)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "attribute 'isBoolean' unknown for 'M2'")
 
-
-    def testAttributeValuesInheritance(self):
+    def test_attribute_values_inheritance(self):
         t1 = CMetaclass("T1")
         t2 = CMetaclass("T2")
-        c = CMetaclass("C", superclasses = [t1, t2])
-        sc = CMetaclass("C", superclasses = c)
+        c = CMetaclass("C", superclasses=[t1, t2])
+        sc = CMetaclass("C", superclasses=c)
 
-        t1.attributes = {"i0" : 0}
-        t2.attributes = {"i1" : 1}
-        c.attributes = {"i2" : 2}
-        sc.attributes = {"i3" : 3}
+        t1.attributes = {"i0": 0}
+        t2.attributes = {"i1": 1}
+        c.attributes = {"i2": 2}
+        sc.attributes = {"i3": 3}
 
         cl = CClass(sc, "C")
 
-        for name, value in {"i0" : 0, "i1" : 1, "i2" : 2, "i3" : 3}.items():
+        for name, value in {"i0": 0, "i1": 1, "i2": 2, "i3": 3}.items():
             eq_(cl.get_value(name), value)
 
         eq_(cl.get_value("i0", t1), 0)
@@ -457,10 +456,10 @@ class TestClassAttributeValues():
         eq_(cl.get_value("i2", c), 2)
         eq_(cl.get_value("i3", sc), 3)
 
-        for name, value in {"i0" : 10, "i1" : 11, "i2" : 12, "i3" : 13}.items():
+        for name, value in {"i0": 10, "i1": 11, "i2": 12, "i3": 13}.items():
             cl.set_value(name, value)
 
-        for name, value in {"i0" : 10, "i1" : 11, "i2" : 12, "i3" : 13}.items():
+        for name, value in {"i0": 10, "i1": 11, "i2": 12, "i3": 13}.items():
             eq_(cl.get_value(name), value)
 
         eq_(cl.get_value("i0", t1), 10)
@@ -468,74 +467,73 @@ class TestClassAttributeValues():
         eq_(cl.get_value("i2", c), 12)
         eq_(cl.get_value("i3", sc), 13)
 
-    def testAttributeValuesInheritanceAfterDeleteSuperclass(self):
+    def test_attribute_values_inheritance_after_delete_superclass(self):
         t1 = CMetaclass("T1")
         t2 = CMetaclass("T2")
-        c = CMetaclass("C", superclasses = [t1, t2])
-        sc = CMetaclass("C", superclasses = c)
+        c = CMetaclass("C", superclasses=[t1, t2])
+        sc = CMetaclass("C", superclasses=c)
 
-        t1.attributes = {"i0" : 0}
-        t2.attributes = {"i1" : 1}
-        c.attributes = {"i2" : 2}
-        sc.attributes = {"i3" : 3}
+        t1.attributes = {"i0": 0}
+        t2.attributes = {"i1": 1}
+        c.attributes = {"i2": 2}
+        sc.attributes = {"i3": 3}
 
         cl = CClass(sc, "C")
 
         t2.delete()
 
-        for name, value in {"i0" : 0, "i2" : 2, "i3" : 3}.items():
+        for name, value in {"i0": 0, "i2": 2, "i3": 3}.items():
             eq_(cl.get_value(name), value)
         try:
             cl.get_value("i1")
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "attribute 'i1' unknown for 'C'")
 
         eq_(cl.get_value("i0", t1), 0)
         try:
             cl.get_value("i1", t2)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "attribute 'i1' unknown for ''")
         eq_(cl.get_value("i2", c), 2)
         eq_(cl.get_value("i3", sc), 3)
 
-        for name, value in {"i0" : 10, "i2" : 12, "i3" : 13}.items():
+        for name, value in {"i0": 10, "i2": 12, "i3": 13}.items():
             cl.set_value(name, value)
         try:
             cl.set_value("i1", 11)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "attribute 'i1' unknown for 'C'")
 
-        for name, value in {"i0" : 10, "i2" : 12, "i3" : 13}.items():
+        for name, value in {"i0": 10, "i2": 12, "i3": 13}.items():
             eq_(cl.get_value(name), value)
         try:
             cl.get_value("i1")
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "attribute 'i1' unknown for 'C'")
 
         eq_(cl.get_value("i0", t1), 10)
         try:
             cl.get_value("i1", t2)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "attribute 'i1' unknown for ''")
         eq_(cl.get_value("i2", c), 12)
         eq_(cl.get_value("i3", sc), 13)
 
-
-    def testAttributeValuesSameNameInheritance(self):
+    def test_attribute_values_same_name_inheritance(self):
         t1 = CMetaclass("T1")
         t2 = CMetaclass("T2")
-        c = CMetaclass("C", superclasses = [t1, t2])
-        sc = CMetaclass("C", superclasses = c)
+        c = CMetaclass("C", superclasses=[t1, t2])
+        sc = CMetaclass("C", superclasses=c)
 
-        t1.attributes = {"i" : 0}
-        t2.attributes = {"i" : 1}
-        c.attributes = {"i" : 2}
-        sc.attributes = {"i" : 3}
+        t1.attributes = {"i": 0}
+        t2.attributes = {"i": 1}
+        c.attributes = {"i": 2}
+        sc.attributes = {"i": 3}
 
         cl1 = CClass(sc)
         cl2 = CClass(c)
@@ -553,7 +551,7 @@ class TestClassAttributeValues():
         eq_(cl2.get_value("i", t2), 1)
         eq_(cl2.get_value("i", t1), 0)
         eq_(cl3.get_value("i", t1), 0)
-        
+
         cl1.set_value("i", 10)
         cl2.set_value("i", 11)
         cl3.set_value("i", 12)
@@ -583,28 +581,27 @@ class TestClassAttributeValues():
         eq_(cl1.get_value("i", t2), 110)
         eq_(cl1.get_value("i", t1), 100)
 
-
-    def testValuesMultipleInheritance(self):
+    def test_values_multiple_inheritance(self):
         t1 = CMetaclass("T1")
         t2 = CMetaclass("T2")
-        sta = CMetaclass("STA", superclasses = [t1, t2])
-        suba = CMetaclass("SubA", superclasses = [sta])
-        stb = CMetaclass("STB", superclasses = [t1, t2])
-        subb = CMetaclass("SubB", superclasses = [stb])
-        stc = CMetaclass("STC")
-        subc = CMetaclass("SubC", superclasses = [stc])
+        st_a = CMetaclass("STA", superclasses=[t1, t2])
+        sub_a = CMetaclass("SubA", superclasses=[st_a])
+        st_b = CMetaclass("STB", superclasses=[t1, t2])
+        sub_b = CMetaclass("SubB", superclasses=[st_b])
+        st_c = CMetaclass("STC")
+        sub_c = CMetaclass("SubC", superclasses=[st_c])
 
-        mcl = CMetaclass("M", superclasses = [suba, subb, subc])
+        mcl = CMetaclass("M", superclasses=[sub_a, sub_b, sub_c])
         cl = CClass(mcl, "C")
 
-        t1.attributes = {"i0" : 0} 
-        t2.attributes = {"i1" : 1}
-        sta.attributes = {"i2" : 2}
-        suba.attributes = {"i3" : 3}
-        stb.attributes = {"i4" : 4}
-        subb.attributes = {"i5" : 5}
-        stc.attributes = {"i6" : 6}
-        subc.attributes = {"i7" : 7}
+        t1.attributes = {"i0": 0}
+        t2.attributes = {"i1": 1}
+        st_a.attributes = {"i2": 2}
+        sub_a.attributes = {"i3": 3}
+        st_b.attributes = {"i4": 4}
+        sub_b.attributes = {"i5": 5}
+        st_c.attributes = {"i6": 6}
+        sub_c.attributes = {"i7": 7}
 
         eq_(cl.get_value("i0"), 0)
         eq_(cl.get_value("i1"), 1)
@@ -617,12 +614,12 @@ class TestClassAttributeValues():
 
         eq_(cl.get_value("i0", t1), 0)
         eq_(cl.get_value("i1", t2), 1)
-        eq_(cl.get_value("i2", sta), 2)
-        eq_(cl.get_value("i3", suba), 3)
-        eq_(cl.get_value("i4", stb), 4)
-        eq_(cl.get_value("i5", subb), 5)
-        eq_(cl.get_value("i6", stc), 6)
-        eq_(cl.get_value("i7", subc), 7)
+        eq_(cl.get_value("i2", st_a), 2)
+        eq_(cl.get_value("i3", sub_a), 3)
+        eq_(cl.get_value("i4", st_b), 4)
+        eq_(cl.get_value("i5", sub_b), 5)
+        eq_(cl.get_value("i6", st_c), 6)
+        eq_(cl.get_value("i7", sub_c), 7)
 
         cl.set_value("i0", 10)
         cl.set_value("i1", 11)
@@ -642,89 +639,91 @@ class TestClassAttributeValues():
         eq_(cl.get_value("i6"), 16)
         eq_(cl.get_value("i7"), 17)
 
-    def testDeleteAttributeValues(self):
-        mcl = CMetaclass("M", attributes = {
-                "isBoolean": True, 
-                "intVal": 1,
-                "floatVal": 1.1,
-                "string": "abc",
-                "list": ["a", "b"]})
+    def test_delete_attribute_values(self):
+        mcl = CMetaclass("M", attributes={
+            "isBoolean": True,
+            "intVal": 1,
+            "floatVal": 1.1,
+            "string": "abc",
+            "list": ["a", "b"]})
         cl = CClass(mcl, "C")
         cl.delete_value("isBoolean")
         cl.delete_value("intVal")
-        valueOfList = cl.delete_value("list")
+        value_of_list = cl.delete_value("list")
         eq_(cl.values, {'floatVal': 1.1, 'string': 'abc'})
-        eq_(valueOfList, ['a', 'b'])
+        eq_(value_of_list, ['a', 'b'])
 
-    def testDeleteAttributeValuesWithSuperclass(self):
-        smcl = CMetaclass("SCL_M",  attributes = {
-                "intVal": 20, "intVal2": 30})
-        mcl = CMetaclass("M", superclasses = smcl, attributes = {
-                "isBoolean": True, 
-                "intVal": 1})
-        cl = CClass(mcl, "C", values = {
+    def test_delete_attribute_values_with_superclass(self):
+        mcl_super = CMetaclass("SCL_M", attributes={
+            "intVal": 20, "intVal2": 30})
+        mcl = CMetaclass("M", superclasses=mcl_super, attributes={
+            "isBoolean": True,
+            "intVal": 1})
+        cl = CClass(mcl, "C", values={
             "isBoolean": False})
         cl.delete_value("isBoolean")
         cl.delete_value("intVal2")
         eq_(cl.values, {"intVal": 1})
 
-        cl.set_value("intVal", 2, smcl)
+        cl.set_value("intVal", 2, mcl_super)
         cl.set_value("intVal", 3, mcl)
         eq_(cl.values, {"intVal": 3})
         cl.delete_value("intVal")
         eq_(cl.values, {"intVal": 2})
 
-        cl.set_value("intVal", 2, smcl)
+        cl.set_value("intVal", 2, mcl_super)
         cl.set_value("intVal", 3, mcl)
         cl.delete_value("intVal", mcl)
         eq_(cl.values, {"intVal": 2})
 
-        cl.set_value("intVal", 2, smcl)
+        cl.set_value("intVal", 2, mcl_super)
         cl.set_value("intVal", 3, mcl)
-        cl.delete_value("intVal", smcl)
+        cl.delete_value("intVal", mcl_super)
         eq_(cl.values, {"intVal": 3})
 
-    def testAttributeValuesExceptionalCases(self):
-        mcl = CMetaclass("M", attributes = {"b": True})
+    def test_attribute_values_exceptional_cases(self):
+        mcl = CMetaclass("M", attributes={"b": True})
         cl1 = CClass(mcl, "C")
         cl1.delete()
 
         try:
             cl1.get_value("b")
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "can't get value 'b' on deleted class")
 
         try:
             cl1.set_value("b", 1)
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "can't set value 'b' on deleted class")
 
         try:
             cl1.delete_value("b")
-            exceptionExpected_()
-        except CException as e: 
-            eq_(e.value,"can't delete value 'b' on deleted class")
+            exception_expected_()
+        except CException as e:
+            eq_(e.value, "can't delete value 'b' on deleted class")
 
         try:
-            cl1.values = {"b": 1}                
-            exceptionExpected_()
-        except CException as e: 
+            cl1.values = {"b": 1}
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "can't set values on deleted class")
 
         try:
-            cl1.values                
-            exceptionExpected_()
-        except CException as e: 
+            # we just use list here, in order to not get a warning that cl1.values has no effect
+            list(cl1.values)
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "can't get values on deleted class")
 
         cl = CClass(mcl, "C")
         try:
             cl.delete_value("x")
-            exceptionExpected_()
-        except CException as e: 
+            exception_expected_()
+        except CException as e:
             eq_(e.value, "attribute 'x' unknown for 'C'")
+
 
 if __name__ == "__main__":
     nose.main()
