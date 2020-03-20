@@ -13,10 +13,10 @@ class PlantUMLGenerator(object):
             if os.path.exists(self.directory):
                 shutil.rmtree(self.directory)
             os.makedirs(self.directory)
-        self.classModelRenderer = ClassModelRenderer(plant_uml_jar_path=self._plant_uml_jar_path,
-                                                     directory=self._directory)
-        self.objectModelRenderer = ObjectModelRenderer(plant_uml_jar_path=self._plant_uml_jar_path,
+        self.class_model_renderer = ClassModelRenderer(plant_uml_jar_path=self._plant_uml_jar_path,
                                                        directory=self._directory)
+        self.object_model_renderer = ObjectModelRenderer(plant_uml_jar_path=self._plant_uml_jar_path,
+                                                         directory=self._directory)
 
     @staticmethod
     def get_file_name(element_name):
@@ -24,10 +24,11 @@ class PlantUMLGenerator(object):
         return name
 
     def generate_class_model(self, bundle, **kwargs):
-        self.classModelRenderer.render_class_model_to_file(self.get_file_name(bundle.name), bundle.elements, **kwargs)
+        self.class_model_renderer.render_class_model_to_file(self.get_file_name(bundle.name), bundle.elements, **kwargs)
 
     def generate_object_model(self, bundle, **kwargs):
-        self.objectModelRenderer.render_object_model_to_file(self.get_file_name(bundle.name), bundle.elements, **kwargs)
+        self.object_model_renderer.render_object_model_to_file(self.get_file_name(bundle.name), bundle.elements,
+                                                               **kwargs)
 
     def generate_class_models(self, dir_name, view_list):
         main_dir = self.directory
@@ -50,8 +51,8 @@ class PlantUMLGenerator(object):
     @plant_uml_jar_path.setter
     def plant_uml_jar_path(self, plant_uml_jar_path):
         self._plant_uml_jar_path = plant_uml_jar_path
-        self.classModelRenderer.plant_uml_jar_path = plant_uml_jar_path
-        self.objectModelRenderer.plant_uml_jar_path = plant_uml_jar_path
+        self.class_model_renderer.plant_uml_jar_path = plant_uml_jar_path
+        self.object_model_renderer.plant_uml_jar_path = plant_uml_jar_path
 
     @property
     def directory(self):
@@ -60,5 +61,5 @@ class PlantUMLGenerator(object):
     @directory.setter
     def directory(self, directory):
         self._directory = directory
-        self.classModelRenderer.directory = directory
-        self.objectModelRenderer.directory = directory
+        self.class_model_renderer.directory = directory
+        self.object_model_renderer.directory = directory

@@ -1195,6 +1195,22 @@ class TestClassLinks:
         l3 = c1.add_links(c3, association=a1, label="x1")
         eq_(l3[0].label, "x1")
 
+    def test_add_links_with_inherited_common_classifiers(self):
+        super_a = CMetaclass("SuperA")
+        super_b = CMetaclass("SuperB")
+        super_a.association(super_b, "[a] 1 -> [b] *")
+
+        sub_b1 = CMetaclass("SubB1", superclasses=[super_b])
+        sub_b2 = CMetaclass("SubB2", superclasses=[super_b])
+        sub_a = CMetaclass("SubA", superclasses=[super_a])
+
+        cl_a = CClass(sub_a, "a")
+        cl_b1 = CClass(sub_b1, "b1")
+        cl_b2 = CClass(sub_b2, "b2")
+
+        add_links({cl_a: [cl_b1, cl_b2]}, role_name="b")
+        eq_(set(cl_a.get_links(role_name="b")), {cl_b1, cl_b2})
+
 
 if __name__ == "__main__":
     nose.main()

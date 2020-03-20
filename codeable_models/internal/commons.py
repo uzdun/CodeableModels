@@ -168,14 +168,21 @@ def get_common_classifier(objects):
         if common_classifier is None:
             common_classifier = o.classifier
         else:
-            if common_classifier == o.classifier:
-                continue
-            if common_classifier in o.classifier.all_superclasses:
-                continue
-            if common_classifier in o.classifier.all_subclasses:
+            object_classifiers = {o.classifier}.union(o.classifier.all_superclasses)
+            common_classifier_found = False
+            if common_classifier in object_classifiers:
+                common_classifier_found = True
+            if not common_classifier_found and common_classifier in o.classifier.all_subclasses:
                 common_classifier = o.classifier
-                continue
-            raise CException(f"object '{o!s}' has an incompatible classifier")
+                common_classifier_found = True
+            if not common_classifier_found:
+                for cl in common_classifier.all_superclasses:
+                    if cl in object_classifiers:
+                        common_classifier = cl
+                        common_classifier_found = True
+                        break
+            if not common_classifier_found:
+                raise CException(f"object '{o!s}' has an incompatible classifier")
     return common_classifier
 
 

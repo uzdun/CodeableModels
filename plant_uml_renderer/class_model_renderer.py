@@ -29,6 +29,15 @@ class ClassModelRenderer(ModelRenderer):
     def render_attributes(self, context, cl):
         if not context.render_attributes:
             return ""
+        if is_cenum(cl):
+            if len(cl.values) == 0:
+                return ""
+            value_string = "{\n"
+            for value in cl.values:
+                value_string += value + "\n"
+            value_string += "}\n"
+            return value_string
+        # this is a classifier
         if len(cl.attributes) == 0:
             return ""
         attribute_string = "{\n"
@@ -36,6 +45,7 @@ class ClassModelRenderer(ModelRenderer):
             attribute_string += self.render_attribute(attribute)
         attribute_string += "}\n"
         return attribute_string
+
 
     @staticmethod
     def render_attribute(attribute):
@@ -59,6 +69,8 @@ class ClassModelRenderer(ModelRenderer):
 
     def render_associations(self, context, cl, class_list):
         if not context.render_associations:
+            return
+        if is_cenum(cl):
             return
         for association in cl.associations:
             if association in context.excluded_associations:
@@ -123,14 +135,16 @@ class ClassModelRenderer(ModelRenderer):
         if not context.render_inheritance:
             return
         for cl in class_list:
+            if is_cenum(cl):
+                continue
             for sub_class in cl.subclasses:
                 if sub_class in class_list:
                     context.add_line(self.get_node_id(context, cl) + " <|--- " + self.get_node_id(context, sub_class))
 
     def render_classes(self, context, class_list):
         for cl in class_list:
-            if not is_cclassifier(cl):
-                raise CException(f"'{cl!s}' handed to class renderer is not a classifier'")
+            if not is_cclassifier(cl) and not is_cenum(cl):
+                raise CException(f"'{cl!s}' handed to class renderer is not a classifier or enum'")
             self.render_classifier_specification(context, cl)
         self.render_inheritance_relations(context, class_list)
         for cl in class_list:
