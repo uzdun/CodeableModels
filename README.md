@@ -33,10 +33,10 @@ sure that the scripts in `tests` are not executable, e.g., run: `chmod -x $(find
 
 ## Deployment
 
-No specific instructions so far; simply import from the `codeableModels` module like:
+No specific instructions so far; simply import from the `codeable_models` module like:
 
 ```
-from codeableModels import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
+from codeable_models import CMetaclass, CClass, CObject, CAttribute, CException, CEnum, CStereotype
 ``` 
 
 ## Built With
