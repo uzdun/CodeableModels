@@ -12,19 +12,30 @@ class RenderingContext(object):
         self.result = ""
         self.indent = 0
         self.indent_cache_string = ""
-        self.unnamed_objects = {}
-        self.unnamed_id = 0
+        self.node_ids = {}
+        self.current_node_id = 0
 
-    def get_unnamed_celement_id(self, element):
+    def get_encoded_name(self, element):
+        if isinstance(element, CNamedElement):
+            name = f"_{element.name}"
+            if name is None:
+                return ""
+            # put a placeholder _ in the name for special characters as plantuml does not
+            # support many of them
+            name = "".join([c if c.isalnum() else "_" for c in name])
+            return name
+        return ""
+
+    def get_node_id(self, element):
         if is_cobject(element) and element.class_object_class_ is not None:
             # use the class object's class rather than the class object to identify them uniquely
             element = element.class_object_class_
-        if element in self.unnamed_objects:
-            return self.unnamed_objects[element]
+        if element in self.node_ids:
+            return self.node_ids[element]
         else:
-            self.unnamed_id += 1
-            name = f"__{self.unnamed_id!s}"
-            self.unnamed_objects[element] = name
+            self.current_node_id += 1
+            name = f"__{self.current_node_id!s}" + self.get_encoded_name(element)
+            self.node_ids[element] = name
             return name
 
     def add_line(self, string):
@@ -214,21 +225,7 @@ class ModelRenderer(object):
 
     @staticmethod
     def get_node_id(context, element):
-        if isinstance(element, CNamedElement):
-            name = element.name
-            if name is None:
-                name = context.get_unnamed_celement_id(element)
-        else:
-            # else this must be a string
-            name = element
-
-        # we add a "_" before the name to make sure the name is not a plantuml keyword
-        name = f"_{name!s}"
-
-        # put a placeholder in the name for special characters as plantuml does not
-        # support many of them
-        name = "".join([c if c.isalnum() else "_" + str(ord(c)) + "_" for c in name])
-        return name
+        return context.get_node_id(element)
 
     def render_to_files(self, file_name_base, source):
         file_name_base_with_dir = f"{self.directory!s}/{file_name_base!s}"
