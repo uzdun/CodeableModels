@@ -107,7 +107,7 @@ component_stereotypes = CBundle("Component Stereotypes",
 connector_stereotypes = CBundle("Connector Stereotypes",
                                 elements=[component] + connector_type.get_connected_elements(add_stereotypes=True))
 
-component_metamodel_views = [
+microservice_metamodel_views = [
     _all, {},
-    component_stereotypes, {},
-    connector_stereotypes, {}]
+    component_stereotypes, {"render_attributes": False},
+    connector_stereotypes, {"render_attributes": False}]

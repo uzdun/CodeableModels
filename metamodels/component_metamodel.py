@@ -11,8 +11,11 @@ connector_type = CStereotype("Connector Type", extended=connectors_relation,
                              attributes={"description": str})
 
 _all_elements = component.get_connected_elements(add_stereotypes=True) + \
-                connector_type.get_connected_elements(add_stereotypes=True)
+                connector_type.get_connected_elements(add_stereotypes=True) + \
+                component_type.get_connected_elements(add_stereotypes=True)
 _all = CBundle("_all", elements=_all_elements)
 
 componentMetamodelViews = [
     _all, {}]
+
+
