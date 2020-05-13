@@ -244,5 +244,6 @@ class ModelRenderer(object):
 def _check_for_illegal_value_characters(value):
     if '(' in value or ')' in value:
         raise CException(
-            "do not use '(' or ')' in attribute values, as PlantUML interprets them as method parameters " +
+            f"in value `{value!s}`: " +
+            "do not use `(` or `)` in attribute values, as PlantUML interprets them as method parameters " +
             "and would start a new compartment if they are part of an attribute value")

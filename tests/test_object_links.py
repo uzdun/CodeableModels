@@ -445,14 +445,17 @@ class TestObjectLinks:
         o2 = CObject(self.c2, "o2")
         o3 = CObject(self.c2, "o3")
 
-        set_links({o1: o2}, association=a1)
-        set_links({o1: [o2, o3]}, association=a2)
+        links_a1 = set_links({o1: o2}, association=a1)
+        links_a2 = set_links({o1: [o2, o3]}, association=a2)
 
         eq_(o1.get_links(), [o2, o2, o3])
         eq_(o1.links, [o2, o2, o3])
 
         eq_(o1.get_links(association=a1), [o2])
         eq_(o1.get_links(association=a2), [o2, o3])
+
+        eq_(o1.get_link_objects_for_association(a1), links_a1)
+        eq_(o1.get_link_objects_for_association(a2), links_a2)
 
     def test_link_with_inheritance_in_classifier_targets(self):
         sub_class = CClass(self.mcl, superclasses=self.c2)

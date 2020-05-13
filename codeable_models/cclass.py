@@ -205,8 +205,22 @@ class CClass(CClassifier):
     def get_links(self, **kwargs):
         return self.class_object_.get_links(**kwargs)
 
-    def get_links_for_association(self, association):
-        return self.class_object_.get_links_for_association(association)
+    def get_link_objects_for_association(self, association):
+        return self.class_object_.get_link_objects_for_association(association)
+
+    # returns a list of tuples of the form: (from, to, stereotype_instance), listing all such relations for the
+    # an association
+    def get_link_stereotype_instances_for_association(self, association):
+        result = []
+        for link in self.get_link_objects_for_association(association):
+            for link_type in link.stereotype_instances:
+                from_object = link.source
+                to_object = self
+                if link.source == self:
+                    from_object = self
+                    to_object = link.target
+                result.append((from_object, to_object, link_type))
+        return result
 
     def add_links(self, links, **kwargs):
         return self.class_object_.add_links(links, **kwargs)

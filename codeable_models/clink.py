@@ -126,7 +126,7 @@ def _check_link_definition_and_replace_classes(link_definitions):
         raise CException("link definitions should be of the form " +
                          "{<link source 1>: <link target(s) 1>, ..., <link source n>: <link target(s) n>}")
 
-    new_defs = {}
+    new_definitions = {}
     for source in link_definitions:
         source_obj = source
         if source is None or source == []:
@@ -137,9 +137,9 @@ def _check_link_definition_and_replace_classes(link_definitions):
             raise CException(f"link source '{source!s}' is neither an object nor a class")
         targets = _get_target_objects_from_definition(link_definitions[source],
                                                       source_obj.class_object_class_ is not None)
-        new_defs[source_obj] = targets
+        new_definitions[source_obj] = targets
 
-    return new_defs
+    return new_definitions
 
 
 def _determine_matching_association_and_set_context_info(context, source, targets):
@@ -234,12 +234,12 @@ def link_objects_(context, source, targets):
 def remove_links_for_associations(context, source, targets):
     if source not in context.objectLinksHaveBeenRemoved:
         context.objectLinksHaveBeenRemoved.append(source)
-        for link in source.get_links_for_association(context.association):
+        for link in source.get_link_objects_for_association(context.association):
             link.delete()
     for target in targets:
         if target not in context.objectLinksHaveBeenRemoved:
             context.objectLinksHaveBeenRemoved.append(target)
-            for link in target.get_links_for_association(context.association):
+            for link in target.get_link_objects_for_association(context.association):
                 link.delete()
 
 
@@ -262,12 +262,12 @@ def set_links(link_definitions, do_add_links=False, **kwargs):
     try:
         for source in link_definitions:
             targets = link_definitions[source]
-            source_len = len(source.get_links_for_association(context.association))
+            source_len = len(source.get_link_objects_for_association(context.association))
             if len(targets) == 0:
                 context.association.check_multiplicity(source, source_len, 0, context.matchesInOrder[source])
             else:
                 for target in targets:
-                    target_len = len(target.get_links_for_association(context.association))
+                    target_len = len(target.get_link_objects_for_association(context.association))
                     context.association.check_multiplicity(source, source_len, target_len,
                                                            context.matchesInOrder[source])
                     context.association.check_multiplicity(target, target_len, source_len,
@@ -333,8 +333,8 @@ def delete_links(link_definitions, **kwargs):
             else:
                 if matches_in_order is None:
                     raise CException(f"no link found for '{source!s} -> {target!s}' in delete links")
-                source_len = len(source.get_links_for_association(matching_link.association)) - 1
-                target_len = len(target.get_links_for_association(matching_link.association)) - 1
+                source_len = len(source.get_link_objects_for_association(matching_link.association)) - 1
+                target_len = len(target.get_link_objects_for_association(matching_link.association)) - 1
                 matching_link.association.check_multiplicity(source, source_len, target_len, matches_in_order)
                 matching_link.association.check_multiplicity(target, target_len, source_len, not matches_in_order)
                 matching_link.delete()

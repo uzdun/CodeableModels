@@ -441,14 +441,17 @@ class TestClassLinks:
         c2 = CClass(self.m2, "c2")
         c3 = CClass(self.m2, "c3")
 
-        set_links({c1: c2}, association=a1)
-        set_links({c1: [c2, c3]}, association=a2)
+        links_a1 = set_links({c1: c2}, association=a1)
+        links_a2 = set_links({c1: [c2, c3]}, association=a2)
 
         eq_(c1.get_links(), [c2, c2, c3])
         eq_(c1.links, [c2, c2, c3])
 
         eq_(c1.get_links(association=a1), [c2])
         eq_(c1.get_links(association=a2), [c2, c3])
+
+        eq_(c1.get_link_objects_for_association(a1), links_a1)
+        eq_(c1.get_link_objects_for_association(a2), links_a2)
 
     def test_link_with_inheritance_in_classifier_targets(self):
         sub_class = CMetaclass(superclasses=self.m2)

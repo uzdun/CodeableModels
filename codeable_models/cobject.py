@@ -140,7 +140,7 @@ class CObject(CBundlable):
                 result.append(link.get_opposite_object(self))
         return result
 
-    def get_links_for_association(self, association):
+    def get_link_objects_for_association(self, association):
         association_links = []
         for link in list(self.link_objects_):
             if link.association == association:
