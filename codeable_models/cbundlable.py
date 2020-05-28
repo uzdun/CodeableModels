@@ -1,7 +1,7 @@
 from codeable_models.cexception import CException
 from codeable_models.cnamedelement import CNamedElement
 from codeable_models.internal.commons import set_keyword_args, check_named_element_is_not_deleted, is_cbundle, \
-    is_cmetaclass, is_cstereotype, is_cbundlable
+    is_cmetaclass, is_cstereotype, is_cbundlable, is_cassociation, is_cclass, is_cobject, is_clink
 
 
 class CBundlable(CNamedElement):
@@ -51,41 +51,53 @@ class CBundlable(CNamedElement):
     def get_connected_elements(self, **kwargs):
         context = ConnectedElementsContext()
 
-        allowed_keyword_args = ["add_bundles", "process_bundles", "stop_elements_inclusive", "stop_elements_exclusive"]
+        allowed_keyword_args = ["add_bundles", "process_bundles", "stop_elements_inclusive",
+                                "stop_elements_exclusive"]
         if is_cmetaclass(self) or is_cbundle(self) or is_cstereotype(self):
             allowed_keyword_args = ["add_stereotypes", "process_stereotypes"] + allowed_keyword_args
+        if is_cmetaclass(self) or is_cclass(self) or is_cassociation(self):
+            allowed_keyword_args = ["add_associations"] + allowed_keyword_args
+        if is_cobject(self) or is_clink(self):
+            allowed_keyword_args = ["add_links"] + allowed_keyword_args
+
         set_keyword_args(context, allowed_keyword_args, **kwargs)
 
         if self in context.stop_elements_exclusive:
             return []
         context.elements.append(self)
-        self.compute_connected(context)
+        self.compute_connected_(context)
         if not context.add_bundles:
             context.elements = [elt for elt in context.elements if not is_cbundle(elt)]
         if not context.add_stereotypes:
             context.elements = [elt for elt in context.elements if not is_cstereotype(elt)]
+        if not context.add_associations:
+            context.elements = [elt for elt in context.elements if not is_cassociation(elt)]
+        if not context.add_links:
+            context.elements = [elt for elt in context.elements if not is_clink(elt)]
         return context.elements
 
     @staticmethod
-    def append_connected(context, connected):
+    def append_connected_(context, connected):
         for c in connected:
             if c not in context.elements:
                 context.elements.append(c)
                 if c not in context.all_stop_elements:
-                    c.compute_connected(context)
+                    c.compute_connected_(context)
 
-    def compute_connected(self, context):
+    def compute_connected_(self, context):
         connected = []
         for bundle in self.bundles_:
             if bundle not in context.stop_elements_exclusive:
                 connected.append(bundle)
-        self.append_connected(context, connected)
+        self.append_connected_(context, connected)
 
 
 class ConnectedElementsContext(object):
     def __init__(self):
         self.elements = []
         self.add_bundles = False
+        self.add_associations = False
+        self.add_links = False
         self.add_stereotypes = False
         self.process_bundles = False
         self.process_stereotypes = False

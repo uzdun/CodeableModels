@@ -1,7 +1,7 @@
 import re
 
 from codeable_models.cexception import CException
-from codeable_models.cnamedelement import CNamedElement
+from codeable_models.cclassifier import CClassifier
 from codeable_models.internal.commons import is_cmetaclass, is_cstereotype
 from codeable_models.internal.stereotype_holders import CStereotypesHolder
 
@@ -21,7 +21,7 @@ def _check_for_classifier_and_role_name_match(classifier, role_name, association
     return False
 
 
-class CAssociation(CNamedElement):
+class CAssociation(CClassifier):
     STAR_MULTIPLICITY = -1
 
     def __init__(self, source, target, descriptor=None, **kwargs):
@@ -65,6 +65,11 @@ class CAssociation(CNamedElement):
             return self.target
         else:
             return self.source
+
+    def is_metaclass_association(self):
+        if is_cmetaclass(self.source):
+            return True
+        return False
 
     def matches_target(self, classifier, role_name):
         return _check_for_classifier_and_role_name_match(classifier, role_name, self.target, self.role_name)
@@ -166,7 +171,7 @@ class CAssociation(CNamedElement):
         else:
             all_instances = self.source.all_objects
         for instance in all_instances:
-            for link in instance.link_objects:
+            for link in instance.links:
                 link.delete()
         self.source.associations_.remove(self)
         if self.source != self.target:
@@ -248,3 +253,15 @@ class CAssociation(CNamedElement):
             self.aggregation = True
         elif composition:
             self.composition = True
+
+    # overridden methods from CClassifier
+    @property
+    def attributes(self):
+        return super().attributes
+
+    def _set_attribute(self, name, value):
+        raise CException("setting of attributes not supported for associations")
+
+    @attributes.setter
+    def attributes(self, attribute_descriptions):
+        raise CException("setting of attributes not supported for associations")

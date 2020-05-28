@@ -182,7 +182,10 @@ def get_common_classifier(objects):
                         common_classifier_found = True
                         break
             if not common_classifier_found:
-                raise CException(f"object '{o!s}' has an incompatible classifier")
+                if is_clink(o):
+                    raise CException(f"the link's association is missing a compatible classifier")
+                else:
+                    raise CException(f"object '{o!s}' has an incompatible classifier")
     return common_classifier
 
 
@@ -211,41 +214,60 @@ def _remove_superclasses_and_duplicates(classes):
     return result
 
 
-def get_common_metaclasses(classes):
+def update_common_metaclasses(common_metaclasses, new_metaclasses):
+    updated_common_metaclasses = []
+    for metaclass in new_metaclasses:
+        metaclasses = metaclass.class_path
+        for cmc in common_metaclasses:
+            for mc in metaclasses:
+                if cmc == mc:
+                    updated_common_metaclasses.append(cmc)
+    if len(updated_common_metaclasses) == 0:
+        return []
+    return updated_common_metaclasses
+
+
+def get_common_metaclasses(classes_or_links):
     common_metaclasses = None
-    for c in classes:
-        if c is None or not is_cclass(c):
-            raise CException(f"not a class: '{c!s}'")
-        if common_metaclasses is None:
-            common_metaclasses = c.metaclass.class_path
+    for classifier in classes_or_links:
+        if is_clink(classifier):
+            link_classifiers = [link_cl for link_cl in classifier.association.all_superclasses if
+                                is_cmetaclass(link_cl)]
+            if not link_classifiers:
+                raise CException(f"the metaclass link's association is missing a compatible classifier")
+            if common_metaclasses is None:
+                common_metaclasses = link_classifiers
+            else:
+                common_metaclasses = update_common_metaclasses(common_metaclasses, link_classifiers)
+                if len(common_metaclasses) == 0:
+                    break
+        elif classifier is None or not is_cclass(classifier):
+            raise CException(f"not a class or link: '{classifier!s}'")
         else:
-            updated_common_metaclasses = []
-            metaclasses = c.metaclass.class_path
-            for cmc in common_metaclasses:
-                for mc in metaclasses:
-                    if cmc == mc:
-                        updated_common_metaclasses.append(cmc)
-            if len(updated_common_metaclasses) == 0:
-                break
-            common_metaclasses = updated_common_metaclasses
+            if common_metaclasses is None:
+                common_metaclasses = classifier.metaclass.class_path
+            else:
+                common_metaclasses = update_common_metaclasses(common_metaclasses, [classifier.metaclass])
+                if len(common_metaclasses) == 0:
+                    break
     if common_metaclasses is None:
         return [None]
     if len(common_metaclasses) == 0:
-        raise CException(f"no common metaclass for classes found")
+        raise CException(f"no common metaclass for classes or links found")
     # if some superclasses and their subclasses are in the list, take only the subclasses 
     # and remove duplicates form the list
     common_metaclasses = _remove_superclasses_and_duplicates(common_metaclasses)
     return common_metaclasses
 
 
-def get_link_objects(obj_list):
+def get_links(linked_elements):
     result = []
-    for o in obj_list:
-        obj = o
-        if not is_cobject(o):
-            if is_cclass(o):
-                obj = o.class_object
+    for linked_ in linked_elements:
+        linked = linked_
+        if not is_cobject(linked) and not is_clink(linked):
+            if is_cclass(linked):
+                linked_ = linked.class_object
             else:
-                raise CException(f"'{o!s}' is not an object")
-        result.extend(obj.link_objects)
+                raise CException(f"'{linked!s}' is not an object, class, or link")
+        result.extend(linked_.links)
     return result

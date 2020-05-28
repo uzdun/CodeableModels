@@ -1,7 +1,8 @@
 from codeable_models.cclassifier import CClassifier
 from codeable_models.cexception import CException
 from codeable_models.cobject import CObject
-from codeable_models.internal.commons import check_is_cmetaclass, check_is_cobject, check_named_element_is_not_deleted
+from codeable_models.internal.commons import check_is_cmetaclass, check_is_cobject, \
+    check_named_element_is_not_deleted
 from codeable_models.internal.stereotype_holders import CStereotypeInstancesHolder
 from codeable_models.internal.var_values import delete_var_value, set_var_value, get_var_value, get_var_values, \
     set_var_values, VarValueKind
@@ -90,7 +91,7 @@ class CClass(CClassifier):
     def instance_of(self, cl):
         return self.class_object_.instance_of(cl)
 
-    def update_default_values_of_classifier(self, attribute=None):
+    def update_default_values_of_classifier_(self, attribute=None):
         for i in self.all_objects:
             attr_items = self.attributes_.items()
             if attribute is not None:
@@ -104,7 +105,7 @@ class CClass(CClassifier):
         for i in self.all_objects:
             for attrName in self.attribute_names:
                 if attrName not in attributes_to_keep:
-                    i.remove_value(attrName, self)
+                    i.remove_value_(attrName, self)
 
     def get_value(self, attribute_name, cl=None):
         return self.class_object_.get_value(attribute_name, cl)
@@ -195,32 +196,18 @@ class CClass(CClassifier):
         return super(CClass, self).association(target, descriptor, **kwargs)
 
     @property
-    def link_objects(self):
-        return self.class_object_.link_objects
-
-    @property
     def links(self):
         return self.class_object_.links
 
-    def get_links(self, **kwargs):
-        return self.class_object_.get_links(**kwargs)
+    @property
+    def linked(self):
+        return self.class_object_.linked
 
-    def get_link_objects_for_association(self, association):
-        return self.class_object_.get_link_objects_for_association(association)
+    def get_linked(self, **kwargs):
+        return self.class_object_.get_linked(**kwargs)
 
-    # returns a list of tuples of the form: (from, to, stereotype_instance), listing all such relations for the
-    # an association
-    def get_link_stereotype_instances_for_association(self, association):
-        result = []
-        for link in self.get_link_objects_for_association(association):
-            for link_type in link.stereotype_instances:
-                from_object = link.source
-                to_object = self
-                if link.source == self:
-                    from_object = self
-                    to_object = link.target
-                result.append((from_object, to_object, link_type))
-        return result
+    def get_links_for_association(self, association):
+        return self.class_object_.get_links_for_association(association)
 
     def add_links(self, links, **kwargs):
         return self.class_object_.add_links(links, **kwargs)

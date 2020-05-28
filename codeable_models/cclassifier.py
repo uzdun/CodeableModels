@@ -1,4 +1,3 @@
-from codeable_models.cassociation import CAssociation
 from codeable_models.cattribute import CAttribute
 from codeable_models.cbundlable import CBundlable
 from codeable_models.cenum import CEnum
@@ -50,12 +49,24 @@ class CClassifier(CBundlable):
             raise CException(f"malformed attribute description: '{attribute_descriptions!s}'")
         for attributeName in attribute_descriptions:
             self._set_attribute(attributeName, attribute_descriptions[attributeName])
-        self.update_default_values_of_classifier()
+        self.update_default_values_of_classifier_()
+
+    @property
+    def attribute_names(self):
+        return list(self.attributes_.keys())
+
+    def get_attribute(self, attribute_name):
+        if attribute_name is None or not isinstance(attribute_name, str):
+            return None
+        try:
+            return self.attributes_[attribute_name]
+        except KeyError:
+            return None
 
     def _remove_attribute_values_of_classifier(self, attributes_to_keep):
         raise CException("should be overridden by subclasses to update defaults on instances")
 
-    def update_default_values_of_classifier(self, attribute=None):
+    def update_default_values_of_classifier_(self, attribute=None):
         raise CException("should be overridden by subclasses to update defaults on instances")
 
     def _check_same_type_as_self(self, cl):
@@ -82,7 +93,17 @@ class CClassifier(CBundlable):
             if scl is not None:
                 check_named_element_is_not_deleted(scl)
             if not isinstance(scl, self.__class__):
-                raise CException(f"cannot add superclass '{scl!s}' to '{self!s}': not of type {self.__class__!s}")
+                if is_cassociation(self):
+                    if self.is_metaclass_association():
+                        if not is_cmetaclass(scl) or (is_cassociation(scl) and scl.is_metaclass_association()):
+                            raise CException(f"cannot add superclass '{scl!s}':" +
+                                             " not a metaclass or metaclass association")
+                    else:
+                        if not is_cclass(scl) or (is_cassociation(scl) and not scl.is_metaclass_association()):
+                            raise CException(f"cannot add superclass '{scl!s}':" +
+                                             " not a class or class association")
+                else:
+                    raise CException(f"cannot add superclass '{scl!s}' to '{self!s}': not of type {self.__class__!s}")
             if scl in self.superclasses_:
                 raise CException(f"'{scl.name!s}' is already a superclass of '{self.name!s}'")
             self.superclasses_.append(scl)
@@ -102,43 +123,6 @@ class CClassifier(CBundlable):
         if self in type_classifiers:
             return True
         return False
-
-    @property
-    def attribute_names(self):
-        return list(self.attributes_.keys())
-
-    def get_attribute(self, attribute_name):
-        if attribute_name is None or not isinstance(attribute_name, str):
-            return None
-        try:
-            return self.attributes_[attribute_name]
-        except KeyError:
-            return None
-
-    def delete(self):
-        if self.is_deleted:
-            return
-        super().delete()
-
-        # self.superclasses removes the self subclass from the superclasses
-        self.superclasses = []
-
-        for subclass in self.subclasses_:
-            # for each cl, remove superclass cl
-            if self not in subclass.superclasses_:
-                raise CException(f"can't remove superclass '{self!s}' from classifier '{subclass!s}': not a superclass")
-            subclass.superclasses_.remove(self)
-        self.subclasses_ = []
-
-        # remove all associations
-        associations = self.associations.copy()
-        for association in associations:
-            association.delete()
-
-        for a in self.attributes:
-            a.name_ = None
-            a.classifier_ = None
-        self.attributes_ = {}
 
     def get_all_superclasses(self, iterated_classes=None):
         if iterated_classes is None:
@@ -168,6 +152,31 @@ class CClassifier(CBundlable):
     def has_superclass(self, cl):
         return cl in self.get_all_superclasses()
 
+    def delete(self):
+        if self.is_deleted:
+            return
+        super().delete()
+
+        # self.superclasses removes the self subclass from the superclasses
+        self.superclasses = []
+
+        for subclass in self.subclasses_:
+            # for each cl, remove superclass cl
+            if self not in subclass.superclasses_:
+                raise CException(f"can't remove superclass '{self!s}' from classifier '{subclass!s}': not a superclass")
+            subclass.superclasses_.remove(self)
+        self.subclasses_ = []
+
+        # remove all associations
+        associations = self.associations.copy()
+        for association in associations:
+            association.delete()
+
+        for a in self.attributes:
+            a.name_ = None
+            a.classifier_ = None
+        self.attributes_ = {}
+
     @property
     def associations(self):
         return list(self.associations_)
@@ -182,14 +191,15 @@ class CClassifier(CBundlable):
         return all_associations
 
     def association(self, target, descriptor=None, **kwargs):
+        from codeable_models.cassociation import CAssociation
         a = CAssociation(self, target, descriptor, **kwargs)
         self.associations_.append(a)
         if self != target:
             target.associations_.append(a)
         return a
 
-    def compute_connected(self, context):
-        super().compute_connected(context)
+    def compute_connected_(self, context):
+        super().compute_connected_(context)
         connected_candidates = []
         connected = []
         for association in self.associations:
@@ -198,7 +208,7 @@ class CClassifier(CBundlable):
         for c in connected_candidates:
             if c not in context.stop_elements_exclusive:
                 connected.append(c)
-        self.append_connected(context, connected)
+        self.append_connected_(context, connected)
 
     # get class path starting from this classifier, including this classifier
     def get_class_path(self):

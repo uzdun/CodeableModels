@@ -46,7 +46,6 @@ class ClassModelRenderer(ModelRenderer):
         attribute_string += "}\n"
         return attribute_string
 
-
     @staticmethod
     def render_attribute(attribute):
         type_ = attribute.type

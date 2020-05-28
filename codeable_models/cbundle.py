@@ -96,15 +96,15 @@ class CBundle(CBundlable):
         elements = self.get_elements(**kwargs)
         return None if len(elements) == 0 else elements[0]
 
-    def compute_connected(self, context):
-        super().compute_connected(context)
+    def compute_connected_(self, context):
+        super().compute_connected_(context)
         if not context.process_bundles:
             return
         connected = []
         for element in self.elements_:
             if element not in context.stop_elements_exclusive:
                 connected.append(element)
-        self.append_connected(context, connected)
+        self.append_connected_(context, connected)
 
 
 class CPackage(CBundle):

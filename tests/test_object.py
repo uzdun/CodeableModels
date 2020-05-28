@@ -170,7 +170,8 @@ class TestObject:
             exception_expected_()
         except CException as e:
             eq_(e.value, "unknown keyword argument 'a', should be one of: " +
-                "['add_bundles', 'process_bundles', 'stop_elements_inclusive', 'stop_elements_exclusive']")
+                "['add_links', 'add_bundles', 'process_bundles', " +
+                "'stop_elements_inclusive', 'stop_elements_exclusive']")
 
     def test_get_connected_elements_empty(self):
         o1 = CObject(self.cl, "o1")
@@ -245,6 +246,10 @@ class TestObject:
                                                             connected_elements_result):
         for elt in test_elements:
             eq_(set(elt.get_connected_elements(**kwargs_dict)), connected_elements_result)
+
+    def test_class_object_class_is_none(self):
+        o1 = CObject(self.cl, "o")
+        eq_(o1.class_object_class, None)
 
 
 if __name__ == "__main__":

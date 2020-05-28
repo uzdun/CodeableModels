@@ -1,38 +1,37 @@
 import nose
 from nose.tools import eq_
 
-from codeable_models import CMetaclass, CClass, CException, set_links, add_links, CObject, CStereotype, CBundle
+from codeable_models import CMetaclass, CClass, CObject, CException, set_links, add_links, CStereotype, CBundle
 from codeable_models.internal.commons import get_links
 from tests.testing_commons import exception_expected_
 
 
-class TestLinkObjectsForMetaclasses:
+class TestLinkObjectsForClasses:
     def setup(self):
         self.mcl = CMetaclass("MCL")
+        self.cl = CClass(self.mcl, "CL")
 
     def test_reference_to_link(self):
-        code = CMetaclass("Code")
-
-        source = CMetaclass("Source")
+        code = CClass(self.mcl, "Code")
+        source = CClass(self.mcl, "Source")
         code_association = code.association(source, "[contained_code] * -> [source] *")
-
-        code_a = CMetaclass("Code A", superclasses=code)
-        code_b = CMetaclass("Code B", superclasses=code)
+        code_a = CClass(self.mcl, "Code A", superclasses=code)
+        code_b = CClass(self.mcl, "Code B", superclasses=code)
         a_b_association = code_a.association(code_b, "a_b: [code_a] * -> [code_b] *", superclasses=code)
 
-        source_1 = CClass(source, "source_1")
+        source_1 = CObject(source, "source_1")
 
-        code_a1 = CClass(code_a, "code_a1")
-        code_b1 = CClass(code_b, "code_b1")
-        code_b2 = CClass(code_b, "code_b2")
-        code_b3 = CClass(code_b, "code_b3")
+        code_a1 = CObject(code_a, "code_a1")
+        code_b1 = CObject(code_b, "code_b1")
+        code_b2 = CObject(code_b, "code_b2")
+        code_b3 = CObject(code_b, "code_b3")
         a_b_links = add_links({code_a1: [code_b1, code_b2]}, association=a_b_association)
 
         code_links = add_links({source_1: [code_a1, code_b2, code_b1, a_b_links[0], a_b_links[1]]},
                                role_name="contained_code")
         eq_(len(code_links), 5)
 
-        # test getter methods on class
+        # test getter methods on object
         eq_(set(source_1.get_linked(role_name="contained_code")),
             {code_a1, code_b2, code_b1, a_b_links[0], a_b_links[1]})
         eq_(set(source_1.linked), {code_a1, code_b2, code_b1, a_b_links[0], a_b_links[1]})
@@ -60,36 +59,34 @@ class TestLinkObjectsForMetaclasses:
         source_1.delete_links([code_a1, a_b_links[0]])
         eq_(set(source_1.linked), {code_b2, code_b1, code_b3_link})
 
-        # test whether class links fail on metaclass
-        cl_a = CClass(self.mcl, "CLA")
-        cl_b = CClass(self.mcl, "CLB")
-        cl_association = cl_a.association(cl_b, "[a] * -> [b] *")
+        # test whether metaclass links fail on class
+        mcl_a = CMetaclass("M")
+        mcl_b = CMetaclass("Source")
+        mcl_association = mcl_a.association(mcl_b, "[a] * -> [b] *")
 
-        o_a = CObject(cl_a, "oa")
-        o_b = CObject(cl_a, "ob")
-        object_link = add_links({o_a: [o_b]}, association=cl_association)[0]
+        cl_a = CClass(mcl_a, "cla")
+        cl_b = CClass(mcl_a, "clb")
+        class_link = add_links({cl_a: [cl_b]}, association=mcl_association)[0]
 
         try:
-            add_links({source_1: [code_a1, code_b2, code_b1, object_link]}, role_name="contained_code")
+            add_links({source_1: [code_a1, code_b2, code_b1, class_link]}, role_name="contained_code")
             exception_expected_()
         except CException as e:
-            eq_("link target is an object link, but source is a class", e.value)
+            eq_("link target is a class link, but source is an object", e.value)
 
     def test_link_association_has_a_compatible_superclass(self):
-        code = CMetaclass("Code")
-
-        source = CMetaclass("Source")
+        code = CClass(self.mcl, "Code")
+        source = CClass(self.mcl, "Source")
         code.association(source, "[contained_code] * -> [source] *")
-
-        code_a = CMetaclass("Code A", superclasses=code)
-        code_b = CMetaclass("Code B", superclasses=code)
+        code_a = CClass(self.mcl, "Code A", superclasses=code)
+        code_b = CClass(self.mcl, "Code B", superclasses=code)
         a_b_association = code_a.association(code_b, "a_b: [code_a] * -> [code_b] *")
 
-        source_1 = CClass(source, "source_1")
+        source_1 = CObject(source, "source_1")
 
-        code_a1 = CClass(code_a, "code_a1")
-        code_b1 = CClass(code_b, "code_b1")
-        code_b2 = CClass(code_b, "code_b2")
+        code_a1 = CObject(code_a, "code_a1")
+        code_b1 = CObject(code_b, "code_b1")
+        code_b2 = CObject(code_b, "code_b2")
         links = add_links({code_a1: [code_b1, code_b2]}, association=a_b_association)
 
         try:
@@ -97,51 +94,51 @@ class TestLinkObjectsForMetaclasses:
                       role_name="contained_code")
             exception_expected_()
         except CException as e:
-            eq_("the metaclass link's association is missing a compatible classifier", e.value)
+            eq_("the link's association is missing a compatible classifier", e.value)
 
-        a_b_association.superclasses = self.mcl
+        a_b_association.superclasses = self.cl
         try:
             add_links({source_1: [code_a1, code_b2, code_b1, links[0], links[1]]},
                       role_name="contained_code")
             exception_expected_()
         except CException as e:
-            eq_("no common metaclass for classes or links found", e.value)
+            eq_("the link's association is missing a compatible classifier", e.value)
 
         a_b_association.superclasses = code_b
         add_links({source_1: [code_a1, code_b2, code_b1, links[0], links[1]]},
                   role_name="contained_code")
 
     def test_association_to_association_not_possible(self):
-        clx = CMetaclass("X")
-        cla = CMetaclass("A")
-        clb = CMetaclass("B")
+        clx = CClass(self.mcl, "X")
+        cla = CClass(self.mcl, "A")
+        clb = CClass(self.mcl, "B")
         a_b_association = cla.association(clb, "a_b: [a] * -> [b] *")
         try:
             clx.association(a_b_association, "[x] * -> [a_b_association] *")
             exception_expected_()
         except CException as e:
-            eq_("metaclass 'X' is not compatible with association target 'a_b'", e.value)
+            eq_("class 'X' is not compatible with association target 'a_b'", e.value)
 
     def test_link_to_link(self):
-        collection1 = CMetaclass("Collection1")
-        collection2 = CMetaclass("Collection2")
+        collection1 = CClass(self.mcl, "Collection1")
+        collection2 = CClass(self.mcl, "Collection2")
         collections_association = collection1.association(collection2,
                                                           "element references: [references] * -> [referenced] *")
-        type_a = CMetaclass("Type A", superclasses=collection1)
-        type_b = CMetaclass("Type B", superclasses=collection1)
+        type_a = CClass(self.mcl, "Type A", superclasses=collection1)
+        type_b = CClass(self.mcl, "Type B", superclasses=collection1)
         a_b_association = type_a.association(type_b, "a_b: [type_a] * -> [type_b] *", superclasses=collection1)
-        type_c = CMetaclass("Type C", superclasses=collection2)
-        type_d = CMetaclass("Type D", superclasses=[collection1, collection2])
+        type_c = CClass(self.mcl, "Type C", superclasses=collection2)
+        type_d = CClass(self.mcl, "Type D", superclasses=[collection1, collection2])
         c_d_association = type_c.association(type_d, "c_d: [type_c] * -> [type_d] *", superclasses=collection2)
         a_d_association = type_a.association(type_d, "a_d: [type_a] * -> [type_d] *",
                                              superclasses=[collection1, collection2])
 
-        a1 = CClass(type_a, "a1")
-        b1 = CClass(type_b, "b1")
-        b2 = CClass(type_b, "b2")
-        c1 = CClass(type_c, "c1")
-        c2 = CClass(type_c, "c2")
-        d1 = CClass(type_d, "d1")
+        a1 = CObject(type_a, "a1")
+        b1 = CObject(type_b, "b1")
+        b2 = CObject(type_b, "b2")
+        c1 = CObject(type_c, "c1")
+        c2 = CObject(type_c, "c2")
+        d1 = CObject(type_d, "d1")
 
         a_b_links = add_links({a1: [b1, b2]}, association=a_b_association)
         c_d_links = add_links({d1: [c1, c2]}, association=c_d_association)
@@ -176,27 +173,26 @@ class TestLinkObjectsForMetaclasses:
         eq_(set(get_links([a_d_links[0]])), correct_links_set)
 
     def test_links_as_attribute_values(self):
-        code = CMetaclass("Code")
-        source = CMetaclass("Source")
+        code = CClass(self.mcl, "Code")
+        source = CClass(self.mcl, "Source")
         code.association(source, "[contained_code] * -> [source] *")
-        code_a = CMetaclass("Code A", superclasses=code)
-        code_b = CMetaclass("Code B", superclasses=code)
+        code_a = CClass(self.mcl, "Code A", superclasses=code)
+        code_b = CClass(self.mcl, "Code B", superclasses=code)
         a_b_association = code_a.association(code_b, "a_b: [code_a] * -> [code_b] *", superclasses=code)
-        CClass(source, "source_1")
-        code_a1 = CClass(code_a, "code_a1")
-        code_b1 = CClass(code_b, "code_b1")
-        code_b2 = CClass(code_b, "code_b2")
+        code_a1 = CObject(code_a, "code_a1")
+        code_b1 = CObject(code_b, "code_b1")
+        code_b2 = CObject(code_b, "code_b2")
         a_b_links = add_links({code_a1: [code_b1, code_b2]}, association=a_b_association)
 
         links_list = [code_a1, code_b2, code_b1, a_b_links[0], a_b_links[1]]
 
-        collection_type = CMetaclass("Collection Type", attributes={
+        collection_type = CClass(self.mcl, "Collection Type", attributes={
             "primary_code": code,
             "default_value_code": a_b_links[0],
             "codes": list,
             "default_values_list": links_list
         })
-        collection = CClass(collection_type)
+        collection = CObject(collection_type)
 
         eq_(collection.get_value("primary_code"), None)
         eq_(collection.get_value("default_value_code"), a_b_links[0])
@@ -231,17 +227,17 @@ class TestLinkObjectsForMetaclasses:
         eq_(collection.get_value("default_values_list"), None)
 
     def create_simple_link_object_test_setup(self):
-        self.a = CMetaclass("A")
-        self.a1 = CMetaclass("A1", superclasses=self.a)
-        self.a2 = CMetaclass("A2", superclasses=self.a)
+        self.a = CClass(self.mcl, "A")
+        self.a1 = CClass(self.mcl, "A1", superclasses=self.a)
+        self.a2 = CClass(self.mcl, "A2", superclasses=self.a)
         self.a_association = self.a1.association(self.a2, "[a1] * -> [a2] *", superclasses=self.a)
-        self.b = CMetaclass("B")
+        self.b = CClass(self.mcl, "B")
         self.b_a_association = self.b.association(self.a, "[b] * -> [a] *")
 
-        self.a1_1 = CClass(self.a1, "a1_1")
-        self.a1_2 = CClass(self.a1, "a1_2")
-        self.a2_1 = CClass(self.a2, "a2_1")
-        self.b_1 = CClass(self.b, "b_1")
+        self.a1_1 = CObject(self.a1, "a1_1")
+        self.a1_2 = CObject(self.a1, "a1_2")
+        self.a2_1 = CObject(self.a2, "a2_1")
+        self.b_1 = CObject(self.b, "b_1")
         self.a_links = add_links({self.a2_1: [self.a1_1, self.a1_2]}, association=self.a_association)
 
         self.b_a_links = add_links({self.b_1: [self.a_links[0], self.a_links[1]]}, association=self.b_a_association)
@@ -272,20 +268,20 @@ class TestLinkObjectsForMetaclasses:
         eq_(self.a.subclasses, [self.a1, self.a2, self.a_association])
 
         try:
-            another_sc = CClass(self.mcl, "ASC")
+            another_sc = CMetaclass("ASC")
             self.a_association.superclasses = [self.a, another_sc]
             exception_expected_()
         except CException as e:
-            eq_("cannot add superclass 'ASC': not a metaclass or metaclass association", e.value)
+            eq_("cannot add superclass 'ASC': not a class or class association", e.value)
 
         try:
             another_sc = CStereotype("ASC")
             self.a_association.superclasses = [self.a, another_sc]
             exception_expected_()
         except CException as e:
-            eq_("cannot add superclass 'ASC': not a metaclass or metaclass association", e.value)
+            eq_("cannot add superclass 'ASC': not a class or class association", e.value)
 
-        another_sc = CMetaclass("ASC")
+        another_sc = CClass(self.mcl, "ASC")
         self.a_association.superclasses = [self.a, another_sc]
         eq_(self.a_association.superclasses, [self.a, another_sc])
         eq_(set(self.a_association.all_superclasses), {self.a, another_sc})
@@ -352,11 +348,10 @@ class TestLinkObjectsForMetaclasses:
         eq_(self.a_links[0].instance_of(self.a), True)
         eq_(self.a_links[0].instance_of(self.a1), False)
         try:
-            cl = CClass(self.mcl, "CL")
-            eq_(self.a_links[0].instance_of(cl), False)
+            eq_(self.a_links[0].instance_of(self.mcl), False)
             exception_expected_()
         except CException as e:
-            eq_("'CL' is not an association or a metaclass", e.value)
+            eq_("'MCL' is not an association or a class", e.value)
 
         eq_(self.b_a_links[0].instance_of(self.a_association), False)
         eq_(self.b_a_links[0].instance_of(self.b_a_association), True)
@@ -394,7 +389,7 @@ class TestLinkObjectsForMetaclasses:
         except CException as e:
             eq_("can't set values on deleted link", e.value)
 
-    def test_class_link_classifier_bundable(self):
+    def test_object_link_classifier_bundable(self):
         self.create_simple_link_object_test_setup()
 
         bundle = CBundle("Bundle", elements=self.a.get_connected_elements())
@@ -405,8 +400,8 @@ class TestLinkObjectsForMetaclasses:
             exception_expected_()
         except CException as e:
             eq_("unknown keyword argument 'add_links', should be one of:" +
-                " ['add_associations', 'add_stereotypes', 'process_stereotypes', 'add_bundles', 'process_bundles'," +
-                " 'stop_elements_inclusive', 'stop_elements_exclusive']", e.value)
+                " ['add_associations', 'add_bundles', 'process_bundles', 'stop_elements_inclusive', " +
+                "'stop_elements_exclusive']", e.value)
 
         eq_(self.a_association.bundles, [])
 
@@ -425,39 +420,39 @@ class TestLinkObjectsForMetaclasses:
         self.a_association.delete()
         eq_(set(bundle.elements), {self.a, self.a1, self.a2, self.b})
 
-    def test_class_link_bundable(self):
+    def test_object_link_bundable(self):
         self.create_simple_link_object_test_setup()
 
-        bundle = CBundle("Bundle", elements=self.a1_1.class_object.get_connected_elements())
-        eq_(set(bundle.elements), {self.a1_1.class_object, self.a1_2.class_object, self.a2_1.class_object})
+        bundle = CBundle("Bundle", elements=self.a1_1.get_connected_elements())
+        eq_(set(bundle.elements), {self.a1_1, self.a1_2, self.a2_1})
 
         try:
-            bundle.elements = self.a1_1.class_object.get_connected_elements(add_associations=True)
+            bundle.elements = self.a1_1.get_connected_elements(add_associations=True)
             exception_expected_()
         except CException as e:
             eq_("unknown keyword argument 'add_associations', should be one of:" +
-                " ['add_links', 'add_bundles', 'process_bundles', 'stop_elements_inclusive', " +
-                "'stop_elements_exclusive']", e.value)
+                " ['add_links', 'add_bundles', 'process_bundles', 'stop_elements_inclusive'," +
+                " 'stop_elements_exclusive']", e.value)
 
-        bundle.elements = self.b_1.class_object.get_connected_elements()
-        eq_(set(bundle.elements), {self.b_1.class_object})
+        bundle.elements = self.b_1.get_connected_elements()
+        eq_(set(bundle.elements), {self.b_1})
 
         eq_(self.a_links[0].bundles, [])
 
-        bundle.elements = self.b_1.class_object.get_connected_elements(add_links=True)
-        eq_(set(bundle.elements), {self.b_1.class_object, self.a_links[0], self.a_links[1]})
+        bundle.elements = self.b_1.get_connected_elements(add_links=True)
+        eq_(set(bundle.elements), {self.b_1, self.a_links[0], self.a_links[1]})
 
         eq_(self.a_links[0].bundles, [bundle])
 
         bundle2 = CBundle("Bundle2", elements=self.a_links[0].get_connected_elements(add_links=True))
-        eq_(set(bundle2.elements), {self.b_1.class_object, self.a_links[0], self.a_links[1]})
+        eq_(set(bundle2.elements), {self.b_1, self.a_links[0], self.a_links[1]})
         eq_(set(self.a_links[0].bundles), {bundle, bundle2})
 
         bundle2.delete()
         eq_(set(self.a_links[0].bundles), {bundle})
 
         self.a_links[0].delete()
-        eq_(set(bundle.elements), {self.b_1.class_object, self.a_links[1]})
+        eq_(set(bundle.elements), {self.b_1, self.a_links[1]})
 
 
 if __name__ == "__main__":

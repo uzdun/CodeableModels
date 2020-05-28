@@ -1,11 +1,11 @@
+from codeable_models.cobject import CObject
 from codeable_models.internal.commons import *
-from codeable_models.cexception import CException
 from codeable_models.internal.stereotype_holders import CStereotypeInstancesHolder
 from codeable_models.internal.var_values import delete_var_value, set_var_value, get_var_value, get_var_values, \
     set_var_values, VarValueKind
 
 
-class CLink(object):
+class CLink(CObject):
     def __init__(self, association, source_object, target_object, **kwargs):
         self.is_deleted = False
         self.source_ = source_object
@@ -14,8 +14,14 @@ class CLink(object):
         self.association = association
         self.stereotype_instances_holder = CStereotypeInstancesHolder(self)
         self.tagged_values_ = {}
-        super().__init__()
+        super().__init__(association)
         self._init_keyword_args(**kwargs)
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return f"[CLink source = {self.source_!s} -> target = {self.target_!s}]"
 
     def _init_keyword_args(self, legal_keyword_args=None, **kwargs):
         if legal_keyword_args is None:
@@ -24,10 +30,17 @@ class CLink(object):
         set_keyword_args(self, legal_keyword_args, **kwargs)
 
     def get_opposite_object(self, object_):
+        if is_cclass(object_):
+            object_ = object_.class_object
         if object_ == self.source_:
             return self.target_
         else:
             return self.source_
+
+    def is_class_link(self):
+        if is_cclass(self.source) or (self.source.class_object_class is not None):
+            return True
+        return False
 
     @property
     def role_name(self):
@@ -39,26 +52,27 @@ class CLink(object):
 
     @property
     def source(self):
-        if self.source_.class_object_class_ is not None:
-            return self.source_.class_object_class_
+        if self.source_.class_object_class is not None:
+            return self.source_.class_object_class
         return self.source_
 
     @property
     def target(self):
-        if self.target_.class_object_class_ is not None:
-            return self.target_.class_object_class_
+        if self.target_.class_object_class is not None:
+            return self.target_.class_object_class
         return self.target_
 
     def delete(self):
         if self.is_deleted:
             return
-        self.is_deleted = True
         for si in self.stereotype_instances:
             si.extended_instances_.remove(self)
         self.stereotype_instances_holder.stereotypes_ = []
         if self.source_ != self.target_:
-            self.target_.link_objects_.remove(self)
-        self.source_.link_objects_.remove(self)
+            self.target_.links_.remove(self)
+        self.source_.links_.remove(self)
+        super().delete()
+        self.is_deleted = True
 
     @property
     def stereotype_instances(self):
@@ -99,25 +113,47 @@ class CLink(object):
         set_var_values(self, new_values, VarValueKind.TAGGED_VALUE)
 
 
-def _get_target_objects_from_definition(targets, is_class_links):
+def _get_target_objects_from_definition(source_obj, targets):
     if targets is None:
         targets = []
     elif not isinstance(targets, list):
         targets = [targets]
     new_targets = []
     for t in targets:
+        is_source_a_class = source_obj.class_object_class is not None
         if is_cclass(t):
-            if not is_class_links:
+            if is_clink(source_obj):
+                if not is_cmetaclass(source_obj.association.target):
+                    raise CException(f"link target '{t!s}' is a class, but source is a not class link")
+            elif not is_source_a_class:
                 raise CException(f"link target '{t!s}' is a class, but source is an object")
             new_targets.append(t.class_object_)
+        elif is_clink(t):
+            if is_cmetaclass(t.association.source):
+                if is_clink(source_obj):
+                    if not is_cmetaclass(source_obj.association.target):
+                        raise CException(f"link target is an class link, but source is an object link")
+                elif not is_source_a_class:
+                    raise CException(f"link target is a class link, but source is an object")
+            else:
+                if is_clink(source_obj):
+                    if not is_cclass(source_obj.association.target):
+                        raise CException(f"link target is an object link, but source is an class link")
+                elif is_source_a_class:
+                    raise CException(f"link target is an object link, but source is a class")
+            new_targets.append(t)
         elif is_cobject(t):
-            if is_class_links and t.class_object_class_ is None:
-                raise CException(f"link target '{t!s}' is an object, but source is an class")
-            if not is_class_links and t.class_object_class_ is not None:
-                raise CException(f"link target '{t!s}' is an class, but source is an object")
+            if is_clink(source_obj):
+                if not is_cclass(source_obj.association.target):
+                    raise CException(f"link target '{t!s}' is an object, but source is not an object link")
+            else:
+                if is_source_a_class and t.class_object_class is None:
+                    raise CException(f"link target '{t!s}' is an object, but source is a class")
+                if not is_source_a_class and t.class_object_class is not None:
+                    raise CException(f"link target '{t!s}' is a class, but source is an object")
             new_targets.append(t)
         else:
-            raise CException(f"link target '{t!s}' is neither an object nor a class")
+            raise CException(f"link target '{t!s}' is not an object, class, or link")
     return new_targets
 
 
@@ -134,18 +170,18 @@ def _check_link_definition_and_replace_classes(link_definitions):
         if is_cclass(source):
             source_obj = source.class_object_
         elif not is_cobject(source):
-            raise CException(f"link source '{source!s}' is neither an object nor a class")
-        targets = _get_target_objects_from_definition(link_definitions[source],
-                                                      source_obj.class_object_class_ is not None)
+            raise CException(f"link source '{source!s}' is not an object, class, or link")
+        targets = _get_target_objects_from_definition(source_obj, link_definitions[source])
         new_definitions[source_obj] = targets
 
     return new_definitions
 
 
 def _determine_matching_association_and_set_context_info(context, source, targets):
-    if source.class_object_class_ is not None:
-        target_classifier_candidates = get_common_metaclasses([co.class_object_class_ for co in targets])
-        context.sourceClassifier = source.class_object_class_.metaclass
+    if source.class_object_class is not None:
+        target_classifier_candidates = get_common_metaclasses(
+            [co.class_object_class if not is_clink(co) else co for co in targets])
+        context.sourceClassifier = source.class_object_class.metaclass
     else:
         target_classifier_candidates = [get_common_classifier(targets)]
         context.sourceClassifier = source.classifier
@@ -208,7 +244,7 @@ def link_objects_(context, source, targets):
         if not context.matchesInOrder[source_obj]:
             source_for_link = target
             target_for_link = source_obj
-        for existingLink in source_obj.link_objects_:
+        for existingLink in source_obj.links_:
             if (existingLink.source_ == source_for_link and existingLink.target_ == target_for_link
                     and existingLink.association == context.association):
                 for link in new_links:
@@ -220,10 +256,10 @@ def link_objects_(context, source, targets):
             link.label = context.label
 
         new_links.append(link)
-        source_obj.link_objects_.append(link)
+        source_obj.links_.append(link)
         # for links from this object to itself, store only one link object
         if source_obj != target:
-            target.link_objects_.append(link)
+            target.links_.append(link)
         if context.stereotype_instances is not None:
             link.stereotype_instances = context.stereotype_instances
         if context.tagged_values is not None:
@@ -234,12 +270,12 @@ def link_objects_(context, source, targets):
 def remove_links_for_associations(context, source, targets):
     if source not in context.objectLinksHaveBeenRemoved:
         context.objectLinksHaveBeenRemoved.append(source)
-        for link in source.get_link_objects_for_association(context.association):
+        for link in source.get_links_for_association(context.association):
             link.delete()
     for target in targets:
         if target not in context.objectLinksHaveBeenRemoved:
             context.objectLinksHaveBeenRemoved.append(target)
-            for link in target.get_link_objects_for_association(context.association):
+            for link in target.get_links_for_association(context.association):
                 link.delete()
 
 
@@ -249,7 +285,13 @@ def set_links(link_definitions, do_add_links=False, **kwargs):
 
     new_links = []
     for source in link_definitions:
+        if source.is_deleted:
+            raise CException("cannot link to deleted source")
         targets = link_definitions[source]
+        for target in targets:
+            if target.is_deleted:
+                raise CException("cannot link to deleted target")
+
         _determine_matching_association_and_set_context_info(context, source, targets)
         if not do_add_links:
             remove_links_for_associations(context, source, targets)
@@ -262,12 +304,12 @@ def set_links(link_definitions, do_add_links=False, **kwargs):
     try:
         for source in link_definitions:
             targets = link_definitions[source]
-            source_len = len(source.get_link_objects_for_association(context.association))
+            source_len = len(source.get_links_for_association(context.association))
             if len(targets) == 0:
                 context.association.check_multiplicity(source, source_len, 0, context.matchesInOrder[source])
             else:
                 for target in targets:
-                    target_len = len(target.get_link_objects_for_association(context.association))
+                    target_len = len(target.get_links_for_association(context.association))
                     context.association.check_multiplicity(source, source_len, target_len,
                                                            context.matchesInOrder[source])
                     context.association.check_multiplicity(target, target_len, source_len,
@@ -299,7 +341,7 @@ def delete_links(link_definitions, **kwargs):
         for target in targets:
             matches_in_order = None
             matching_link = None
-            for link in source.link_objects_:
+            for link in source.links_:
                 if context.association is not None and link.association != context.association:
                     continue
                 matches_in_order = True
@@ -333,8 +375,8 @@ def delete_links(link_definitions, **kwargs):
             else:
                 if matches_in_order is None:
                     raise CException(f"no link found for '{source!s} -> {target!s}' in delete links")
-                source_len = len(source.get_link_objects_for_association(matching_link.association)) - 1
-                target_len = len(target.get_link_objects_for_association(matching_link.association)) - 1
+                source_len = len(source.get_links_for_association(matching_link.association)) - 1
+                target_len = len(target.get_links_for_association(matching_link.association)) - 1
                 matching_link.association.check_multiplicity(source, source_len, target_len, matches_in_order)
                 matching_link.association.check_multiplicity(target, target_len, source_len, not matches_in_order)
                 matching_link.delete()

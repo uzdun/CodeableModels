@@ -20,8 +20,8 @@ class TestStereotypeInstancesOnAssociations:
         c1 = CClass(self.m1, "C1")
         c2 = CClass(self.m2, "C2")
         c3 = CClass(self.m2, "C3")
-        link_objects = set_links({c1: [c2, c3]})
-        l1 = link_objects[0]
+        links = set_links({c1: [c2, c3]})
+        l1 = links[0]
 
         eq_(l1.stereotype_instances, [])
         eq_(s1.extended_instances, [])
@@ -39,12 +39,9 @@ class TestStereotypeInstancesOnAssociations:
         eq_(s2.extended_instances, [l1])
         eq_(s3.extended_instances, [])
 
-        eq_(c1.get_link_objects_for_association(self.a), link_objects)
-        eq_(c1.get_link_stereotype_instances_for_association(self.a), [(c1, c2, s2)])
-        eq_(c2.get_link_objects_for_association(self.a), [l1])
-        eq_(c2.get_link_stereotype_instances_for_association(self.a), [(c1, c2, s2)])
-        eq_(c3.get_link_objects_for_association(self.a), [link_objects[1]])
-        eq_(c3.get_link_stereotype_instances_for_association(self.a), [])
+        eq_(c1.get_links_for_association(self.a), links)
+        eq_(c2.get_links_for_association(self.a), [l1])
+        eq_(c3.get_links_for_association(self.a), [links[1]])
 
     def test_stereotype_instances_double_assignment(self):
         s1 = CStereotype("S1", extended=self.a)
@@ -93,18 +90,16 @@ class TestStereotypeInstancesOnAssociations:
         c2 = CClass(self.m2, "C2")
         c3 = CClass(self.m2, "C3")
         c4 = CClass(self.m2, "C4")
-        link_objects = set_links({c1: [c2, c3, c4]})
-        link_objects[0].stereotype_instances = [s1]
-        eq_(s1.extended_instances, [link_objects[0]])
-        link_objects[1].stereotype_instances = [s1]
-        eq_(set(s1.extended_instances), {link_objects[0], link_objects[1]})
-        link_objects[2].stereotype_instances = [s1, s2]
-        eq_(set(s1.extended_instances), {link_objects[0], link_objects[1], link_objects[2]})
-        eq_(set(s2.extended_instances), {link_objects[2]})
+        links = set_links({c1: [c2, c3, c4]})
+        links[0].stereotype_instances = [s1]
+        eq_(s1.extended_instances, [links[0]])
+        links[1].stereotype_instances = [s1]
+        eq_(set(s1.extended_instances), {links[0], links[1]})
+        links[2].stereotype_instances = [s1, s2]
+        eq_(set(s1.extended_instances), {links[0], links[1], links[2]})
+        eq_(set(s2.extended_instances), {links[2]})
 
-        eq_(c1.get_link_objects_for_association(self.a), link_objects)
-        eq_(c1.get_link_stereotype_instances_for_association(self.a),
-            [(c1, c2, s1), (c1, c3, s1), (c1, c4, s1), (c1, c4, s2)])
+        eq_(c1.get_links_for_association(self.a), links)
 
     def test_delete_stereotype_of_extended_instances(self):
         s1 = CStereotype("S1", extended=self.a)
@@ -168,13 +163,13 @@ class TestStereotypeInstancesOnAssociations:
         c1 = CClass(self.m1, "C1")
         c2 = CClass(self.m2, "C2")
         c3 = CClass(self.m2, "C3")
-        link_objects = set_links({c1: [c2, c3]})
-        link_objects[0].stereotype_instances = s1
-        link_objects[1].stereotype_instances = s2
-        eq_(s1.extended_instances, [link_objects[0]])
-        eq_(s2.extended_instances, [link_objects[1]])
-        eq_(s1.all_extended_instances, [link_objects[0], link_objects[1]])
-        eq_(s2.all_extended_instances, [link_objects[1]])
+        links = set_links({c1: [c2, c3]})
+        links[0].stereotype_instances = s1
+        links[1].stereotype_instances = s2
+        eq_(s1.extended_instances, [links[0]])
+        eq_(s2.extended_instances, [links[1]])
+        eq_(s1.all_extended_instances, [links[0], links[1]])
+        eq_(s2.all_extended_instances, [links[1]])
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ the project.
 
 ## Pull Request Process
 
-* TODO: will be added in later releases
+* will be added in later releases
 
 ## Code of Conduct
 

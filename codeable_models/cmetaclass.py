@@ -24,8 +24,9 @@ class CMetaclass(CClassifier):
     def all_classes(self):
         all_classes = list(self.classes_)
         for scl in self.all_subclasses:
-            for cl in scl.classes_:
-                all_classes.append(cl)
+            if isinstance(scl, CMetaclass):
+                for cl in scl.classes_:
+                    all_classes.append(cl)
         return all_classes
 
     def get_classes(self, name):
@@ -73,7 +74,7 @@ class CMetaclass(CClassifier):
     def stereotypes(self, elements):
         self.stereotypes_holder.stereotypes = elements
 
-    def update_default_values_of_classifier(self, attribute=None):
+    def update_default_values_of_classifier_(self, attribute=None):
         for i in self.all_classes:
             attr_items = self.attributes_.items()
             if attribute is not None:
@@ -94,10 +95,10 @@ class CMetaclass(CClassifier):
             raise CException(f"metaclass '{self!s}' is not compatible with association target '{target!s}'")
         return super(CMetaclass, self).association(target, descriptor, **kwargs)
 
-    def compute_connected(self, context):
-        super().compute_connected(context)
+    def compute_connected_(self, context):
+        super().compute_connected_(context)
         connected = []
         for s in self.stereotypes:
             if s not in context.stop_elements_exclusive:
                 connected.append(s)
-        self.append_connected(context, connected)
+        self.append_connected_(context, connected)

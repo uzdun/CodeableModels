@@ -24,9 +24,9 @@ class ObjectModelRenderer(ModelRenderer):
             object_ = object_.class_object
 
         stereotype_string = ""
-        if object_.class_object_class_ is not None:
-            stereotype_string = self.render_stereotypes(object_.class_object_class_,
-                                                        object_.class_object_class_.stereotype_instances)
+        if object_.class_object_class is not None:
+            stereotype_string = self.render_stereotypes(object_.class_object_class,
+                                                        object_.class_object_class.stereotype_instances)
 
         cl_name = object_.classifier.name
         if cl_name is None:
@@ -74,7 +74,7 @@ class ObjectModelRenderer(ModelRenderer):
     def render_links(self, context, obj, obj_list):
         for classifier in obj.classifier.class_path:
             for association in classifier.associations:
-                links = [l for l in obj.link_objects if l.association == association]
+                links = [l for l in obj.links if l.association == association]
                 for link in links:
                     if link in context.excluded_links:
                         continue

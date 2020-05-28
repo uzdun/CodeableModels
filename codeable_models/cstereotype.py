@@ -85,7 +85,7 @@ class CStereotype(CClassifier):
         self.extended_ = []
         super().delete()
 
-    def update_default_values_of_classifier(self, attribute=None):
+    def update_default_values_of_classifier_(self, attribute=None):
         all_classes = [self] + list(self.all_subclasses)
         for sc in all_classes:
             for i in sc.extended_instances_:
@@ -133,15 +133,15 @@ class CStereotype(CClassifier):
             raise CException(f"stereotype '{self!s}' is not compatible with association target '{target!s}'")
         return super(CStereotype, self).association(target, descriptor, **kwargs)
 
-    def compute_connected(self, context):
-        super().compute_connected(context)
+    def compute_connected_(self, context):
+        super().compute_connected_(context)
         if not context.process_stereotypes:
             return
         connected = []
         for e in self.extended:
             if e not in context.stop_elements_exclusive:
                 connected.append(e)
-        self.append_connected(context, connected)
+        self.append_connected_(context, connected)
 
     def _get_all_extended_elements(self):
         result = []

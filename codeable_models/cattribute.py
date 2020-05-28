@@ -82,7 +82,7 @@ class CAttribute(object):
             self.type = attr_type
         self.default_ = default
         if self.classifier_ is not None:
-            self.classifier_.update_default_values_of_classifier(self)
+            self.classifier_.update_default_values_of_classifier_(self)
 
     def check_attribute_value_type(self, name, value):
         attr_type = get_attribute_type(value)

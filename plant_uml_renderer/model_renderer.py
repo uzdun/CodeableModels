@@ -6,6 +6,18 @@ from codeable_models import *
 from codeable_models.internal.commons import set_keyword_args, is_cobject
 
 
+def get_encoded_name(element):
+    if isinstance(element, CNamedElement):
+        name = f"_{element.name}"
+        if name is None:
+            return ""
+        # put a placeholder _ in the name for special characters as plantuml does not
+        # support many of them
+        name = "".join([c if c.isalnum() else "_" for c in name])
+        return name
+    return ""
+
+
 class RenderingContext(object):
     def __init__(self):
         super().__init__()
@@ -15,26 +27,15 @@ class RenderingContext(object):
         self.node_ids = {}
         self.current_node_id = 0
 
-    def get_encoded_name(self, element):
-        if isinstance(element, CNamedElement):
-            name = f"_{element.name}"
-            if name is None:
-                return ""
-            # put a placeholder _ in the name for special characters as plantuml does not
-            # support many of them
-            name = "".join([c if c.isalnum() else "_" for c in name])
-            return name
-        return ""
-
     def get_node_id(self, element):
-        if is_cobject(element) and element.class_object_class_ is not None:
+        if is_cobject(element) and element.class_object_class is not None:
             # use the class object's class rather than the class object to identify them uniquely
-            element = element.class_object_class_
+            element = element.class_object_class
         if element in self.node_ids:
             return self.node_ids[element]
         else:
             self.current_node_id += 1
-            name = f"__{self.current_node_id!s}" + self.get_encoded_name(element)
+            name = f"__{self.current_node_id!s}" + get_encoded_name(element)
             self.node_ids[element] = name
             return name
 

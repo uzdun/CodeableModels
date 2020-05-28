@@ -5,8 +5,11 @@ akin to UML models, but radically simplified compared to the UML2 meta-model. Th
 the API allows you to create metaclasses, classes, objects, stereotypes and their
 dependencies. The main envisaged use case is at the moment to create domain models in
 your code at runtime and generate visual representations of those models for human users.
-We use PlantUML and Graphviz in our projects for such visual representations; but no
-generation code is yet included in the Codeable Models project.
+
+We use PlantUML and Graphviz in our projects for such visual representations; see folder 
+plant_uml_renderer for simple class and object model renderers. 
+
+The folder metamodels contains a couple of example metamodels.
 
 ## Getting Started
 

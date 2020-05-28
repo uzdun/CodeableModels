@@ -160,11 +160,11 @@ class TestClass:
         except CException as e:
             ok_(e.value.endswith("'None' is not a metaclass"))
 
-    def test_get_class_object(self):
+    def test_class_object(self):
         cl = CClass(self.mcl, "CX")
         eq_(cl.class_object.name, cl.name)
         eq_(cl.class_object.classifier, self.mcl)
-        eq_(cl.class_object.class_object_class_, cl)
+        eq_(cl.class_object.class_object_class, cl)
 
     def test_get_connected_elements__wrong_keyword_arg(self):
         c1 = CClass(self.mcl, "c1")
@@ -173,7 +173,8 @@ class TestClass:
             exception_expected_()
         except CException as e:
             eq_(e.value, "unknown keyword argument 'a', should be one of: " +
-                "['add_bundles', 'process_bundles', 'stop_elements_inclusive', 'stop_elements_exclusive']")
+                "['add_associations', 'add_bundles', 'process_bundles', 'stop_elements_inclusive'," +
+                " 'stop_elements_exclusive']")
 
     def test_get_connected_elements_empty(self):
         c1 = CClass(self.mcl, "c1")

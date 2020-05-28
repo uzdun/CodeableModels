@@ -105,7 +105,7 @@ class TestMetaclass:
             exception_expected_()
         except CException as e:
             eq_(e.value, "unknown keyword argument 'a', should be one of: " +
-                "['add_stereotypes', 'process_stereotypes', 'add_bundles', 'process_bundles', " +
+                "['add_associations', 'add_stereotypes', 'process_stereotypes', 'add_bundles', 'process_bundles', " +
                 "'stop_elements_inclusive', 'stop_elements_exclusive']")
 
     def test_get_connected_elements_empty(self):
