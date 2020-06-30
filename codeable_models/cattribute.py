@@ -3,6 +3,20 @@ from codeable_models.internal.commons import *
 
 class CAttribute(object):
     def __init__(self, **kwargs):
+        """``CAttribute`` is internally used for storing attributes, and can be used by the user for
+        detailed setting or introspection of attribute data.
+
+        The ``attributes`` getter of :py:class:`.CClassifier` returns ``CAttribute`` objects.
+        They can be used as an alternative method in
+        the ``attributes`` setter of :py:class:`.CClassifier` to define attributes of a classifier.
+
+        Args:
+           **kwargs: ``CAttribute`` accepts: ``type``, ``default``.
+
+                - The ``type`` kwarg accepts a type argument in the form acceptable to the ``type`` property.
+                - The ``default`` kwarg accepts a default value in the form acceptable to the ``default`` property.
+
+        """
         self.name_ = None
         self.classifier_ = None
         self.type_ = None
@@ -21,14 +35,30 @@ class CAttribute(object):
 
     @property
     def name(self):
+        """str: Property used to get the name of the attribute.
+
+        Will be set automatically if the attribute is created on a classifier.
+        """
         return self.name_
 
     @property
     def classifier(self):
+        """:py:class:`.CClassifier`: Property used to get the classifier of the attribute.
+
+        The attribute classifier is set automatically when the attribute is created on a classifier.
+        """
         return self.classifier_
 
     @property
     def type(self):
+        """supported_type: Property used to set or get the type of the attribute.
+
+        If a default value is set before the type, an exception will be raised if the new type does
+        not match the default value.
+
+        Supported types of attributes are documented in the documentation of the ``attributes`` property
+        of :py:class:`.CClassifier`.
+        """
         self.check_attribute_type_is_not_deleted()
         return self.type_
 
@@ -53,6 +83,11 @@ class CAttribute(object):
 
     @property
     def default(self):
+        """default_value: Property used to set or get the default value of the attribute.
+
+        If an attribute type is set before the default value, the default value must conform to the type.
+        Else the type is guessed from the provided default value.
+        """
         self.check_attribute_type_is_not_deleted()
         return self.default_
 
@@ -84,7 +119,7 @@ class CAttribute(object):
         if self.classifier_ is not None:
             self.classifier_.update_default_values_of_classifier_(self)
 
-    def check_attribute_value_type(self, name, value):
+    def check_attribute_value_type_(self, name, value):
         attr_type = get_attribute_type(value)
         if attr_type is None:
             raise CException(f"value for attribute '{name!s}' is not a known attribute type")

@@ -14,7 +14,7 @@ def _check_for_classifier_and_role_name_match(classifier, role_name, association
         if role_name != association_role_name:
             matches = False
     if matches and classifier is not None:
-        if not classifier.conforms_to_type(association_classifier):
+        if not classifier.is_classifier_of_type(association_classifier):
             matches = False
     if matches:
         return True
@@ -25,6 +25,105 @@ class CAssociation(CClassifier):
     STAR_MULTIPLICITY = -1
 
     def __init__(self, source, target, descriptor=None, **kwargs):
+        """
+        ``CAssociation`` is used for representing associations. Usually associations are created using the
+        ``association`` method of :py:class:`.CClassifier` which calls the constructor of ``CAssociation``
+        to actually create the association (i.e., ``CAssociation`` could also be used directly).
+
+        **Superclasses:**  :py:class:`.CClassifier`
+
+        Args:
+            source (:py:class:`.CClassifier`): The source classifier of the association.
+            target (:py:class:`.CClassifier`): The target classifier of the association.
+            descriptor: An optional descriptor making it easier to define associations with a simple string. The
+                descriptor syntax is described below.
+            **kwargs: Pass in any kwargs acceptable to superclasses. In addition, ``CAssociation`` accepts:
+                ``multiplicity``, ``role_name``, ``source_multiplicity``,
+                ``source_role_name``, ``aggregation``, ``composition``, ``stereotypes``.
+
+                - ``multiplicity``:
+                    Used to provide the target multiplicity of the association. Defaults to ``*``.
+                    See documentation of the property ``multiplicity`` for the accepted syntax.
+                - ``role_name``:
+                    Takes a string specifying the target role name and stores it in the same-named
+                    attribute. Defaults to ``None``.
+                - ``source_multiplicity``:
+                    Used to provide the source multiplicity of the association.
+                    Defaults to ``1``. See documentation of the property ``multiplicity``
+                    for the accepted syntax.
+                - ``source_role_name``:
+                    Takes a string specifying the source role name and stores it in the same-named
+                    attribute. Defaults to ``None``.
+                - ``aggregation``:
+                    Takes a boolean argument. If set to ``True``, this association is set to be
+                    an aggregation, else it is not. Also, if set to ``True``, it sets the property
+                    ``composition`` to ``False``.
+                - ``composition``:
+                    Takes a boolean argument. If set to ``True``, this association is set to be
+                    a composition,  else it is not. Also, if set to ``True``, it sets the property
+                    ``aggregation`` to ``False``.
+                - ``stereotypes``:
+                    Takes a single or a list of :py:class:`.CStereotype` objects which extend this
+                    association. Extension is only possible, if this association is an association
+                    between meta-classes.
+
+        Attributes:
+            role_name: A string specifying the target role name.
+            source_role_name: A string specifying the source role name.
+
+        Please note that the  ``name`` property derived from :py:class:`.CNamedElement`
+        is interpreted as the label of the association.
+
+        **Descriptor Syntax:**
+
+        The ``descriptor`` has the following syntax:
+
+        .. code-block:: none
+
+            ?<label>:? \\
+                ?[<source_role_name>]? <source_multiplicity> ->|<>-|<*>- \\
+                ?[<target_role_name>]? <target_multiplicity>
+
+        With it, first the label of the association can be optionally specified.
+        Source and target multiplicity strings, in the same form as accepted by the ``multiplicity``
+        property, must be specified, too.
+        They are divided by an arrow determining the type of association: ``->`` for ordinary
+        associations, ``<>-`` for aggregations, and ``<*>-`` for compositions.
+        Optionally in square brackets the source and target role names can be specified right before
+        the multiplicities.
+
+        Please note that first the keyword arguments are evaluated and then the descriptor. So the descriptor
+        would override settings made in the keyword arguments.
+
+        **Examples:**
+
+        The following specifies a ``0..1`` to ``*`` association from a class ``cart`` to a class ``item`` labelled
+        ``in cart`` with source role name ``cart`` and target role name ``item in cart``::
+
+            cart.association(item, "in cart: [cart] 0..1 -> [item in cart] *")
+
+        The same can be specified more verbosely with kwargs::
+
+            cart.association(item, name="in cart", role_name="item in cart", multiplicity="*",
+                 source_role_name="cart", source_multiplicity="0..1")
+
+
+        **Main Relations:**
+
+        The main relations of ``CAssociation`` are shown in the figure below.
+
+        .. image:: ../images/association_model.png
+
+        A ``CAssociation`` is need in order to derive :py:class:`.CLink` objects, which link objects
+        in an object model.  The ``CAssociation`` is  the classifier of the  :py:class:`.CLink`.
+
+        As can be seen,  a ``CAssociation`` can be extended by stereotypes. A :py:class:`.CLink` can have
+        stereotype instances of any :py:class:`.CStereotype` defined on the link's association.
+
+        The :py:class:`.CClassifier` can be introspected for its ``associations``. The association stores its ``source``
+        and ``target`` classifiers.
+
+        """
         self.source = source
         self.target = target
         self.role_name = None
@@ -44,6 +143,10 @@ class CAssociation(CClassifier):
         if descriptor is not None:
             self._eval_descriptor(descriptor)
 
+        source.associations_.append(self)
+        if source != target:
+            target.associations_.append(self)
+
     def _init_keyword_args(self, legal_keyword_args=None, **kwargs):
         if legal_keyword_args is None:
             legal_keyword_args = []
@@ -60,25 +163,40 @@ class CAssociation(CClassifier):
             name = self.name
         return f"CAssociation name = {name!s}, source = {self.source!s} -> target = {self.target!s}"
 
-    def get_opposite_class(self, cl):
-        if cl == self.source:
-            return self.target
-        else:
-            return self.source
+    def get_opposite_classifier(self, classifier):
+        """Given a classifier, this method returns the opposite in the association,
+        i.e. the source if ``classifier`` is the
+        target, and vice versa. Raises an exception if ``classifier`` is neither source nor target.
 
-    def is_metaclass_association(self):
+        Args:
+            classifier: The classifier from which we want to get the opposite in the association.
+
+        Returns:
+            CClassifier: The opposite classifier.
+
+        """
+        if classifier == self.source:
+            return self.target
+        elif classifier == self.target:
+            return self.source
+        else:
+            raise CException("can only get opposite if either source or target classifier is provided")
+
+    def is_metaclass_association_(self):
         if is_cmetaclass(self.source):
             return True
         return False
 
-    def matches_target(self, classifier, role_name):
+    def matches_target_(self, classifier, role_name):
         return _check_for_classifier_and_role_name_match(classifier, role_name, self.target, self.role_name)
 
-    def matches_source(self, classifier, role_name):
+    def matches_source_(self, classifier, role_name):
         return _check_for_classifier_and_role_name_match(classifier, role_name, self.source, self.source_role_name)
 
     @property
     def aggregation(self):
+        """bool: Takes a boolean argument. If set to ``True``, this association is set to be
+        an aggregation, else it is not. Also, if set to ``True``, it sets the property ``composition`` to ``False``."""
         return self.aggregation_
 
     @aggregation.setter
@@ -86,6 +204,18 @@ class CAssociation(CClassifier):
         if aggregation:
             self.composition_ = False
         self.aggregation_ = aggregation
+
+    @property
+    def composition(self):
+        """bool: Takes a boolean argument. If set to ``True``, this association is set to be
+        a composition,  else it is not. Also, if set to ``True``, it sets the property ``aggregation`` to ``False``."""
+        return self.composition_
+
+    @composition.setter
+    def composition(self, composition):
+        if composition:
+            self.aggregation_ = False
+        self.composition_ = composition
 
     def _set_multiplicity(self, multiplicity, is_target_multiplicity):
         if not isinstance(multiplicity, str):
@@ -127,6 +257,21 @@ class CAssociation(CClassifier):
 
     @property
     def multiplicity(self):
+        """str: Getter and setter for the target multiplicity of the association. The multiplicity string
+        has the following syntax: ``<lower_multiplicity>..<higher_multiplicity>|<single_multiplicity>``.
+
+        The multiplicity is either specified as a range or using a ``<single_multiplicity>``. Accepted
+        ``<single_multiplicity>`` values are any positive number, zero, or ``*``.  ``*`` denotes
+        unbounded multiplicity.
+
+        For multiplicity ranges, ``<lower_multiplicity>`` is zero or any positive number specifying the lower end
+        of the accepted multiplicity range. ``<higher_multiplicity>``
+        is a number specifying the higher end of the accepted multiplicity range. It must be higher than
+        ``<lower_multiplicity>``. It can also be ``*`` meaning
+        unbounded higher multiplicity.
+
+        ``*`` multiplicity is equal to the range ``0..*``.
+        """
         return self.multiplicity_
 
     @multiplicity.setter
@@ -136,6 +281,8 @@ class CAssociation(CClassifier):
 
     @property
     def source_multiplicity(self):
+        """str: Getter and setter for the source multiplicity of the association. Syntax is equal to the syntax
+        defined in the documentation of the ``multiplicity`` property."""
         return self.source_multiplicity_
 
     @source_multiplicity.setter
@@ -144,24 +291,26 @@ class CAssociation(CClassifier):
         self._set_multiplicity(multiplicity, False)
 
     @property
-    def composition(self):
-        return self.composition_
-
-    @composition.setter
-    def composition(self, composition):
-        if composition:
-            self.aggregation_ = False
-        self.composition_ = composition
-
-    @property
     def stereotypes(self):
+        """CStereotype|list[CStereotype]: The setter takes a single or a list of :py:class:`.CStereotype`
+        objects which extend this association. Extension is only possible, if this association is an association
+        between meta-classes. The getter returns the stereotypes that extend this association."""
         return self.stereotypes_holder.stereotypes
 
     @stereotypes.setter
     def stereotypes(self, elements):
+        if not self.is_metaclass_association_():
+            raise CException("stereotypes on associations can only be defined for metaclass associations")
         self.stereotypes_holder.stereotypes = elements
 
     def delete(self):
+        """Deletes this association. Removes the association from all classifiers and links. Removes it from
+        all stereotypes, too.  Calls ``delete()`` on superclass.
+
+        Returns:
+            None.
+
+        """
         if self.is_deleted:
             return
         if is_cmetaclass(self.source):
@@ -181,7 +330,7 @@ class CAssociation(CClassifier):
         self.stereotypes_holder.stereotypes_ = []
         super().delete()
 
-    def check_multiplicity(self, obj, actual_length, actual_opposite_length, check_target_multiplicity):
+    def check_multiplicity_(self, obj, actual_length, actual_opposite_length, check_target_multiplicity):
         if check_target_multiplicity:
             upper = self.upper_multiplicity
             lower = self.lower_multiplicity
@@ -257,6 +406,7 @@ class CAssociation(CClassifier):
     # overridden methods from CClassifier
     @property
     def attributes(self):
+        """Overridden method from :py:class:`.CClassifier`. Attributes on associations are not supported."""
         return super().attributes
 
     def _set_attribute(self, name, value):

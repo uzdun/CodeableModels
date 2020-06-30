@@ -6,6 +6,22 @@ from codeable_models.internal.commons import set_keyword_args, check_named_eleme
 
 class CBundlable(CNamedElement):
     def __init__(self, name, **kwargs):
+        """``CBundlable`` is a superclass for all elements in Codeable Models that can be placed in a
+        :py:class:`.CBundle`, which is used for grouping elements. Elements that can be bundled are
+        :py:class:`.CClass`, :py:class:`.CObject`, etc.
+        The class is usually not used directly but via its bundable subclasses.
+
+        **Superclasses:**  :py:class:`.CNamedElement`
+
+        Args:
+           name (str): An optional name.
+           **kwargs: Accepts keyword args defined as ``legal_keyword_args`` by subclasses.
+
+        ``CBundlable`` is superclass of all classes that can be placed in a :py:class:`.CBundle` as shown in the
+        figure below. Please note that bundles can be placed in bundles in order to model composite structures.
+
+        .. image:: ../images/bundles_model.png
+        """
         self.bundles_ = []
         super().__init__(name, **kwargs)
 
@@ -17,6 +33,11 @@ class CBundlable(CNamedElement):
 
     @property
     def bundles(self):
+        """list[CBundle]|CBundle: Property that gets or sets the list of bundles this bundable element is part of.
+        For the setter, ``None`` or ``[]`` can be used to remove the element from all bundles.
+        In the setter, a single parameter of type :py:class:`.CBundle` will set this single bundle as the only
+        bundle of the element. A list of bundles (i.e., list elements of
+        type :py:class:`.CBundle`) will set the whole list."""
         return list(self.bundles_)
 
     @bundles.setter
@@ -40,6 +61,13 @@ class CBundlable(CNamedElement):
             b.elements_.append(self)
 
     def delete(self):
+        """
+        Delete the element and remove the element from all bundles it is part of.
+        Calls ``delete()`` on superclass.
+
+        Returns:
+            None
+        """
         if self.is_deleted:
             return
         bundles_to_delete = list(self.bundles_)
@@ -49,6 +77,51 @@ class CBundlable(CNamedElement):
         super().delete()
 
     def get_connected_elements(self, **kwargs):
+        """Get all elements this element is connected to.
+
+        Args:
+            **kwargs: Configuration parameters for the method
+
+        Returns:
+            List[CBundlable]: List of connected elements.
+
+        Per default associations and inheritance relations are included.
+        Use the following ``**kwargs`` to specify which connections are included.
+
+        - ``add_bundles`` (bool):
+            Default value: False. If set to True, relations to
+            bundles are included in the returned list.
+        - ``process_bundles`` (bool):
+            Default value: False. If set to True, elements in
+            connected bundles will be processed and all elements in the bundle will be
+            added recursively (i.e. their connections will be processed, too) to the returned list.
+        - ``stop_elements_inclusive`` (list of CNamedElements):
+            Default value: []. If set, searching will be
+            stopped whenever an element on the list in encountered. The stop element will be added to the result.
+        - ``stop_elements_exclusive`` (list of CNamedElements):
+            Default value: []. If set, searching will be
+            stopped whenever an element on the list in encountered. The stop element will not be added to the result.
+        - ``add_stereotypes`` (bool):
+            Default value: False. If set to True, relations to stereotypes are included
+            in the returned list. The option is only applicable on :py:class:`.CMetaclass`,
+            :py:class:`.CBundle`, or :py:class:`.CStereotype`.
+        - ``process_stereotypes`` (bool):
+            Default value: False. If set to True, relations to stereotypes will be
+            processed and all elements connected to the stereotype will be added recursively
+            (i.e. their connections will be processed, too) to the returned list.
+            The option is only applicable on :py:class:`.CMetaclass`,
+            :py:class:`.CBundle`, or :py:class:`.CStereotype`.
+        - ``add_associations`` (bool):
+            Default value: False. If set to True, relations to associations
+            (i.e., the association objects) are included
+            in the returned list.
+            The option is only applicable on :py:class:`.CMetaclass`,
+            :py:class:`.CClass`, or :py:class:`.CAssociation`.
+        - ``add_links`` (bool):
+            Default value: False. If set to True, relations to links
+            (i.e., the link objects) are included
+            in the returned list. The option is only applicable on :py:class:`.CObject` and  :py:class:`CLink`.
+        """
         context = ConnectedElementsContext()
 
         allowed_keyword_args = ["add_bundles", "process_bundles", "stop_elements_inclusive",

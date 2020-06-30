@@ -13,6 +13,7 @@ class TestBundlesOfClasses:
 
     def test_class_name_fail(self):
         try:
+            # noinspection PyTypeChecker
             CClass(self.mcl, self.mcl)
             exception_expected_()
         except CException as e:
@@ -118,6 +119,7 @@ class TestBundlesOfClasses:
         b2 = CBundle("B2")
         cl1 = CClass(self.mcl, "CL1", bundles=b1)
         try:
+            # noinspection PyTypeChecker
             b1.remove(None)
             exception_expected_()
         except CException as e:

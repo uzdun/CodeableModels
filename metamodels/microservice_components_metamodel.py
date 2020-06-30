@@ -1,3 +1,12 @@
+"""
+*File Name:* metamodels/microservice_components_metamodel.py
+
+This is an extension of the component metamodel in :ref:`component_metamodel`.
+It provides many ``component_type`` and ``connector_type`` subclasses for modelling various concepts
+found in microservices and other service-based systems.
+
+"""
+
 from metamodels.component_metamodel import *
 
 # Component types

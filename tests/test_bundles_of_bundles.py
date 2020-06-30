@@ -115,6 +115,7 @@ class TestBundlesOfBundles:
         b2 = CBundle("B2")
         ba = CBundle("A", bundles=b1)
         try:
+            # noinspection PyTypeChecker
             b1.remove(None)
             exception_expected_()
         except CException as e:

@@ -146,6 +146,7 @@ class TestClassLinks:
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
         try:
+            # noinspection PyTypeChecker
             set_links([c1, c2])
             exception_expected_()
         except CException as e:
@@ -890,6 +891,7 @@ class TestClassLinks:
         c1 = CClass(self.m1, "c1")
         c2 = CClass(self.m2, "c2")
         try:
+            # noinspection PyTypeChecker
             delete_links(c1)
             exception_expected_()
         except CException as e:

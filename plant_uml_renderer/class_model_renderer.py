@@ -11,8 +11,10 @@ class ClassifierRenderingContext(RenderingContext):
         self.render_inheritance = True
         self.render_attributes = True
         self.excluded_associations = []
+        self.included_associations = None
         self.render_extended_relations = True
         self.excluded_extended_classes = []
+        self.included_extended_classes = None
 
 
 class ClassModelRenderer(ModelRenderer):
@@ -52,6 +54,8 @@ class ClassModelRenderer(ModelRenderer):
         t = None
         if is_cenum(type_) or is_cclassifier(type_):
             t = type_.name
+            if t is None:
+                t = " "
         elif type_ == str:
             t = "String"
         elif type_ == int:
@@ -72,6 +76,9 @@ class ClassModelRenderer(ModelRenderer):
         if is_cenum(cl):
             return
         for association in cl.associations:
+            if context.included_associations is not None:
+                if association not in context.included_associations:
+                    continue
             if association in context.excluded_associations:
                 continue
             if not association.source == cl:
@@ -97,13 +104,14 @@ class ClassModelRenderer(ModelRenderer):
         for stereotype in association.stereotypes:
             if stereotype in class_list:
                 if first_loop_iteration:
-                    extended_by_string = extended_by_string + " [extended by: \\n"
+                    extended_by_string = extended_by_string + "\\n" + \
+                                         self.render_stereotypes_string("stereotypes") + ""
                     first_loop_iteration = False
                 else:
                     extended_by_string = extended_by_string + ", "
-                extended_by_string = extended_by_string + f"'{stereotype.name!s}'"
+                extended_by_string = extended_by_string + f"{stereotype.name!s}"
         if extended_by_string != "":
-            extended_by_string = extended_by_string + "]"
+            extended_by_string = extended_by_string + ""
 
         label = ""
         if association.name is not None and len(association.name) != 0:
@@ -123,6 +131,9 @@ class ClassModelRenderer(ModelRenderer):
             return
         for extended in stereotype.extended:
             if is_cmetaclass(extended):
+                if context.included_extended_classes:
+                    if extended not in context.included_extended_classes:
+                        continue
                 if extended in context.excluded_extended_classes:
                     continue
                 if extended in class_list:
@@ -154,7 +165,9 @@ class ClassModelRenderer(ModelRenderer):
     def render_class_model(self, class_list, **kwargs):
         context = ClassifierRenderingContext()
         set_keyword_args(context,
-                         ["render_associations", "render_inheritance", "render_attributes", "excluded_associations"],
+                         ["render_associations", "render_inheritance", "render_attributes", "excluded_associations",
+                          "included_associations", "render_extended_relations",
+                          "excluded_extended_classes", "included_extended_classes"],
                          **kwargs)
         self.render_start_graph(context)
         self.render_classes(context, class_list)

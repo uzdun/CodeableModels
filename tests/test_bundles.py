@@ -12,6 +12,7 @@ class TestBundles:
 
     def test_bundle_name_fail(self):
         try:
+            # noinspection PyTypeChecker
             CBundle(self.mcl)
             exception_expected_()
         except CException as e:

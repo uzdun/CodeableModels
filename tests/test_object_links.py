@@ -151,6 +151,7 @@ class TestObjectLinks:
         o1 = CObject(self.c1, "o1")
         o2 = CObject(self.c2, "o2")
         try:
+            # noinspection PyTypeChecker
             set_links([o1, o2])
             exception_expected_()
         except CException as e:
@@ -893,6 +894,7 @@ class TestObjectLinks:
         o1 = CObject(self.c1, "o1")
         o2 = CObject(self.c2, "o2")
         try:
+            # noinspection PyTypeChecker
             delete_links(o1)
             exception_expected_()
         except CException as e:

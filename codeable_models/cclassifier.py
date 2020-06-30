@@ -6,6 +6,50 @@ from codeable_models.internal.commons import *
 
 class CClassifier(CBundlable):
     def __init__(self, name=None, **kwargs):
+        """``CClassifier`` is superclass of classifiers such as :py:class:`.CClass` and :py:class:`.CMetaclass`
+        defining common features for
+        classifiers. The class is usually not used directly but its features are used from the subclasses.
+
+        **Superclasses:**  :py:class:`.CBundlable`
+
+        Args:
+           name (str): An optional name.
+           **kwargs: Pass in any kwargs acceptable to superclasses. In addition, ``CClassifier`` accepts:
+                ``attributes``, ``superclasses``.
+
+                - The ``attributes`` kwarg accepts a dict of attributes in the form acceptable
+                  to the ``attributes`` property.
+                - The ``superclasses`` kwarg accepts a list of superclasses in the form
+                  acceptable to the ``superclasses`` property.
+
+        **Examples:**
+
+        The following code uses the ``superclasses`` and ``attributes`` features of ``CClassifier`` during
+        a class definition and then uses the ``association`` feature to define an association for a class::
+
+            customer = CClass(domain_metaclass, "Customer", superclasses=person, attributes={
+                "id": str,
+                "shipping addresses": [],
+            })
+
+            customer.association(cart, "shops with: [customer] 1 <*>- [cart] 1")
+
+        **Main Relations:**
+
+        The main relations of ``CClassifier`` are shown in the figure below.
+
+        .. image:: ../images/classifier_model.png
+
+        As can be seen,  :py:class:`.CClass`, :py:class:`.CMetaclass`, and :py:class:`.CStereotype` are
+        classifiers, as could be expected.
+        In addition, :py:class:`.CAssociation` is a classifier, which might be a less obvious design choice. It is
+        a classifier, so that a :py:class:`.CLink` can be an object. That is, the association is the classifier
+        of the link. This way links can be referenced and treated as objects.
+
+        The associations, attributes, and inheritance hierarchy of a classifier are managed by
+        the methods of ``CClassifier``.
+
+        """
         self.superclasses_ = []
         self.subclasses_ = []
         self.attributes_ = {}
@@ -21,6 +65,50 @@ class CClassifier(CBundlable):
 
     @property
     def attributes(self):
+        """dict[str, CAttribute | Attribute Type | Default Value] : Property that gets the list of attributes
+        of a classifier or sets them using a dictionary.
+
+        All attributes are internally stored as :py:class:`.CAttribute` objects. The getter returns the list of
+        all attributes as :py:class:`.CAttribute` objects.
+
+        For the setter, ``None`` or ``{}`` can be used to remove all attributes from the classifier.
+
+        Each attribute in the dict is specified using the form:
+
+        .. code-block:: none
+
+             attributeName: <type|default-value|CAttribute>
+
+        Possible types of attributes are:
+
+            - ``bool``: a boolean
+            - ``int``: an integer
+            - ``float``: a floating point number
+            - ``str``: a string
+            - ``list``: a Python list
+            - enumeration values: An object of type :py:class:`.CEnum` is the type and enumeration values are used
+              as attribute values.
+            - objects: A class of type :py:class:`.CClassifier` is the type and :py:class:`.CObject`'s are used as
+              attribute values. Please note this might be :py:class:`.CClass` as a type
+              with :py:class:`.CObject` objects, or
+              :py:class:`.CMetaclass` as a type with :py:class:`.CClass` objects.
+            - ``CAttribute`` objects: An :py:class:`.CAttribute` object describes an attribute, i.e., its type and
+              default value.
+
+        **Example:** The following code initialized one ``int`` and one ``bool`` attribute,
+        each with a default value,
+        and it defines another string attribute using the ``str`` type::
+
+            game = CClass(metaclass, "Game", attributes={
+                "number_of_players": 1,
+                "game_started": False,
+                "player_id": str
+            })
+
+        ``game.attributes`` returns the list of attributes as :py:class:`.CAttribute` objects.
+
+        More examples are provided in the document :ref:`class_attributes`.
+        """
         return list(self.attributes_.values())
 
     def _set_attribute(self, name, value):
@@ -53,9 +141,21 @@ class CClassifier(CBundlable):
 
     @property
     def attribute_names(self):
+        """list[str]: Returns a list of all attribute names defined for this classifier.
+
+        Examples are provided in the document :ref:`class_attributes`.
+        """
         return list(self.attributes_.keys())
 
     def get_attribute(self, attribute_name):
+        """Returns the :py:class:`.CAttribute` object that conforms to the provided attribute name. If none is found,
+        ``None`` is returned.
+
+        Examples are provided in the document :ref:`class_attributes`.
+
+        Returns:
+            CAttribute: The attribute conforming to the attribute name.
+        """
         if attribute_name is None or not isinstance(attribute_name, str):
             return None
         try:
@@ -74,10 +174,13 @@ class CClassifier(CBundlable):
 
     @property
     def subclasses(self):
+        """list[CClassifier]: Getter that returns the subclasses of this classifier."""
         return list(self.subclasses_)
 
     @property
     def superclasses(self):
+        """list[CClassifier]: Setter to set and getter to return the superclasses of
+        this classifier."""
         return list(self.superclasses_)
 
     @superclasses.setter
@@ -94,12 +197,12 @@ class CClassifier(CBundlable):
                 check_named_element_is_not_deleted(scl)
             if not isinstance(scl, self.__class__):
                 if is_cassociation(self):
-                    if self.is_metaclass_association():
-                        if not is_cmetaclass(scl) or (is_cassociation(scl) and scl.is_metaclass_association()):
+                    if self.is_metaclass_association_():
+                        if not is_cmetaclass(scl) or (is_cassociation(scl) and scl.is_metaclass_association_()):
                             raise CException(f"cannot add superclass '{scl!s}':" +
                                              " not a metaclass or metaclass association")
                     else:
-                        if not is_cclass(scl) or (is_cassociation(scl) and not scl.is_metaclass_association()):
+                        if not is_cclass(scl) or (is_cassociation(scl) and not scl.is_metaclass_association_()):
                             raise CException(f"cannot add superclass '{scl!s}':" +
                                              " not a class or class association")
                 else:
@@ -111,20 +214,33 @@ class CClassifier(CBundlable):
 
     @property
     def all_superclasses(self):
-        return self.get_all_superclasses()
+        """list[CClassifier]: Getter that returns all superclasses of this classifier
+        on the inheritance hierarchy."""
+        return self.get_all_superclasses_()
 
     @property
     def all_subclasses(self):
-        return self.get_all_subclasses()
+        """list[CClassifier]: Getter that returns all subclasses of this classifier
+        on the inheritance hierarchy."""
+        return self.get_all_subclasses_()
 
-    def conforms_to_type(self, classifier):
+    def is_classifier_of_type(self, classifier):
+        """Checks if the classifier conforms to the provided classifier's type.
+
+        Args:
+            classifier: A :py:class:`.CClassifier` to check against.
+
+        Returns:
+            bool: Boolean result of the check.
+
+        """
         type_classifiers = classifier.all_subclasses
         type_classifiers.add(classifier)
         if self in type_classifiers:
             return True
         return False
 
-    def get_all_superclasses(self, iterated_classes=None):
+    def get_all_superclasses_(self, iterated_classes=None):
         if iterated_classes is None:
             iterated_classes = set()
         result = set()
@@ -132,10 +248,10 @@ class CClassifier(CBundlable):
             if sc not in iterated_classes:
                 iterated_classes.add(sc)
                 result.add(sc)
-                result.update(sc.get_all_superclasses(iterated_classes))
+                result.update(sc.get_all_superclasses_(iterated_classes))
         return result
 
-    def get_all_subclasses(self, iterated_classes=None):
+    def get_all_subclasses_(self, iterated_classes=None):
         if iterated_classes is None:
             iterated_classes = set()
         result = set()
@@ -143,16 +259,38 @@ class CClassifier(CBundlable):
             if sc not in iterated_classes:
                 iterated_classes.add(sc)
                 result.add(sc)
-                result.update(sc.get_all_subclasses(iterated_classes))
+                result.update(sc.get_all_subclasses_(iterated_classes))
         return result
 
-    def has_subclass(self, cl):
-        return cl in self.get_all_subclasses()
+    def has_subclass(self, classifier):
+        """Returns ``True`` if ``classifier`` is subclass of this classifier, else ``False``.
 
-    def has_superclass(self, cl):
-        return cl in self.get_all_superclasses()
+        Args:
+            classifier: The classifier to test.
+
+        Returns:
+            bool: Boolean result of the check
+
+        """
+        return classifier in self.get_all_subclasses_()
+
+    def has_superclass(self, classifier):
+        """Returns ``True`` if ``classifier`` is superclass of this classifier, else ``False``.
+
+        Args:
+            classifier: The classifier to test.
+
+        Returns:
+            bool: Boolean result of the check
+
+        """
+        return classifier in self.get_all_superclasses_()
 
     def delete(self):
+        """Deletes the classifier, removes superclasses, removes it from subclasses,
+        removes all associations and attributes, and removes the classifier from bundles.
+        Calls ``delete()`` on superclass.
+        """
         if self.is_deleted:
             return
         super().delete()
@@ -179,10 +317,13 @@ class CClassifier(CBundlable):
 
     @property
     def associations(self):
+        """list[CAssociation]: Getter listing associations of this classifier."""
         return list(self.associations_)
 
     @property
     def all_associations(self):
+        """list[CAssociation]: Getter listing all associations of this classifier including those
+        of superclasses."""
         all_associations = self.associations
         for sc in self.all_superclasses:
             for a in sc.associations:
@@ -191,19 +332,30 @@ class CClassifier(CBundlable):
         return all_associations
 
     def association(self, target, descriptor=None, **kwargs):
+        """Method used to create associations on this classifier.
+        Returns the :py:class:`.CAssociation` that is created.
+
+        Args:
+            target: The association target classifier.
+            descriptor: An optional descriptor making it easier to define associations with a simple string.
+            **kwargs: Accepts all keyword arguments acceptable to :py:class:`.CAssociation` to define associations.
+
+        Returns:
+            CAssociation: The created association.
+
+        For explanation of descriptor syntax and supported keyword arguments see documentation of the
+        constructor of :py:class:`.CAssociation`.
+
+        """
         from codeable_models.cassociation import CAssociation
-        a = CAssociation(self, target, descriptor, **kwargs)
-        self.associations_.append(a)
-        if self != target:
-            target.associations_.append(a)
-        return a
+        return CAssociation(self, target, descriptor, **kwargs)
 
     def compute_connected_(self, context):
         super().compute_connected_(context)
         connected_candidates = []
         connected = []
         for association in self.associations:
-            connected_candidates.append(association.get_opposite_class(self))
+            connected_candidates.append(association.get_opposite_classifier(self))
         connected_candidates = self.superclasses + self.subclasses + connected_candidates
         for c in connected_candidates:
             if c not in context.stop_elements_exclusive:
@@ -211,14 +363,22 @@ class CClassifier(CBundlable):
         self.append_connected_(context, connected)
 
     # get class path starting from this classifier, including this classifier
-    def get_class_path(self):
+    def get_class_path_(self):
         class_path = [self]
         for sc in self.superclasses:
-            for cl in sc.get_class_path():
+            for cl in sc.get_class_path_():
                 if cl not in class_path:
                     class_path.append(cl)
         return class_path
 
     @property
     def class_path(self):
-        return self.get_class_path()
+        """list[CClassifier]: Superclasses are processed using a linerarized class path.
+        This path unambiguously orders the superclasses for each classifier, from lower-level to higher-level
+        classes. At the same level, classes will be ordered in the same order as specified in the ``superclasses``
+        definitions. If a classifier appears multiple times on the class path, i.e. it is reachable via
+        different paths, the first appearance is chosen.
+
+        This getter returns all superclasses in the order of the class path.
+        """
+        return self.get_class_path_()

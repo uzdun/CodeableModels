@@ -5,6 +5,31 @@ from codeable_models.internal.commons import is_cnamedelement, check_named_eleme
 
 class CBundle(CBundlable):
     def __init__(self, name=None, **kwargs):
+        """
+        ``CBundle`` is used to manage bundles, i.e., groups of modelling elements in Codeable Models.
+
+        **Superclasses:**  :py:class:`.CBundlable`
+
+        Args:
+           name (str): An optional name.
+           **kwargs: Pass in any kwargs acceptable to superclasses. In addition, ``CBundle`` accepts:
+                ``elements``.
+
+                - The ``elements`` kwarg accepts a list of elements (same format as the ``elements`` property).
+
+        All kinds of modelling elements in Codeable Models that inherit from :py:class:`.CBundlable`
+        can be placed in a bundle, including bundles themselves.
+        Thus bundles can be composed recursively in order to model composite structures. The relations of
+        ``CBundle`` are shown in the figure below.
+
+        .. image:: ../images/bundles_model.png
+
+        For example, the following code creates the bundle of classes used to generate the figure above::
+
+            bundles_model = CBundle("bundles_model", elements=[cbundlable, cbundle, cenum,
+                                    cobject, cclassifier, cclass, cmetaclass, cstereotype, cassociation, clink])
+
+        """
         self.elements_ = []
         super().__init__(name, **kwargs)
 
@@ -15,6 +40,16 @@ class CBundle(CBundlable):
         super()._init_keyword_args(legal_keyword_args, **kwargs)
 
     def add(self, elt):
+        """
+        Add an element to the bundle.
+
+        Args:
+            elt (CBundlable): Element to add to the bundle
+
+        Returns:
+            None
+
+        """
         if elt is not None:
             if elt in self.elements_:
                 raise CException(f"element '{elt!s}' cannot be added to bundle: element is already in bundle")
@@ -25,6 +60,16 @@ class CBundle(CBundlable):
         raise CException(f"can't add '{elt!s}': not an element")
 
     def remove(self, element):
+        """
+        Remove an element from the bundle.
+
+        Args:
+            element (CBundlable): Element to remove from the bundle.
+
+        Returns:
+            None
+
+        """
         if (element is None or
                 (not isinstance(element, CBundlable)) or
                 (self not in element.bundles)):
@@ -33,6 +78,13 @@ class CBundle(CBundlable):
         element.bundles_.remove(self)
 
     def delete(self):
+        """
+        Delete the bundle. Delete all elements from the bundle.
+        Calls ``delete()`` on superclass.
+
+        Returns:
+            None
+        """
         if self.is_deleted:
             return
         elements_to_delete = list(self.elements_)
@@ -43,6 +95,8 @@ class CBundle(CBundlable):
 
     @property
     def elements(self):
+        """List[CBundlable]: Getter and setter for the elements of the bundle.
+        """
         return list(self.elements_)
 
     @elements.setter
@@ -65,9 +119,24 @@ class CBundle(CBundlable):
             if e not in self.elements_:
                 # if it is already in the bundle, do not add it twice
                 self.elements_.append(e)
+                # noinspection PyUnresolvedReferences
                 e.bundles_.append(self)
 
     def get_elements(self, **kwargs):
+        """
+        Get specific elements from the bundle. Per default returns all elements.
+
+        Args:
+            **kwargs: Used to specify in more detail which elements to get from the bundle. Accepts the
+                following arguments:
+
+                - ``type``: Return only elements which are instances of the specified type.
+                - ``name``: Return only elements with the specified name.
+
+        Returns:
+            List[CBundlable]: List of elements.
+
+        """
         type_ = None
         name = None
         # use this as name can also be provided as None
@@ -93,6 +162,18 @@ class CBundle(CBundlable):
         return elements
 
     def get_element(self, **kwargs):
+        """
+          Get a specific element from the bundle. Returns the first found element, if more than one are found.
+          Returns ``None`` if none is found.
+
+          Args:
+              **kwargs: Used to specify in more detail which elements to get from the bundle. Accepts the
+                arguments acceptable to ``get_elements()``.
+
+          Returns:
+              CBundlable: The element of the bundle.
+
+          """
         elements = self.get_elements(**kwargs)
         return None if len(elements) == 0 else elements[0]
 
@@ -108,11 +189,31 @@ class CBundle(CBundlable):
 
 
 class CPackage(CBundle):
-    pass
+    def __init__(self, name=None, **kwargs):
+        """
+        Simple class to designate bundles as packages.
+
+        **Superclasses:**  :py:class:`.CBundle`
+        """
+        super().__init__(name, **kwargs)
 
 
 class CLayer(CBundle):
     def __init__(self, name=None, **kwargs):
+        """
+        Simple class to designate bundles as layers, and manage sub-/super-layer relations.
+
+        **Superclasses:**  :py:class:`.CBundle`
+
+        Args:
+           name (str): An optional name.
+           **kwargs: Pass in any kwargs acceptable to superclasses. In addition, ``CLayer`` accepts:
+                ``sub_layer`` and ``super_layer``.
+
+                - The ``sub_layer`` kwarg accepts a ``CLayer`` as a sub layer (same as the same-named property).
+                - The ``super_layer`` kwarg accepts a ``CLayer`` as a super layer (same as the same-named property).
+
+        """
         self._sub_layer = None
         self._super_layer = None
         super().__init__(name, **kwargs)
@@ -126,6 +227,8 @@ class CLayer(CBundle):
 
     @property
     def sub_layer(self):
+        """CLayer: Accepts a ``CLayer`` as a sub layer.
+        """
         return self._sub_layer
 
     @sub_layer.setter
@@ -142,6 +245,8 @@ class CLayer(CBundle):
 
     @property
     def super_layer(self):
+        """CLayer: Accepts a ``CLayer`` as a super layer.
+        """
         return self._super_layer
 
     @super_layer.setter

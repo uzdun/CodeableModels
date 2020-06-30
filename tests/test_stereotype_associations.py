@@ -190,6 +190,16 @@ class TestStereotypeAssociations:
         eq_(d.all_associations, [a])
         eq_(s.all_associations, [a])
 
+    def test_get_opposite_classifier(self):
+        a = self.s1.association(self.s2, "[o]*->[s]1")
+        eq_(a.get_opposite_classifier(self.s1), self.s2)
+        eq_(a.get_opposite_classifier(self.s2), self.s1)
+        try:
+            a.get_opposite_classifier(self.s3)
+            exception_expected_()
+        except CException as e:
+            eq_("can only get opposite if either source or target classifier is provided", e.value)
+
 
 if __name__ == "__main__":
     nose.main()

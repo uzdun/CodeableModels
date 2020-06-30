@@ -6,17 +6,20 @@ from plant_uml_renderer.object_model_renderer import ObjectModelRenderer
 
 
 class PlantUMLGenerator(object):
-    def __init__(self, delete_gen_dir=True):
+    def __init__(self, delete_gen_dir_during_init=False):
         self._directory = "../_generated"
         self._plant_uml_jar_path = "../../libs/plantuml.jar"
-        if delete_gen_dir:
-            if os.path.exists(self.directory):
-                shutil.rmtree(self.directory)
-            os.makedirs(self.directory)
+        if delete_gen_dir_during_init:
+            self.delete_gen_dir()
         self.class_model_renderer = ClassModelRenderer(plant_uml_jar_path=self._plant_uml_jar_path,
                                                        directory=self._directory)
         self.object_model_renderer = ObjectModelRenderer(plant_uml_jar_path=self._plant_uml_jar_path,
                                                          directory=self._directory)
+
+    def delete_gen_dir(self):
+        if os.path.exists(self.directory):
+            shutil.rmtree(self.directory)
+        os.makedirs(self.directory)
 
     @staticmethod
     def get_file_name(element_name):

@@ -1,3 +1,14 @@
+"""
+*File Name:* metamodels/activity_metamodel.py
+
+This is a simple activity metamodel. As it is used for explaining basic meta-modelling, it is
+described in :ref:`meta_modelling`.
+
+It provide a couple of standard node types in activity models as sub-classes of ``activity_node``
+as well as an ``edge_relation`` to define a graph of such nodes.
+
+"""
+
 from codeable_models import CMetaclass, CBundle
 
 # node types
@@ -19,8 +30,8 @@ send_signal_action = CMetaclass("Send Signal Action", superclasses=action)
 # edges
 edge_relation = activity_node.association(activity_node, "next: [source] * -> [target] *")
 
-_all = CBundle("_all",
+_all = CBundle("activity_metamodel_all",
                elements=activity_node.get_connected_elements(add_stereotypes=True))
 
-activityMetamodelViews = [
+activity_metamodel_views = [
     _all, {}]

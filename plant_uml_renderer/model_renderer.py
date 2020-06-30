@@ -199,6 +199,9 @@ class ModelRenderer(object):
         if name_padding is None:
             name_padding = self.name_padding
 
+        if name is None:
+            name = " "
+
         if len(name) <= self.name_break_length:
             return name_padding + name + name_padding
 

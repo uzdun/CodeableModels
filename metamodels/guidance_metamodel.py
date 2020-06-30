@@ -1,5 +1,12 @@
+"""
+*File Name:* metamodels/guidance_metamodel.py
+
+This is a meta-model for modelling architectural guidance models, aka reusable architectural decision models.
+
+"""
+
 from codeable_models import CMetaclass, CBundle, CStereotype
-from metamodels.domain_meta_model import domain_metaclass, domain_meta_model
+from metamodels.domain_metamodel import domain_metaclass, domain_metamodel
 
 model_element = CMetaclass("Model Element", attributes={"aka": str, "description": str})
 category = CMetaclass("Category", superclasses=model_element)
@@ -87,15 +94,14 @@ do_nothing_design_solution = CMetaclass("Do Nothing", superclasses=design_soluti
 
 _all = CBundle("Guidance Meta Model", elements=model_element.get_connected_elements())
 
-guidance_meta_model_hierarchy = CBundle("Guidance Meta Model Hierarchy",
-                                        elements=model_element.get_connected_elements(
-                                            stop_elements_exclusive=domain_metaclass))
+guidance_metamodel_hierarchy = CBundle("Guidance Meta Model Hierarchy", elements=model_element.get_connected_elements(
+    stop_elements_exclusive=domain_metaclass))
 
-guidance_meta_model_details = CBundle("Guidance Meta Model Details",
-                                      elements=design_solution.get_connected_elements(
-                                          stop_elements_inclusive=domain_metaclass,
-                                          stop_elements_exclusive=[model_element, do_nothing_design_solution, practice,
-                                                                   pattern]))
+guidance_metamodel_details = CBundle("Guidance Meta Model Details",
+                                     elements=design_solution.get_connected_elements(
+                                         stop_elements_inclusive=domain_metaclass,
+                                         stop_elements_exclusive=[model_element, do_nothing_design_solution, practice,
+                                                                  pattern]))
 
 force_impact_metaclasses = [force_impact_relation.source, force_impact_relation.target]
 force_impact_type_bundle = CBundle("Force Impact Types",
@@ -123,14 +129,14 @@ _bundle_elements = decision_category_to_contexts_relation_metaclasses + context_
 context_relations_type_bundle = CBundle("Decision Category To Contexts Relation Types",
                                         elements=_bundle_elements)
 
-guidance_meta_model_views = [_all, {},
-                             guidance_meta_model_hierarchy, {"render_associations": False},
-                             guidance_meta_model_details, {},
-                             domain_meta_model, {},
-                             force_impact_type_bundle, {},
-                             design_solution_dependency_type_bundle, {},
-                             solution_to_next_decisions_relation_type_bundle, {},
-                             context_relations_type_bundle, {}]
+guidance_metamodel_views = [_all, {},
+                            guidance_metamodel_hierarchy, {"render_associations": False},
+                            guidance_metamodel_details, {},
+                            domain_metamodel, {},
+                            force_impact_type_bundle, {},
+                            design_solution_dependency_type_bundle, {},
+                            solution_to_next_decisions_relation_type_bundle, {},
+                            context_relations_type_bundle, {}]
 
 
 # helper functions

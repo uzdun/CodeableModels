@@ -1,3 +1,12 @@
+"""
+*File Name:* metamodels/technology_metamodel.py
+
+This is a simple meta-model for modelling technologies used in a system as stereotype extensions of a meta-class
+``technology``. A few sample stereotypes are provided, too.
+
+"""
+
+
 from codeable_models import CMetaclass, CBundle, CStereotype
 
 # Technology and technology type

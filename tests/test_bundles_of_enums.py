@@ -13,6 +13,7 @@ class TestBundlesOfEnums:
 
     def test_enum_name_fail(self):
         try:
+            # noinspection PyTypeChecker
             CEnum(self.mcl)
             exception_expected_()
         except CException as e:
@@ -118,6 +119,7 @@ class TestBundlesOfEnums:
         b2 = CBundle("B2")
         e1 = CEnum("E1", bundles=b1)
         try:
+            # noinspection PyTypeChecker
             b1.remove(None)
             exception_expected_()
         except CException as e:

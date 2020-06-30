@@ -300,10 +300,10 @@ class TestLinkObjectsForClasses:
         eq_(a2_association.has_superclass(self.a_association), False)
         eq_(a2_association.has_superclass(self.a), True)
 
-        eq_(self.a_association.conforms_to_type(self.a_association), True)
-        eq_(self.a_association.conforms_to_type(a2_association), True)
-        eq_(self.a_association.conforms_to_type(self.a), True)
-        eq_(self.a_association.conforms_to_type(self.a1), False)
+        eq_(self.a_association.is_classifier_of_type(self.a_association), True)
+        eq_(self.a_association.is_classifier_of_type(a2_association), True)
+        eq_(self.a_association.is_classifier_of_type(self.a), True)
+        eq_(self.a_association.is_classifier_of_type(self.a1), False)
 
         # test linking still works after superclass changes
         self.b_1.delete_links([self.a_links[0], self.a_links[1]])
@@ -333,7 +333,7 @@ class TestLinkObjectsForClasses:
             self.a_links[0].classifier = self.b_a_association
             exception_expected_()
         except CException as e:
-            eq_("Changes to classifier (i.e., the association) of a link" +
+            eq_("Changes to the classifier (i.e., the association) of a link" +
                 " should not be performed with CObject methods", e.value)
 
     def test_link_object_class_object_class(self):

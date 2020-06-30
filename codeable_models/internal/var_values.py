@@ -59,7 +59,7 @@ def set_var_value(_self, class_path, values_dict, var_name, value, value_kind, c
     if _self.is_deleted:
         raise CException(f"can't set '{var_name!s}' on deleted element")
     attribute = _get_and_check_var_classifier(_self, class_path, var_name, value_kind, classifier)
-    attribute.check_attribute_value_type(var_name, value)
+    attribute.check_attribute_value_type_(var_name, value)
     try:
         values_dict[attribute.classifier].update({var_name: value})
     except KeyError:

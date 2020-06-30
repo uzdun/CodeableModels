@@ -1,7 +1,7 @@
 import nose
 from nose.tools import eq_
 
-from codeable_models import CStereotype, CMetaclass, CException, CBundle
+from codeable_models import CStereotype, CMetaclass, CException, CBundle, CClass
 from tests.testing_commons import exception_expected_
 
 
@@ -34,6 +34,23 @@ class TestStereotypesOnAssociations:
             exception_expected_()
         except CException as e:
             eq_("unknown type of extend element: 'P'", e.value)
+
+    def test_attempt_to_define_stereotypes_on_class_association(self):
+        a_class = CClass(self.m1, "AClass")
+        b_class = CClass(self.m1, "BClass")
+        s = CStereotype("S")
+        try:
+            a_class.association(b_class, "1 -> 1", stereotypes=s)
+            exception_expected_()
+        except CException as e:
+            eq_("stereotypes on associations can only be defined for metaclass associations", e.value)
+
+        association = a_class.association(b_class, "1 -> 1")
+        try:
+            association.stereotypes = s
+            exception_expected_()
+        except CException as e:
+            eq_("stereotypes on associations can only be defined for metaclass associations", e.value)
 
     def test_creation_of_3_stereotypes(self):
         s1 = CStereotype("S1")

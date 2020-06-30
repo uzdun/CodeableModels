@@ -10,7 +10,7 @@ and class models from lists of the form `[<view-1>, <config-option-1>, ... <view
 The views are CBundles of model elements:
 
 ```
-from plantUMLRenderer import PlantUMLGenerator
+from plant_uml_renderer import PlantUMLGenerator
 from metamodels.componentMetamodel import componentMetamodelViews
 from microserviceModels.ecommerceMicroservices import ecommerceMicroservicesViews
 from microserviceModels.ecommerceMicroservicesDetailed import ecommerceMicroservicesDetailedViews
@@ -48,7 +48,7 @@ self.directory = "../_generated"
 self.plant_uml_jar_path = "../../libs/plantuml.jar"
 ```
 
-The directory containing `codeableModels` and `plantUMLRenderer` must be on the PYTHONPATH.
+The directory containing `codeable_models` and `plant_uml_renderer` must be on the PYTHONPATH.
 
 ## Running the tests
 

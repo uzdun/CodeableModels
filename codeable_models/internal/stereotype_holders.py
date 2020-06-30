@@ -95,7 +95,7 @@ class CStereotypeInstancesHolder(CStereotypesHolder):
         if stereotype in self.stereotypes_:
             raise CException(
                 f"'{stereotype.name!s}' is already a stereotype instance on {self._get_element_name_string()!s}")
-        if not stereotype.is_element_extended_by_stereotype(self.element):
+        if not stereotype.is_element_extended_by_stereotype_(self.element):
             raise CException(f"stereotype '{stereotype!s}' cannot be added to " +
                              f"{self._get_element_name_string()!s}: no extension by this stereotype found")
 

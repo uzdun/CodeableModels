@@ -17,6 +17,7 @@ class TestBundlesOfStereotypes:
 
     def test_stereotype_name_fail(self):
         try:
+            # noinspection PyTypeChecker
             CStereotype(self.b1)
             exception_expected_()
         except CException as e:
@@ -137,6 +138,7 @@ class TestBundlesOfStereotypes:
         b2 = CBundle("B2")
         s1 = CStereotype("s1", bundles=b1)
         try:
+            # noinspection PyTypeChecker
             b1.remove(None)
             exception_expected_()
         except CException as e:

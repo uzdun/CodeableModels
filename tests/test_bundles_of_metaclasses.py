@@ -12,6 +12,7 @@ class TestBundlesOfMetaclasses:
 
     def test_metaclass_name_fail(self):
         try:
+            # noinspection PyTypeChecker
             CMetaclass(self.b1)
             exception_expected_()
         except CException as e:
@@ -120,6 +121,7 @@ class TestBundlesOfMetaclasses:
         b2 = CBundle("B2")
         m1 = CMetaclass("M1", bundles=b1)
         try:
+            # noinspection PyTypeChecker
             b1.remove(None)
             exception_expected_()
         except CException as e:
