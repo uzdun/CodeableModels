@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Codeable Models API documentation &mdash; CodeableModels 0.99 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2\js\jquery-1.11.0.min.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2\js\lightbox.min.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2-customize\jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinxcontrib-images\LightBox2\lightbox2\css\lightbox.css" type="text/css" />
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="codeable_models.CAssociation" href="stubs/codeable_models.CAssociation.html" />
+    <link rel="prev" title="Overview of predefined meta-model examples" href="metamodels_overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CodeableModels
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About Codeable Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials to learn Codeable Models by example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="samples_overview.html">Overview of the samples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metamodels_overview.html">Overview of predefined meta-model examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Codeable Models API documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CAssociation.html">codeable_models.CAssociation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CAttribute.html">codeable_models.CAttribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CBundlable.html">codeable_models.CBundlable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CBundle.html">codeable_models.CBundle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CClass.html">codeable_models.CClass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CClassifier.html">codeable_models.CClassifier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CEnum.html">codeable_models.CEnum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CException.html">codeable_models.CException</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CLayer.html">codeable_models.CLayer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CLink.html">codeable_models.CLink</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CMetaclass.html">codeable_models.CMetaclass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CNamedElement.html">codeable_models.CNamedElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CObject.html">codeable_models.CObject</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CPackage.html">codeable_models.CPackage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.CStereotype.html">codeable_models.CStereotype</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.add_links.html">codeable_models.add_links</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.set_links.html">codeable_models.set_links</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stubs/codeable_models.delete_links.html">codeable_models.delete_links</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CodeableModels</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Codeable Models API documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-codeable_models">
+<span id="codeable-models-api-documentation"></span><span id="api"></span><h1>Codeable Models API documentation<a class="headerlink" href="#module-codeable_models" title="Permalink to this headline">¶</a></h1>
+<p>Codeable Models is a Python API for programmatically creating models akin to UML or EMF models.
+The goal of the module is to provide a lightweight codeable modeling API. The module is used as a
+foundation for working programmatically with models.</p>
+<p>Typical use case for Codeable Models are:</p>
+<ul class="simple">
+<li><p>Create models textually and be able to use textual tools such as search &amp; replace, copy &amp; paste, grep,
+and so on to edit them.</p></li>
+<li><p>Ease model creation and manipulation through code - provided in Python scripts with little to no boilerplate code.</p></li>
+<li><p>Using Python code to ensure model consistency, perform constraint checking, perform analyses, and calculate metrics.</p></li>
+<li><p>Create domain models in your code and use them at runtime in your Python project, e.g. to realize a
+portion of the software system to reflect the domain model in a very literal way
+as envisaged in Domain-driven Design (DDD).</p></li>
+<li><p>Generate visual representations of those models such as  UML diagrams and tables,
+e.g. used to support understanding the big picture and communicating the model.</p></li>
+<li><p>Generate other textual representations, such as Markdown or Latex texts.</p></li>
+<li><p>Generate code and/or configuration scripts from the models.</p></li>
+</ul>
+<p>Import it with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">codeable_models</span>
+</pre></div>
+</div>
+<p>or import its classes and functions, e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">codeable_models</span> <span class="kn">import</span> <span class="n">CClass</span><span class="p">,</span> <span class="n">CMetaclass</span><span class="p">,</span> <span class="n">CBundle</span><span class="p">,</span> <span class="n">CException</span><span class="p">,</span> <span class="n">CStereotype</span><span class="p">,</span> <span class="n">add_links</span>
+</pre></div>
+</div>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<p>The Codeable Models API offers of a number of classes and functions,
+each documented in a single section below. The main
+class hierarchy of Codeable Models is shown in the figures below.</p>
+<img alt="_images/codeable_models_model_hierarchy.png" src="_images/codeable_models_model_hierarchy.png" />
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CAssociation</span></code></a>(source, target[, descriptor])</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CAssociation</span></code> is used for representing associations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/codeable_models.CAttribute.html#codeable_models.CAttribute" title="codeable_models.CAttribute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CAttribute</span></code></a>(**kwargs)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CAttribute</span></code> is internally used for storing attributes, and can be used by the user for detailed setting or introspection of attribute data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/codeable_models.CBundlable.html#codeable_models.CBundlable" title="codeable_models.CBundlable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CBundlable</span></code></a>(name, **kwargs)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CBundlable</span></code> is a superclass for all elements in Codeable Models that can be placed in a <a class="reference internal" href="stubs/codeable_models.CBundle.html#codeable_models.CBundle" title="codeable_models.CBundle"><code class="xref py py-class docutils literal notranslate"><span class="pre">CBundle</span></code></a>, which is used for grouping elements.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/codeable_models.CBundle.html#codeable_models.CBundle" title="codeable_models.CBundle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CBundle</span></code></a>([name])</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CBundle</span></code> is used to manage bundles, i.e., groups of modelling elements in Codeable Models.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/codeable_models.CClass.html#codeable_models.CClass" title="codeable_models.CClass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CClass</span></code></a>(metaclass[, name])</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CClass</span></code> is used to define classes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CClassifier</span></code></a>([name])</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CClassifier</span></code> is superclass of classifiers such as <a class="reference internal" href="stubs/codeable_models.CClass.html#codeable_models.CClass" title="codeable_models.CClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClass</span></code></a> and <a class="reference internal" href="stubs/codeable_models.CMetaclass.html#codeable_models.CMetaclass" title="codeable_models.CMetaclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CMetaclass</span></code></a> defining common features for classifiers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/codeable_models.CEnum.html#codeable_models.CEnum" title="codeable_models.CEnum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CEnum</span></code></a>([name])</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CEnum</span></code> is used for defining enumerations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/codeable_models.CException.html#codeable_models.CException" title="codeable_models.CException"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CException</span></code></a>(value)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CException</span></code> is a Python <code class="docutils literal notranslate"><span class="pre">Exception</span></code> that signals that an Exception is raised in Codeable Models.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/codeable_models.CLayer.html#codeable_models.CLayer" title="codeable_models.CLayer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CLayer</span></code></a>([name])</p></td>
+<td><p>Simple class to designate bundles as layers, and manage sub-/super-layer relations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/codeable_models.CLink.html#codeable_models.CLink" title="codeable_models.CLink"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CLink</span></code></a>(association, source_object, …)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CLink</span></code> is used to define object links.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/codeable_models.CMetaclass.html#codeable_models.CMetaclass" title="codeable_models.CMetaclass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CMetaclass</span></code></a>([name])</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CMetaclass</span></code> is used to define meta-classes.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/codeable_models.CNamedElement.html#codeable_models.CNamedElement" title="codeable_models.CNamedElement"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CNamedElement</span></code></a>(name, **kwargs)</p></td>
+<td><p>CNamedElement is the superclass for all named elements in Codeable Models, such as CClass, CObject, and so on.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/codeable_models.CObject.html#codeable_models.CObject" title="codeable_models.CObject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CObject</span></code></a>(cl[, name])</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CObject</span></code> is used to define objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/codeable_models.CPackage.html#codeable_models.CPackage" title="codeable_models.CPackage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CPackage</span></code></a>([name])</p></td>
+<td><p>Simple class to designate bundles as packages.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CStereotype</span></code></a>([name])</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CStereotype</span></code> is used to define stereotypes and stereotype instances.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/codeable_models.add_links.html#codeable_models.add_links" title="codeable_models.add_links"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_links</span></code></a>(link_definitions, **kwargs)</p></td>
+<td><p>Function used to add multiple links at once, maybe to different source objects.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/codeable_models.set_links.html#codeable_models.set_links" title="codeable_models.set_links"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_links</span></code></a>(link_definitions[, do_add_links])</p></td>
+<td><p>Sets multiple links by first deleting all existing links on the objects to be used in the links and then adding the links in the <code class="docutils literal notranslate"><span class="pre">link_definitions</span></code> with the same functionality as the <a class="reference internal" href="stubs/codeable_models.add_links.html#codeable_models.add_links" title="codeable_models.add_links"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_links()</span></code></a> function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/codeable_models.delete_links.html#codeable_models.delete_links" title="codeable_models.delete_links"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_links</span></code></a>(link_definitions, **kwargs)</p></td>
+<td><p>Function used to delete multiple links, maybe to different source objects.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="stubs/codeable_models.CAssociation.html" class="btn btn-neutral float-right" title="codeable_models.CAssociation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="metamodels_overview.html" class="btn btn-neutral float-left" title="Overview of predefined meta-model examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Uwe Zdun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

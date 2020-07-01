@@ -60,3 +60,6 @@ autoclass_content = 'both'
 
 # generate class stubs
 autosummary_generate = True
+
+# don't show rst sources in HTML
+html_show_sourcelink = False

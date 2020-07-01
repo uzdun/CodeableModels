@@ -1,0 +1,453 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Class relationships: associations and inheritance &mdash; CodeableModels 0.99 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2\js\jquery-1.11.0.min.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2\js\lightbox.min.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2-customize\jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinxcontrib-images\LightBox2\lightbox2\css\lightbox.css" type="text/css" />
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="A first object model" href="04_first_object_model.html" />
+    <link rel="prev" title="Class attributes" href="02_class_attributes.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CodeableModels
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About Codeable Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials to learn Codeable Models by example</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_first_class_model.html">A first class model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_class_attributes.html">Class attributes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Class relationships: associations and inheritance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#defining-associations">Defining associations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#introspecting-associations">Introspecting associations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inheritance-definition">Inheritance definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#introspecting-inheritance">Introspecting inheritance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#resulting-model">Resulting model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="04_first_object_model.html">A first object model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_improving_the_models_through_code.html">Improving the models through code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_first_meta_model.html">A first meta-model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07_meta_model_with_stereotypes.html">A meta-model with stereotypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_combining_object_class_and_meta_model.html">Combining object, class, and meta-class model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="samples_overview.html">Overview of the samples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metamodels_overview.html">Overview of predefined meta-model examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Codeable Models API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CodeableModels</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="tutorials.html">Tutorials to learn Codeable Models by example</a> &raquo;</li>
+        
+      <li>Class relationships: associations and inheritance</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="class-relationships-associations-and-inheritance">
+<span id="class-relationships"></span><h1>Class relationships: associations and inheritance<a class="headerlink" href="#class-relationships-associations-and-inheritance" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="defining-associations">
+<h2>Defining associations<a class="headerlink" href="#defining-associations" title="Permalink to this headline">¶</a></h2>
+<p>Associations have been introduced in the previous examples implicitly. Lets discuss them in a bit more detail.
+They are defined on one of the classes which are associated with each other.
+For example one of the previously defined associations was:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">order_item_relation</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;in order: [order] 1 -&gt; [item in order] *&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, class <code class="docutils literal notranslate"><span class="pre">order</span></code> is associated to class <code class="docutils literal notranslate"><span class="pre">item</span></code>. As explained in the documentation of <a class="reference internal" href="stubs/codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a>,
+either keyword arguments or the shorter association descriptor string (with the syntax explained in
+<a class="reference internal" href="stubs/codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a>) can be used. That is, the following definition is equivalent to the one above:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">order_item_relation</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;in order&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;item in order&quot;</span><span class="p">,</span>
+                                        <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">source_role_name</span><span class="o">=</span><span class="s2">&quot;order&quot;</span><span class="p">,</span>
+                                        <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The method <code class="docutils literal notranslate"><span class="pre">association</span></code> defined on <a class="reference internal" href="stubs/codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a> is used here to define the association. Equivalently,
+the constructor of <a class="reference internal" href="stubs/codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a> can be used, for example the following also works:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">order_item_relation</span> <span class="o">=</span> <span class="n">CAssociation</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="s2">&quot;in order: [order] 1 -&gt; [item in order] *&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>All those ways to define an association return an object of type <a class="reference internal" href="stubs/codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a> that can be used
+as a handle for the association. We can use this handle to change the association, e.g. add a
+stereotype to it, or use it for defining links.</p>
+</div>
+<div class="section" id="introspecting-associations">
+<h2>Introspecting associations<a class="headerlink" href="#introspecting-associations" title="Permalink to this headline">¶</a></h2>
+<p>As associations are mainly used on links and classifiers, both <a class="reference internal" href="stubs/codeable_models.CLink.html#codeable_models.CLink" title="codeable_models.CLink"><code class="xref py py-class docutils literal notranslate"><span class="pre">CLink</span></code></a> and <a class="reference internal" href="stubs/codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a>
+offer ways to introspect the association(s) used on
+them. See the examples on objects and links, or the documentations of <a class="reference internal" href="stubs/codeable_models.CLink.html#codeable_models.CLink" title="codeable_models.CLink"><code class="xref py py-class docutils literal notranslate"><span class="pre">CLink</span></code></a> and <a class="reference internal" href="stubs/codeable_models.CObject.html#codeable_models.CObject" title="codeable_models.CObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">CObject</span></code></a>,
+for more on links and their associations. Here, we focus on introspecting associations on <a class="reference internal" href="stubs/codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a>
+(and its sub-classes).</p>
+<p>From any classifier we can use the two getter properties <code class="docutils literal notranslate"><span class="pre">associations</span></code> or <code class="docutils literal notranslate"><span class="pre">all_associations</span></code> for either
+listing the associations of the classifier or  listing all associations of the classifier including those
+of superclasses, respectively. Both return a list of <a class="reference internal" href="stubs/codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a> objects.</p>
+<p>For example, the following prints source and target via the <a class="reference internal" href="stubs/codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a> objects for each
+association defined on the <code class="docutils literal notranslate"><span class="pre">order</span></code> class:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">order</span><span class="o">.</span><span class="n">associations</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;SOURCE = </span><span class="si">{</span><span class="n">association</span><span class="o">.</span><span class="n">source</span><span class="si">!s}</span><span class="s2"> -&gt; TARGET = </span><span class="si">{</span><span class="n">association</span><span class="o">.</span><span class="n">target</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The following result will be printed:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>SOURCE = Order -&gt; TARGET = Item
+SOURCE = Customer -&gt; TARGET = Order
+</pre></div>
+</div>
+<p>Suppose we want to get a list of all classes linked to <code class="docutils literal notranslate"><span class="pre">order</span></code>. Then it might be unhandy that <code class="docutils literal notranslate"><span class="pre">order</span></code> is sometimes
+source and sometimes target of the association. Here, <code class="docutils literal notranslate"><span class="pre">get_opposite_classifier()</span></code> can help:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Classes associated to order:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">association</span> <span class="ow">in</span> <span class="n">order</span><span class="o">.</span><span class="n">associations</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">association</span><span class="o">.</span><span class="n">get_opposite_classifier</span><span class="p">(</span><span class="n">order</span><span class="p">)</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would print:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Classes associated to order:
+- Item
+- Customer
+</pre></div>
+</div>
+</div>
+<div class="section" id="inheritance-definition">
+<h2>Inheritance definition<a class="headerlink" href="#inheritance-definition" title="Permalink to this headline">¶</a></h2>
+<p>Codeable models supports single and multiple inheritance for all classifiers. An inheritance relation
+is defined by passing either a classifier (for single inheritance) or a list of
+classifiers (for single or multiple inheritance) to the
+<code class="docutils literal notranslate"><span class="pre">superclasses</span></code> method or keyword argument of the classifier.</p>
+<p>For example, consider we want to support two kinds of persons in our system: customers and staff members. Both
+share some common attributes defined on the class <code class="docutils literal notranslate"><span class="pre">person</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">person</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Person&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;first name&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;last name&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="n">address</span><span class="p">,</span>
+    <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;phone&quot;</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>Now can define the <code class="docutils literal notranslate"><span class="pre">Customer</span></code> and <code class="docutils literal notranslate"><span class="pre">Staff</span> <span class="pre">Member</span></code> classes with their attributes and additional associations.
+Please note that they are both derived from the <code class="docutils literal notranslate"><span class="pre">person</span></code> class via inheritance using the statement
+<code class="docutils literal notranslate"><span class="pre">superclasses=person</span></code> in the keyword arguments:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">customer</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Customer&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">person</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;shipping addresses&quot;</span><span class="p">:</span> <span class="p">[],</span>
+    <span class="s2">&quot;selected shipping address&quot;</span><span class="p">:</span> <span class="mi">0</span>
+<span class="p">})</span>
+
+<span class="n">customer_cart_relation</span> <span class="o">=</span> <span class="n">customer</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">cart</span><span class="p">,</span> <span class="s2">&quot;shops with: [customer] 1 &lt;*&gt;- [cart] 1&quot;</span><span class="p">)</span>
+<span class="n">customer_orders_relation</span> <span class="o">=</span> <span class="n">customer</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="s2">&quot;orders: [customer] 1 &lt;*&gt;- [order] *&quot;</span><span class="p">)</span>
+
+<span class="n">staff_role</span> <span class="o">=</span> <span class="n">CEnum</span><span class="p">(</span><span class="s2">&quot;Staff Role&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Customer Support&quot;</span><span class="p">,</span> <span class="s2">&quot;Management&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;IT Support&quot;</span><span class="p">,</span> <span class="s2">&quot;Payment Processing&quot;</span><span class="p">])</span>
+
+<span class="n">staff_member</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Staff Member&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">person</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="n">staff_role</span><span class="p">,</span>
+<span class="p">})</span>
+<span class="n">staff_reports_to_relation</span> <span class="o">=</span> <span class="n">staff_member</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">staff_member</span><span class="p">,</span>
+                                                     <span class="s2">&quot;reports to: [managed] * -&gt; [manager] *&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Please further note that using a list with a single element (i.e., <code class="docutils literal notranslate"><span class="pre">superclasses=[person]</span></code>) is equivalent to
+the inheritance definition above. <code class="docutils literal notranslate"><span class="pre">superclasses</span></code> can also be called outside the keyword arguments, e.g. like this,
+with the same effect:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">customer</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Customer&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;shipping addresses&quot;</span><span class="p">:</span> <span class="p">[],</span>
+<span class="p">})</span>
+<span class="n">customer</span><span class="o">.</span><span class="n">superclasses</span><span class="o">=</span><span class="n">person</span>
+</pre></div>
+</div>
+<p>Finally, lets consider we also want to support that some staff members may be customers, too. This can be supported with
+multiple inheritance like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">staff_customer</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Staff Customer&quot;</span><span class="p">,</span>
+                        <span class="n">superclasses</span><span class="o">=</span><span class="p">[</span><span class="n">staff_member</span><span class="p">,</span> <span class="n">customer</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Codeable Models uses a linearized class path to unambiguously determine the resolution of classifier features in
+the inheritance hierarchy. See the documentation of <code class="docutils literal notranslate"><span class="pre">class_path</span></code> on <a class="reference internal" href="stubs/codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a> for more information.</p>
+</div>
+<div class="section" id="introspecting-inheritance">
+<h2>Introspecting inheritance<a class="headerlink" href="#introspecting-inheritance" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="stubs/codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a> offers various methods to introspect inheritance relationships, namely:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">superclasses</span></code>:</dt><dd><p>Returns the superclasses of a classifier</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">subclasses</span></code>:</dt><dd><p>Returns the subclasses of a classifier</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">all_superclasses</span></code>:</dt><dd><p>Returns all superclasses of a classifier on the inheritance hierarchy.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">all_subclasses</span></code>:</dt><dd><p>Returns all subclasses of a classifier on the inheritance hierarchy.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">is_classifier_of_type(classifier)</span></code>:</dt><dd><p>Checks if a classifier conforms to the provided <code class="docutils literal notranslate"><span class="pre">classifier</span></code>’s type.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">has_subclass(classifier)</span></code>:</dt><dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">classifier</span></code> is subclass of this classifier, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">has_superclass(classifier)</span></code>:</dt><dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">classifier</span></code> is superclass of this classifier, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">class_path</span></code>:</dt><dd><p>Returns the linear resolution order of a classifier.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>Here are some examples of using these methods and properties on <code class="docutils literal notranslate"><span class="pre">staff_customer</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Direct superclasses of Staff Customer? &quot;</span> <span class="o">+</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">staff_customer</span><span class="o">.</span><span class="n">superclasses</span><span class="p">]</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All superclasses of Staff Customer? &quot;</span> <span class="o">+</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">staff_customer</span><span class="o">.</span><span class="n">all_superclasses</span><span class="p">]</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Is Staff Customer of type Person? &quot;</span> <span class="o">+</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">staff_customer</span><span class="o">.</span><span class="n">is_classifier_of_type</span><span class="p">(</span><span class="n">person</span><span class="p">)</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Is Staff Customer of type Staff Customer? &quot;</span> <span class="o">+</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">staff_customer</span><span class="o">.</span><span class="n">is_classifier_of_type</span><span class="p">(</span><span class="n">staff_customer</span><span class="p">)</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Has Staff Customer superclass Person? &quot;</span> <span class="o">+</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">staff_customer</span><span class="o">.</span><span class="n">has_superclass</span><span class="p">(</span><span class="n">person</span><span class="p">)</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Has Staff Customer superclass Staff Customer? &quot;</span> <span class="o">+</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">staff_customer</span><span class="o">.</span><span class="n">has_superclass</span><span class="p">(</span><span class="n">staff_customer</span><span class="p">)</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;What is the class path of Staff Customer? &quot;</span> <span class="o">+</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">staff_customer</span><span class="o">.</span><span class="n">class_path</span><span class="p">]</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would print:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Direct superclasses of Staff Customer? [&#39;Staff Member&#39;, &#39;Customer&#39;]
+All superclasses of Staff Customer? [&#39;Person&#39;, &#39;Staff Member&#39;, &#39;Customer&#39;]
+Is Staff Customer of type Person? True
+Is Staff Customer of type Staff Customer? True
+Has Staff Customer superclass Person? True
+Has Staff Customer superclass Staff Customer? False
+What is the class path of Staff Customer? [&#39;Staff Customer&#39;, &#39;Staff Member&#39;, &#39;Person&#39;, &#39;Customer&#39;]
+</pre></div>
+</div>
+</div>
+<div class="section" id="resulting-model">
+<h2>Resulting model<a class="headerlink" href="#resulting-model" title="Permalink to this headline">¶</a></h2>
+<p>We can use the the Plant UML renderer to draw the resulting model, like we did before. The result would be:</p>
+<img alt="_images/shopping_model3_all.png" src="_images/shopping_model3_all.png" />
+<p>At this stage, we might feel that this model is growing too large to be depicted in a single view. We could
+thus create views for the persons and the order management parts of our model. This can be done by just listing
+all classes to be included in the bundle, as done for the persons view in the code below.
+Or we can use the stop elements feature of <code class="docutils literal notranslate"><span class="pre">get_connected_elements()</span></code> to delimit the bundle
+elements, as done for the orders view:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">shopping_model_all</span> <span class="o">=</span> <span class="n">CBundle</span><span class="p">(</span><span class="s2">&quot;shopping_model3_all&quot;</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="p">(</span><span class="n">cart</span><span class="o">.</span><span class="n">get_connected_elements</span><span class="p">()</span> <span class="o">+</span>
+                                                              <span class="p">[</span><span class="n">order_status</span><span class="p">,</span> <span class="n">staff_role</span><span class="p">]))</span>
+<span class="n">shopping_model_persons</span> <span class="o">=</span> <span class="n">CBundle</span><span class="p">(</span><span class="s2">&quot;shopping_model3_persons&quot;</span><span class="p">,</span>
+                                 <span class="n">elements</span><span class="o">=</span><span class="p">[</span><span class="n">person</span><span class="p">,</span> <span class="n">customer</span><span class="p">,</span> <span class="n">staff_member</span><span class="p">,</span> <span class="n">staff_customer</span><span class="p">,</span>
+                                           <span class="n">staff_role</span><span class="p">])</span>
+<span class="n">shopping_model_orders</span> <span class="o">=</span> <span class="n">CBundle</span><span class="p">(</span><span class="s2">&quot;shopping_model3_orders&quot;</span><span class="p">,</span>
+                                <span class="n">elements</span><span class="o">=</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">get_connected_elements</span><span class="p">(</span>
+                                          <span class="n">stop_elements_inclusive</span><span class="o">=</span><span class="p">[</span><span class="n">customer</span><span class="p">])</span> <span class="o">+</span>
+                                          <span class="p">[</span><span class="n">order_status</span><span class="p">]))</span>
+<span class="n">generator</span> <span class="o">=</span> <span class="n">PlantUMLGenerator</span><span class="p">()</span>
+<span class="n">generator</span><span class="o">.</span><span class="n">generate_class_models</span><span class="p">(</span><span class="s2">&quot;shopping_model3&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">shopping_model_all</span><span class="p">,</span> <span class="p">{},</span>
+                                                    <span class="n">shopping_model_persons</span><span class="p">,</span> <span class="p">{},</span>
+                                                    <span class="n">shopping_model_orders</span><span class="p">,</span> <span class="p">{}])</span>
+</pre></div>
+</div>
+<p>This creates the following persons view:</p>
+<img alt="_images/shopping_model3_persons.png" src="_images/shopping_model3_persons.png" />
+<p>It also creates the following orders view:</p>
+<img alt="_images/shopping_model3_orders.png" src="_images/shopping_model3_orders.png" />
+<p>The full code of the examples in this tutorial can be found in the sample <a class="reference internal" href="samples_overview.html#shopping-model3"><span class="std std-ref">Shopping Model 3</span></a>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="04_first_object_model.html" class="btn btn-neutral float-right" title="A first object model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="02_class_attributes.html" class="btn btn-neutral float-left" title="Class attributes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Uwe Zdun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

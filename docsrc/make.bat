@@ -12,6 +12,22 @@ set BUILDDIR=build
 
 if "%1" == "" goto help
 
+if "%1" == "docs" (
+    %SPHINXBUILD% -M html %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
+    DEL /F/Q/S "../docs/*.*" > nul
+    RMDIR /Q/S "../docs/"
+    MKDIR "../docs/"
+    robocopy %BUILDDIR%/_images/ ../docs/_images /E > nul
+    robocopy %BUILDDIR%/_static/ ../docs/_static /E > nul
+    robocopy %BUILDDIR%/stubs/ ../docs/stubs /E > nul
+    robocopy %BUILDDIR%/ ../docs/ *.html > nul
+    robocopy %BUILDDIR%/ ../docs/ *.js > nul
+    robocopy %SOURCEDIR%/ ../docs/ .nojekyll  > nul
+
+    echo.Generated files copied to ../docs
+    goto end
+)
+
 %SPHINXBUILD% >NUL 2>NUL
 if errorlevel 9009 (
 	echo.

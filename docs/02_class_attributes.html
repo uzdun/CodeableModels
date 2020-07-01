@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Class attributes &mdash; CodeableModels 0.99 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2\js\jquery-1.11.0.min.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2\js\lightbox.min.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2-customize\jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinxcontrib-images\LightBox2\lightbox2\css\lightbox.css" type="text/css" />
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Class relationships: associations and inheritance" href="03_class_relationships.html" />
+    <link rel="prev" title="A first class model" href="01_first_class_model.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CodeableModels
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About Codeable Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials to learn Codeable Models by example</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_first_class_model.html">A first class model</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Class attributes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#defining-attributes">Defining attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#introspecting-attributes">Introspecting attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#object-and-enumeration-attributes">Object and enumeration attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#resulting-model">Resulting model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="03_class_relationships.html">Class relationships: associations and inheritance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_first_object_model.html">A first object model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_improving_the_models_through_code.html">Improving the models through code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06_first_meta_model.html">A first meta-model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07_meta_model_with_stereotypes.html">A meta-model with stereotypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_combining_object_class_and_meta_model.html">Combining object, class, and meta-class model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="samples_overview.html">Overview of the samples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metamodels_overview.html">Overview of predefined meta-model examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Codeable Models API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CodeableModels</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="tutorials.html">Tutorials to learn Codeable Models by example</a> &raquo;</li>
+        
+      <li>Class attributes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="class-attributes">
+<span id="id1"></span><h1>Class attributes<a class="headerlink" href="#class-attributes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="defining-attributes">
+<h2>Defining attributes<a class="headerlink" href="#defining-attributes" title="Permalink to this headline">¶</a></h2>
+<p>Each class can have attributes of various types (for a full list of supported
+attribute types see <a class="reference internal" href="stubs/codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a>).
+We have already seen examples of <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code>, and <code class="docutils literal notranslate"><span class="pre">str</span></code> attributes in the previous example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">item</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Item&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;quantity&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">})</span>
+
+<span class="n">product</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Product&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>Instead of using types in the <code class="docutils literal notranslate"><span class="pre">attributes</span></code> dictionary, we could also use default values from which the types are
+guessed. For instance, if we like for products to have an empty <code class="docutils literal notranslate"><span class="pre">name</span></code> string as default and offer them per default
+for free (i.e. the price is 0.0), we could define <code class="docutils literal notranslate"><span class="pre">Product</span></code> as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">product</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Product&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="mf">0.0</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="introspecting-attributes">
+<h2>Introspecting attributes<a class="headerlink" href="#introspecting-attributes" title="Permalink to this headline">¶</a></h2>
+<p>The attributes above are defined using the <code class="docutils literal notranslate"><span class="pre">attributes</span></code> setter property of <a class="reference internal" href="stubs/codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a>, invoked
+by a keyword argument. With the
+corresponding getter, we can get a list of all attributes of a classifier. For example, to get all product attributes,
+we can invoke <code class="docutils literal notranslate"><span class="pre">product.attributes</span></code>. This getter will return a list of objects of the type <a class="reference internal" href="stubs/codeable_models.CAttribute.html#codeable_models.CAttribute" title="codeable_models.CAttribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAttribute</span></code></a>.
+Using <a class="reference internal" href="stubs/codeable_models.CAttribute.html#codeable_models.CAttribute" title="codeable_models.CAttribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAttribute</span></code></a> we can introspect all details of an attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Product Attributes:&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">attribute</span> <span class="ow">in</span> <span class="n">product</span><span class="o">.</span><span class="n">attributes</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;- &quot;</span><span class="si">%s</span><span class="s1">&quot;: type &quot;</span><span class="si">%s</span><span class="s1">&quot;, classifier &quot;</span><span class="si">%s</span><span class="s1">&quot;, default &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">attribute</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">attribute</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+          <span class="n">attribute</span><span class="o">.</span><span class="n">classifier</span><span class="p">,</span> <span class="n">attribute</span><span class="o">.</span><span class="n">default</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This would print the following result:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Product Attributes:
+- &quot;id&quot;: type &quot;&lt;class &#39;str&#39;&gt;&quot;, classifier &quot;Product&quot;, default &quot;None&quot;
+- &quot;name&quot;: type &quot;&lt;class &#39;str&#39;&gt;&quot;, classifier &quot;Product&quot;, default &quot;&quot;
+- &quot;price&quot;: type &quot;&lt;class &#39;float&#39;&gt;&quot;, classifier &quot;Product&quot;, default &quot;0.0&quot;
+</pre></div>
+</div>
+<p>Instead of getting the attribute objects, it is also possible to get the names of all attributes only, using the
+<code class="docutils literal notranslate"><span class="pre">attribute_names</span></code> property of <a class="reference internal" href="stubs/codeable_models.CAttribute.html#codeable_models.CAttribute" title="codeable_models.CAttribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAttribute</span></code></a>. For example, the following code lists all
+product attribute names:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Product Attributes: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">product</span><span class="o">.</span><span class="n">attribute_names</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This prints the following result:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Product Attributes: [&#39;id&#39;, &#39;name&#39;, &#39;price&#39;]
+</pre></div>
+</div>
+<p>Individual attributes can be inspected with <code class="docutils literal notranslate"><span class="pre">get_attribute</span></code>. The method returns the attribute’s
+<a class="reference internal" href="stubs/codeable_models.CAttribute.html#codeable_models.CAttribute" title="codeable_models.CAttribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAttribute</span></code></a> object and can thus be used to inspect the attribute, e.g. as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Default for price attribute = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">product</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">default</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This prints:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Default for price attribute = 0.0
+</pre></div>
+</div>
+</div>
+<div class="section" id="object-and-enumeration-attributes">
+<h2>Object and enumeration attributes<a class="headerlink" href="#object-and-enumeration-attributes" title="Permalink to this headline">¶</a></h2>
+<p>In addition to basic types, attributes can have object or enumeration types.</p>
+<p>Enumeration are defined using <a class="reference internal" href="stubs/codeable_models.CEnum.html#codeable_models.CEnum" title="codeable_models.CEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CEnum</span></code></a> with strings as possible enumeration values. For example, an order status
+enumeration can be defined as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">order_status</span> <span class="o">=</span> <span class="n">CEnum</span><span class="p">(</span><span class="s2">&quot;Order Status&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;New&quot;</span><span class="p">,</span> <span class="s2">&quot;Hold&quot;</span><span class="p">,</span> <span class="s2">&quot;Shipped&quot;</span><span class="p">,</span> <span class="s2">&quot;Delivered&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Lets further consider we want to use two basic data objects for defining <code class="docutils literal notranslate"><span class="pre">Date</span></code> and <code class="docutils literal notranslate"><span class="pre">Address</span></code> properties:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">date</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Date&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;day&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="s2">&quot;month&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">})</span>
+
+<span class="n">address</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Address&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;street1&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;street2&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;zip&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;city&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;country&quot;</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>With this we can define an <code class="docutils literal notranslate"><span class="pre">Order</span></code> class that uses dates, an address, and the order status:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">order</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Order&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;ordered&quot;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+    <span class="s2">&quot;shipped&quot;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+    <span class="s2">&quot;ship to&quot;</span><span class="p">:</span> <span class="n">address</span><span class="p">,</span>
+    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">order_status</span><span class="p">,</span>
+    <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">})</span>
+
+<span class="n">order_item_relation</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;in order: [order] 1 -&gt; [item in order] *&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Again, instead of the types we could use objects and enum values as defaults. For objects this is simple. For example,
+consider we have defined an object <code class="docutils literal notranslate"><span class="pre">today</span></code> always set to the today’s date (before importing the
+Python module containing <code class="docutils literal notranslate"><span class="pre">order</span></code>) , e.g. like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">today</span> <span class="o">=</span> <span class="n">CObject</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="s2">&quot;today&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;day&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;month&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">20</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>Then we could use <code class="docutils literal notranslate"><span class="pre">today</span></code> instead of <code class="docutils literal notranslate"><span class="pre">date</span></code> as the default value for the <code class="docutils literal notranslate"><span class="pre">ordered</span></code> attribute (not for <code class="docutils literal notranslate"><span class="pre">shipped</span></code>
+as it is not clear, if the order will be ship on the same day as it is ordered).</p>
+<p>For enumeration objects we need to use
+<a class="reference internal" href="stubs/codeable_models.CAttribute.html#codeable_models.CAttribute" title="codeable_models.CAttribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAttribute</span></code></a> with type and default value, as the enumeration values are strings, and thus just
+using an enumeration value such as <code class="docutils literal notranslate"><span class="pre">&quot;New&quot;</span></code> as a default value would be ambiguous, as it could not be
+distinguished from the string <code class="docutils literal notranslate"><span class="pre">&quot;New&quot;</span></code>. Both object and enumeration default values are used below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">order</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Order&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;ordered&quot;</span><span class="p">:</span> <span class="n">today</span><span class="p">,</span>
+    <span class="s2">&quot;shipped&quot;</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+    <span class="s2">&quot;ship to&quot;</span><span class="p">:</span> <span class="n">address</span><span class="p">,</span>
+    <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">CAttribute</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">order_status</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;New&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="resulting-model">
+<h2>Resulting model<a class="headerlink" href="#resulting-model" title="Permalink to this headline">¶</a></h2>
+<p>We can use the the Plant UML renderer to draw the resulting model like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">shopping_model</span> <span class="o">=</span> <span class="n">CBundle</span><span class="p">(</span><span class="s2">&quot;shopping_model2&quot;</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="p">(</span><span class="n">cart</span><span class="o">.</span><span class="n">get_connected_elements</span><span class="p">()</span> <span class="o">+</span>
+                                                      <span class="p">[</span><span class="n">order_status</span><span class="p">]))</span>
+<span class="n">generator</span> <span class="o">=</span> <span class="n">PlantUMLGenerator</span><span class="p">()</span>
+<span class="n">generator</span><span class="o">.</span><span class="n">generate_class_models</span><span class="p">(</span><span class="s2">&quot;shopping_model2&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">shopping_model</span><span class="p">,</span> <span class="p">{}])</span>
+</pre></div>
+</div>
+<p>This script will generate the following UML class model:</p>
+<img alt="_images/shopping_model2.png" src="_images/shopping_model2.png" />
+<p>The full code of the examples in this tutorial can be found in the sample  <a class="reference internal" href="samples_overview.html#shopping-model2"><span class="std std-ref">Shopping Model 2</span></a>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="03_class_relationships.html" class="btn btn-neutral float-right" title="Class relationships: associations and inheritance" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="01_first_class_model.html" class="btn btn-neutral float-left" title="A first class model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Uwe Zdun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

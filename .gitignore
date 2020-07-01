@@ -9,7 +9,9 @@
 # generated files
 
 _generated/
-docs/build
+
+# Sphinx build
+docsrc/build
 
 
 #

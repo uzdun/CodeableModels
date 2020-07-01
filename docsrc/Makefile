@@ -12,6 +12,15 @@ BUILDDIR      = build
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
+docs:
+	@rm -rf ../docs/*
+	@cp -a "$(BUILDDIR)/_images/." ../docs/_images/
+	@cp -a "$(BUILDDIR)/_static/." ../docs/_static/
+	@cp -a "$(BUILDDIR)/stubs/." ../docs/stubs/
+	@cp -a $(BUILDDIR)/*.html ../docs
+	@cp -a $(BUILDDIR)/*.js ../docs
+	@cp -a $(SOURCEDIR)/.nojekyll ../docs
+
 .PHONY: help Makefile
 
 # Catch-all target: route all unknown targets to Sphinx using the new

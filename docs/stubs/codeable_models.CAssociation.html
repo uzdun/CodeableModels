@@ -1,0 +1,461 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>codeable_models.CAssociation &mdash; CodeableModels 0.99 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/sphinxcontrib-images\LightBox2\lightbox2\js\jquery-1.11.0.min.js"></script>
+        <script src="../_static/sphinxcontrib-images\LightBox2\lightbox2\js\lightbox.min.js"></script>
+        <script src="../_static/sphinxcontrib-images\LightBox2\lightbox2-customize\jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sphinxcontrib-images\LightBox2\lightbox2\css\lightbox.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="codeable_models.CAttribute" href="codeable_models.CAttribute.html" />
+    <link rel="prev" title="Codeable Models API documentation" href="../api.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> CodeableModels
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About Codeable Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials to learn Codeable Models by example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../samples_overview.html">Overview of the samples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metamodels_overview.html">Overview of predefined meta-model examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Codeable Models API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#classes">Classes</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">codeable_models.CAssociation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CAttribute.html">codeable_models.CAttribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CBundlable.html">codeable_models.CBundlable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CBundle.html">codeable_models.CBundle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CClass.html">codeable_models.CClass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CClassifier.html">codeable_models.CClassifier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CEnum.html">codeable_models.CEnum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CException.html">codeable_models.CException</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CLayer.html">codeable_models.CLayer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CLink.html">codeable_models.CLink</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CMetaclass.html">codeable_models.CMetaclass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CNamedElement.html">codeable_models.CNamedElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CObject.html">codeable_models.CObject</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CPackage.html">codeable_models.CPackage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CStereotype.html">codeable_models.CStereotype</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CodeableModels</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">Codeable Models API documentation</a> &raquo;</li>
+        
+      <li>codeable_models.CAssociation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="codeable-models-cassociation">
+<h1>codeable_models.CAssociation<a class="headerlink" href="#codeable-models-cassociation" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="codeable_models.CAssociation">
+<em class="property">class </em><code class="sig-prename descclassname">codeable_models.</code><code class="sig-name descname">CAssociation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span></em>, <em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">descriptor</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CAssociation" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">CAssociation</span></code> is used for representing associations. Usually associations are created using the
+<code class="docutils literal notranslate"><span class="pre">association</span></code> method of <a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a> which calls the constructor of <code class="docutils literal notranslate"><span class="pre">CAssociation</span></code>
+to actually create the association (i.e., <code class="docutils literal notranslate"><span class="pre">CAssociation</span></code> could also be used directly).</p>
+<p><strong>Superclasses:</strong>  <a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a>) – The source classifier of the association.</p></li>
+<li><p><strong>target</strong> (<a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a>) – The target classifier of the association.</p></li>
+<li><p><strong>descriptor</strong> – An optional descriptor making it easier to define associations with a simple string. The
+descriptor syntax is described below.</p></li>
+<li><p><strong>**kwargs</strong> – <p>Pass in any kwargs acceptable to superclasses. In addition, <code class="docutils literal notranslate"><span class="pre">CAssociation</span></code> accepts:
+<code class="docutils literal notranslate"><span class="pre">multiplicity</span></code>, <code class="docutils literal notranslate"><span class="pre">role_name</span></code>, <code class="docutils literal notranslate"><span class="pre">source_multiplicity</span></code>,
+<code class="docutils literal notranslate"><span class="pre">source_role_name</span></code>, <code class="docutils literal notranslate"><span class="pre">aggregation</span></code>, <code class="docutils literal notranslate"><span class="pre">composition</span></code>, <code class="docutils literal notranslate"><span class="pre">stereotypes</span></code>.</p>
+<ul>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">multiplicity</span></code>:</dt><dd><p>Used to provide the target multiplicity of the association. Defaults to <code class="docutils literal notranslate"><span class="pre">*</span></code>.
+See documentation of the property <code class="docutils literal notranslate"><span class="pre">multiplicity</span></code> for the accepted syntax.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">role_name</span></code>:</dt><dd><p>Takes a string specifying the target role name and stores it in the same-named
+attribute. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">source_multiplicity</span></code>:</dt><dd><p>Used to provide the source multiplicity of the association.
+Defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code>. See documentation of the property <code class="docutils literal notranslate"><span class="pre">multiplicity</span></code>
+for the accepted syntax.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">source_role_name</span></code>:</dt><dd><p>Takes a string specifying the source role name and stores it in the same-named
+attribute. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">aggregation</span></code>:</dt><dd><p>Takes a boolean argument. If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, this association is set to be
+an aggregation, else it is not. Also, if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, it sets the property
+<code class="docutils literal notranslate"><span class="pre">composition</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">composition</span></code>:</dt><dd><p>Takes a boolean argument. If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, this association is set to be
+a composition,  else it is not. Also, if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, it sets the property
+<code class="docutils literal notranslate"><span class="pre">aggregation</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">stereotypes</span></code>:</dt><dd><p>Takes a single or a list of <a class="reference internal" href="codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype"><code class="xref py py-class docutils literal notranslate"><span class="pre">CStereotype</span></code></a> objects which extend this
+association. Extension is only possible, if this association is an association
+between meta-classes.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="codeable_models.CAssociation.role_name">
+<code class="sig-name descname">role_name</code><a class="headerlink" href="#codeable_models.CAssociation.role_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string specifying the target role name.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="codeable_models.CAssociation.source_role_name">
+<code class="sig-name descname">source_role_name</code><a class="headerlink" href="#codeable_models.CAssociation.source_role_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A string specifying the source role name.</p>
+</dd></dl>
+
+<p>Please note that the  <code class="docutils literal notranslate"><span class="pre">name</span></code> property derived from <a class="reference internal" href="codeable_models.CNamedElement.html#codeable_models.CNamedElement" title="codeable_models.CNamedElement"><code class="xref py py-class docutils literal notranslate"><span class="pre">CNamedElement</span></code></a>
+is interpreted as the label of the association.</p>
+<p><strong>Descriptor Syntax:</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">descriptor</span></code> has the following syntax:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>?&lt;label&gt;:? \
+    ?[&lt;source_role_name&gt;]? &lt;source_multiplicity&gt; -&gt;|&lt;&gt;-|&lt;*&gt;- \
+    ?[&lt;target_role_name&gt;]? &lt;target_multiplicity&gt;
+</pre></div>
+</div>
+<p>With it, first the label of the association can be optionally specified.
+Source and target multiplicity strings, in the same form as accepted by the <code class="docutils literal notranslate"><span class="pre">multiplicity</span></code>
+property, must be specified, too.
+They are divided by an arrow determining the type of association: <code class="docutils literal notranslate"><span class="pre">-&gt;</span></code> for ordinary
+associations, <code class="docutils literal notranslate"><span class="pre">&lt;&gt;-</span></code> for aggregations, and <code class="docutils literal notranslate"><span class="pre">&lt;*&gt;-</span></code> for compositions.
+Optionally in square brackets the source and target role names can be specified right before
+the multiplicities.</p>
+<p>Please note that first the keyword arguments are evaluated and then the descriptor. So the descriptor
+would override settings made in the keyword arguments.</p>
+<p><strong>Examples:</strong></p>
+<p>The following specifies a <code class="docutils literal notranslate"><span class="pre">0..1</span></code> to <code class="docutils literal notranslate"><span class="pre">*</span></code> association from a class <code class="docutils literal notranslate"><span class="pre">cart</span></code> to a class <code class="docutils literal notranslate"><span class="pre">item</span></code> labelled
+<code class="docutils literal notranslate"><span class="pre">in</span> <span class="pre">cart</span></code> with source role name <code class="docutils literal notranslate"><span class="pre">cart</span></code> and target role name <code class="docutils literal notranslate"><span class="pre">item</span> <span class="pre">in</span> <span class="pre">cart</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cart</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;in cart: [cart] 0..1 -&gt; [item in cart] *&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The same can be specified more verbosely with kwargs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cart</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;in cart&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;item in cart&quot;</span><span class="p">,</span> <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span>
+     <span class="n">source_role_name</span><span class="o">=</span><span class="s2">&quot;cart&quot;</span><span class="p">,</span> <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;0..1&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Main Relations:</strong></p>
+<p>The main relations of <code class="docutils literal notranslate"><span class="pre">CAssociation</span></code> are shown in the figure below.</p>
+<img alt="../_images/association_model.png" src="../_images/association_model.png" />
+<p>A <code class="docutils literal notranslate"><span class="pre">CAssociation</span></code> is need in order to derive <a class="reference internal" href="codeable_models.CLink.html#codeable_models.CLink" title="codeable_models.CLink"><code class="xref py py-class docutils literal notranslate"><span class="pre">CLink</span></code></a> objects, which link objects
+in an object model.  The <code class="docutils literal notranslate"><span class="pre">CAssociation</span></code> is  the classifier of the  <a class="reference internal" href="codeable_models.CLink.html#codeable_models.CLink" title="codeable_models.CLink"><code class="xref py py-class docutils literal notranslate"><span class="pre">CLink</span></code></a>.</p>
+<p>As can be seen,  a <code class="docutils literal notranslate"><span class="pre">CAssociation</span></code> can be extended by stereotypes. A <a class="reference internal" href="codeable_models.CLink.html#codeable_models.CLink" title="codeable_models.CLink"><code class="xref py py-class docutils literal notranslate"><span class="pre">CLink</span></code></a> can have
+stereotype instances of any <a class="reference internal" href="codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype"><code class="xref py py-class docutils literal notranslate"><span class="pre">CStereotype</span></code></a> defined on the link’s association.</p>
+<p>The <a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a> can be introspected for its <code class="docutils literal notranslate"><span class="pre">associations</span></code>. The association stores its <code class="docutils literal notranslate"><span class="pre">source</span></code>
+and <code class="docutils literal notranslate"><span class="pre">target</span></code> classifiers.</p>
+<dl class="py method">
+<dt id="codeable_models.CAssociation.aggregation">
+<em class="property">property </em><code class="sig-name descname">aggregation</code><a class="headerlink" href="#codeable_models.CAssociation.aggregation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a boolean argument. If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, this association is set to be
+an aggregation, else it is not. Also, if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, it sets the property <code class="docutils literal notranslate"><span class="pre">composition</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.attributes">
+<em class="property">property </em><code class="sig-name descname">attributes</code><a class="headerlink" href="#codeable_models.CAssociation.attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overridden method from <a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a>. Attributes on associations are not supported.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.composition">
+<em class="property">property </em><code class="sig-name descname">composition</code><a class="headerlink" href="#codeable_models.CAssociation.composition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a boolean argument. If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, this association is set to be
+a composition,  else it is not. Also, if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, it sets the property <code class="docutils literal notranslate"><span class="pre">aggregation</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CAssociation.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes this association. Removes the association from all classifiers and links. Removes it from
+all stereotypes, too.  Calls <code class="docutils literal notranslate"><span class="pre">delete()</span></code> on superclass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.get_opposite_classifier">
+<code class="sig-name descname">get_opposite_classifier</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">classifier</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CAssociation.get_opposite_classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a classifier, this method returns the opposite in the association,
+i.e. the source if <code class="docutils literal notranslate"><span class="pre">classifier</span></code> is the
+target, and vice versa. Raises an exception if <code class="docutils literal notranslate"><span class="pre">classifier</span></code> is neither source nor target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>classifier</strong> – The classifier from which we want to get the opposite in the association.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The opposite classifier.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier">CClassifier</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.multiplicity">
+<em class="property">property </em><code class="sig-name descname">multiplicity</code><a class="headerlink" href="#codeable_models.CAssociation.multiplicity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter and setter for the target multiplicity of the association. The multiplicity string
+has the following syntax: <code class="docutils literal notranslate"><span class="pre">&lt;lower_multiplicity&gt;..&lt;higher_multiplicity&gt;|&lt;single_multiplicity&gt;</span></code>.</p>
+<p>The multiplicity is either specified as a range or using a <code class="docutils literal notranslate"><span class="pre">&lt;single_multiplicity&gt;</span></code>. Accepted
+<code class="docutils literal notranslate"><span class="pre">&lt;single_multiplicity&gt;</span></code> values are any positive number, zero, or <code class="docutils literal notranslate"><span class="pre">*</span></code>.  <code class="docutils literal notranslate"><span class="pre">*</span></code> denotes
+unbounded multiplicity.</p>
+<p>For multiplicity ranges, <code class="docutils literal notranslate"><span class="pre">&lt;lower_multiplicity&gt;</span></code> is zero or any positive number specifying the lower end
+of the accepted multiplicity range. <code class="docutils literal notranslate"><span class="pre">&lt;higher_multiplicity&gt;</span></code>
+is a number specifying the higher end of the accepted multiplicity range. It must be higher than
+<code class="docutils literal notranslate"><span class="pre">&lt;lower_multiplicity&gt;</span></code>. It can also be <code class="docutils literal notranslate"><span class="pre">*</span></code> meaning
+unbounded higher multiplicity.</p>
+<p><code class="docutils literal notranslate"><span class="pre">*</span></code> multiplicity is equal to the range <code class="docutils literal notranslate"><span class="pre">0..*</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.source_multiplicity">
+<em class="property">property </em><code class="sig-name descname">source_multiplicity</code><a class="headerlink" href="#codeable_models.CAssociation.source_multiplicity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter and setter for the source multiplicity of the association. Syntax is equal to the syntax
+defined in the documentation of the <code class="docutils literal notranslate"><span class="pre">multiplicity</span></code> property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.stereotypes">
+<em class="property">property </em><code class="sig-name descname">stereotypes</code><a class="headerlink" href="#codeable_models.CAssociation.stereotypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>The setter takes a single or a list of <a class="reference internal" href="codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype"><code class="xref py py-class docutils literal notranslate"><span class="pre">CStereotype</span></code></a>
+objects which extend this association. Extension is only possible, if this association is an association
+between meta-classes. The getter returns the stereotypes that extend this association.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>CStereotype|list[<a class="reference internal" href="codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype">CStereotype</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="codeable_models.CAttribute.html" class="btn btn-neutral float-right" title="codeable_models.CAttribute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../api.html" class="btn btn-neutral float-left" title="Codeable Models API documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Uwe Zdun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

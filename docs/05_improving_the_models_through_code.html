@@ -1,0 +1,450 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Improving the models through code &mdash; CodeableModels 0.99 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2\js\jquery-1.11.0.min.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2\js\lightbox.min.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2-customize\jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinxcontrib-images\LightBox2\lightbox2\css\lightbox.css" type="text/css" />
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="A first meta-model" href="06_first_meta_model.html" />
+    <link rel="prev" title="A first object model" href="04_first_object_model.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CodeableModels
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About Codeable Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials to learn Codeable Models by example</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_first_class_model.html">A first class model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_class_attributes.html">Class attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_class_relationships.html">Class relationships: associations and inheritance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_first_object_model.html">A first object model</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Improving the models through code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#on-the-notion-of-codeable-models">On the notion of codeable models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#factory-function-or-method-for-models">Factory function or method for models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-consistency-during-item-creation">Model consistency during item creation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-consistency-during-order-creation">Model consistency during order creation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-consistency-for-changing-the-order-status">Model consistency for changing the order status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#resulting-model">Resulting model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="06_first_meta_model.html">A first meta-model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07_meta_model_with_stereotypes.html">A meta-model with stereotypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_combining_object_class_and_meta_model.html">Combining object, class, and meta-class model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="samples_overview.html">Overview of the samples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metamodels_overview.html">Overview of predefined meta-model examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Codeable Models API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CodeableModels</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="tutorials.html">Tutorials to learn Codeable Models by example</a> &raquo;</li>
+        
+      <li>Improving the models through code</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="improving-the-models-through-code">
+<span id="coded-model"></span><h1>Improving the models through code<a class="headerlink" href="#improving-the-models-through-code" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="on-the-notion-of-codeable-models">
+<h2>On the notion of codeable models<a class="headerlink" href="#on-the-notion-of-codeable-models" title="Permalink to this headline">¶</a></h2>
+<p>In the previous tutorials, we have learned about most basic features of Codeable Models
+needed to create class models and derive object models from them, i.e. basic modelling.
+Codeable Models has the intention to make it easy to
+code (or script) models. In many modelling syntaxes and tools this is only possible in a tedious way, e.g.
+by first writing a parser for a textual syntax and then some code for interpreting the model, in textual
+language workbenches by adding code generators and validators in the workflow of the tool, or by providing
+tooling extensions for graphical or projectional editors. Where it is possible, i.e. where a codeable models API
+is provided, often the API is written for tool builders and not for making it easy to create, access, and manipulate
+the models, meaning that a lot of boilerplate code is needed.</p>
+<p>This is important even for the basic modelling tasks performed in the previous tutorials. In every day modelling tasks
+it is important to:</p>
+<ul class="simple">
+<li><p>be able to use a <em>concise syntax to specify and review</em> the models,</p></li>
+<li><p><em>generate graphical models and tailored views</em> to get a good overview of the big picture and
+be able to communicate (with) the models,</p></li>
+<li><p>be able to efficiently and effectively <em>use copy &amp; paste, search &amp; replace, grep, and other text-based
+inspection and manipulation tools</em>,</p></li>
+<li><p>be able to easily <em>perform static analyzes of model</em> code,</p></li>
+<li><p>be able to traverse and interpret the model to do tasks such as: <em>generating code</em> from models,
+<em>interpreting the models</em> e.g. in workflow engines, using them as <em>models at runtime</em>, generating
+<em>metrics and other analytics</em> based on the models, or using them as very literal
+implementations of <em>domain models</em> in domain-driven design.</p></li>
+</ul>
+<p>As modelling needs a lot of steps that are <em>repetitive</em> or could lead to <em>inconsistencies</em>, it is the goal of
+Codeable Models to make it easy to use Python scripting to <em>automate recurring tasks</em> in modeling, <em>avoid model
+inconsistencies</em> in the first place (instead of later checking that no inconsistencies exist), easily support <em>model
+traversal and analysis</em>, and so on.
+To illustrate this idea, let us study a few places in the models from the prior tutorial that could benefit from such
+improvements in this tutorial.</p>
+</div>
+<div class="section" id="factory-function-or-method-for-models">
+<h2>Factory function or method for models<a class="headerlink" href="#factory-function-or-method-for-models" title="Permalink to this headline">¶</a></h2>
+<p>A recurring theme for introducing code into models is instance creation (be it an instance of a class or meta-class).
+For example, in our models, the customer, product, order, and staff classes all contain an <code class="docutils literal notranslate"><span class="pre">id</span></code>.
+It is rather likely that the <code class="docutils literal notranslate"><span class="pre">id</span></code> is created based on a predefined scheme, rather than manually assigned.
+Manually assigned IDs can lead to inconsistencies in models, e.g. when the same ID is accidentally assigned twice.
+This can be fixed by running a model validator on each created model, to check for the same IDs in different objects
+of a kind, or by providing an object factory that performs <code class="docutils literal notranslate"><span class="pre">id</span></code> value creation according to the pre-defined rules.</p>
+<p>Here are (very simple) examples of  <code class="docutils literal notranslate"><span class="pre">id</span></code> creation functions for our four classes containing IDs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">_order_id_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<span class="k">def</span> <span class="nf">get_order_id</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">_order_id_counter</span>
+    <span class="n">_order_id_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="s2">&quot;O&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{:07d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_order_id_counter</span><span class="p">)</span>
+
+
+<span class="n">_customer_id_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<span class="k">def</span> <span class="nf">get_customer_id</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">_customer_id_counter</span>
+    <span class="n">_customer_id_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="s2">&quot;C&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{:07d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_customer_id_counter</span><span class="p">)</span>
+
+
+<span class="n">_staff_id_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<span class="k">def</span> <span class="nf">get_staff_id</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">_staff_id_counter</span>
+    <span class="n">_staff_id_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="s2">&quot;S&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{:07d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_staff_id_counter</span><span class="p">)</span>
+
+
+<span class="n">_product_id_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<span class="k">def</span> <span class="nf">get_product_id</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">_product_id_counter</span>
+    <span class="n">_product_id_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="s2">&quot;P&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{:07d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_product_id_counter</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Please note that the logic for getting the ID can be much more complex, such as calling a Web service that accesses
+a company database to compute a unique ID. Here we just use this simple logic as an example.</p>
+<p>Now we can define factory functions for classes that use the IDs, e.g. here done for product and customer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">new_product</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">a_product</span> <span class="o">=</span> <span class="n">CObject</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">a_product</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">get_product_id</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">a_product</span>
+
+
+<span class="k">def</span> <span class="nf">new_customer</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">a_customer</span> <span class="o">=</span> <span class="n">CObject</span><span class="p">(</span><span class="n">customer</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">a_customer</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">get_customer_id</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">a_customer</span>
+</pre></div>
+</div>
+<p>Based on this we can define the customer and product creation with automatic ID assignment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">thomas_customer</span> <span class="o">=</span> <span class="n">new_customer</span><span class="p">(</span><span class="s2">&quot;Thomas Customer&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;first name&quot;</span><span class="p">:</span> <span class="s2">&quot;Thomas&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;last name&quot;</span><span class="p">:</span> <span class="s2">&quot;Test&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="n">thomas_home_address</span><span class="p">,</span>
+    <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;thomas.test@thomastest.com&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;phone&quot;</span><span class="p">:</span> <span class="s2">&quot;+43111111222333&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;shipping addresses&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">thomas_home_address</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="n">basic_pen</span> <span class="o">=</span> <span class="n">new_product</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Basic Pen&quot;</span><span class="p">,</span> <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="mf">1.50</span><span class="p">})</span>
+<span class="n">premium_pen</span> <span class="o">=</span> <span class="n">new_product</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Premium Pen&quot;</span><span class="p">,</span> <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="mf">2.50</span><span class="p">})</span>
+<span class="n">basic_paper</span> <span class="o">=</span> <span class="n">new_product</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Basic Paper&quot;</span><span class="p">,</span> <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="mf">2.75</span><span class="p">})</span>
+<span class="n">premium_paper</span> <span class="o">=</span> <span class="n">new_product</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Premium Paper&quot;</span><span class="p">,</span> <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="mf">5.50</span><span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="model-consistency-during-item-creation">
+<h2>Model consistency during item creation<a class="headerlink" href="#model-consistency-during-item-creation" title="Permalink to this headline">¶</a></h2>
+<p>The previous example was rather simple, but many tasks might need to be performed during object creation
+and other manipulations of a model. For example in our example, another source of potential inconsistency
+are the various prices and totals in the model elements. As they depend on each other, this can easily
+lead to inconsistent models. To avoid this in the first place, we can calculate all dependent values automatically,
+and this way avoid any possible human error in calculations.</p>
+<p>For example, when we add items to the cart, we must create an item of a specific product with a given quantity.
+The price of the item should be the current price of the product times the quantity. During these steps
+we must not forget to create two links, one from the newly created item to its product and one from item
+to the cart. Here is a function that performs all these actions as one atomic step:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_items_to_cart</span><span class="p">(</span><span class="n">a_cart</span><span class="p">,</span> <span class="n">items_list</span><span class="p">):</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">items_list</span><span class="p">:</span>
+        <span class="n">item_product</span> <span class="o">=</span> <span class="n">element</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">item_quantity</span> <span class="o">=</span> <span class="n">element</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="n">item_product</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">item_quantity</span>
+        <span class="n">new_item</span> <span class="o">=</span> <span class="n">CObject</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;quantity&quot;</span><span class="p">:</span> <span class="n">item_quantity</span><span class="p">,</span>
+            <span class="s2">&quot;price&quot;</span><span class="p">:</span> <span class="n">price</span>
+        <span class="p">})</span>
+        <span class="n">new_item</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">item_product</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;product&quot;</span><span class="p">)</span>
+        <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_item</span><span class="p">)</span>
+        <span class="n">a_cart</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">new_item</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;item in cart&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">items</span>
+</pre></div>
+</div>
+<p>In our object models, we can use this function as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cart1</span> <span class="o">=</span> <span class="n">CObject</span><span class="p">(</span><span class="n">cart</span><span class="p">)</span>
+<span class="n">add_items_to_cart</span><span class="p">(</span><span class="n">cart1</span><span class="p">,</span> <span class="p">[[</span><span class="n">premium_paper</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="n">basic_paper</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">premium_pen</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+<span class="n">cart1</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">thomas_customer</span><span class="p">,</span> <span class="n">association</span><span class="o">=</span><span class="n">customer_cart_relation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="model-consistency-during-order-creation">
+<h2>Model consistency during order creation<a class="headerlink" href="#model-consistency-during-order-creation" title="Permalink to this headline">¶</a></h2>
+<p>The required actions to place an order are even a bit more complex. This can be done based on a cart. From the cart
+we need to get the customer first. Then we need to create an order object using the automatic ID generation introduced
+above. Next we need to get the items from the cart and link them to the order. Finally, we need to link the order
+to the customer.</p>
+<p>During order creation we need to assign the <code class="docutils literal notranslate"><span class="pre">ship</span> <span class="pre">to</span></code> address of the order.
+It can be calculated from the attribute values <code class="docutils literal notranslate"><span class="pre">shipping</span> <span class="pre">addresses</span></code> and
+<code class="docutils literal notranslate"><span class="pre">selected</span> <span class="pre">shipping</span> <span class="pre">address</span></code> of the customer like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_shipping_address</span><span class="p">(</span><span class="n">a_customer</span><span class="p">):</span>
+    <span class="n">shipping_addresses</span> <span class="o">=</span> <span class="n">a_customer</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;shipping addresses&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">shipping_addresses</span><span class="p">[</span><span class="n">a_customer</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;selected shipping address&quot;</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>Also during order creation, we need to calculate the order <code class="docutils literal notranslate"><span class="pre">total</span></code> based on the items in the cart, which can be
+done as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calc_cart_total</span><span class="p">(</span><span class="n">a_cart</span><span class="p">):</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="n">a_cart</span><span class="o">.</span><span class="n">get_linked</span><span class="p">(</span><span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;item in cart&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">item_in_cart</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">item_in_cart</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;price&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">total</span>
+</pre></div>
+</div>
+<p>Finally, we can put all together in a <code class="docutils literal notranslate"><span class="pre">place_order</span></code> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">place_order</span><span class="p">(</span><span class="n">a_cart</span><span class="p">):</span>
+    <span class="n">a_customer</span> <span class="o">=</span> <span class="n">a_cart</span><span class="o">.</span><span class="n">get_linked</span><span class="p">(</span><span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;customer&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># this assumes &quot;today&quot; is set to the current date and thus we</span>
+    <span class="c1"># can just use the default value for those values.</span>
+    <span class="n">new_order</span> <span class="o">=</span> <span class="n">CObject</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">get_order_id</span><span class="p">(),</span>
+        <span class="s2">&quot;ship to&quot;</span><span class="p">:</span> <span class="n">get_shipping_address</span><span class="p">(</span><span class="n">a_customer</span><span class="p">),</span>
+        <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">calc_cart_total</span><span class="p">(</span><span class="n">a_cart</span><span class="p">)</span>
+    <span class="p">})</span>
+
+    <span class="n">items</span> <span class="o">=</span> <span class="n">a_cart</span><span class="o">.</span><span class="n">get_linked</span><span class="p">(</span><span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;item in cart&quot;</span><span class="p">)</span>
+    <span class="n">add_links</span><span class="p">({</span><span class="n">new_order</span><span class="p">:</span> <span class="n">items</span><span class="p">},</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;item in order&quot;</span><span class="p">)</span>
+    <span class="n">add_links</span><span class="p">({</span><span class="n">a_customer</span><span class="p">:</span> <span class="n">new_order</span><span class="p">},</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;order&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">new_order</span>
+</pre></div>
+</div>
+<p>Please note that <code class="docutils literal notranslate"><span class="pre">get_linked</span></code> always returns a list of links; as the customer-cart relation is a
+1:1 relation, we just need the first element from the list (selected with <code class="docutils literal notranslate"><span class="pre">[0]</span></code>).</p>
+</div>
+<div class="section" id="model-consistency-for-changing-the-order-status">
+<h2>Model consistency for changing the order status<a class="headerlink" href="#model-consistency-for-changing-the-order-status" title="Permalink to this headline">¶</a></h2>
+<p>Finally, we might want to support the change for shipping the order, which must change two values on
+the order (and if not both are changed together, the model is inconsistent):
+1) setting the shipping date to today and 2) setting the status to <code class="docutils literal notranslate"><span class="pre">SHIPPED</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ship_order</span><span class="p">(</span><span class="n">an_order</span><span class="p">):</span>
+    <span class="n">an_order</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s2">&quot;shipped&quot;</span><span class="p">,</span> <span class="n">today</span><span class="p">)</span>
+    <span class="n">an_order</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">,</span> <span class="s2">&quot;Shipped&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now can use the two new functions in our object model to place and ship an order:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">order1</span> <span class="o">=</span> <span class="n">place_order</span><span class="p">(</span><span class="n">cart1</span><span class="p">)</span>
+<span class="n">ship_order</span><span class="p">(</span><span class="n">order1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="resulting-model">
+<h2>Resulting model<a class="headerlink" href="#resulting-model" title="Permalink to this headline">¶</a></h2>
+<p>We can use the the Plant UML renderer to draw the resulting object model, like we did before. The result would be:</p>
+<img alt="_images/shopping_instance2_all.png" src="_images/shopping_instance2_all.png" />
+<p>This image has been rendered using the following code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">shopping_instance2_all</span> <span class="o">=</span> <span class="n">CBundle</span><span class="p">(</span><span class="s2">&quot;shopping_instance2_all&quot;</span><span class="p">,</span>
+                                 <span class="n">elements</span><span class="o">=</span><span class="n">order1</span><span class="o">.</span><span class="n">get_connected_elements</span><span class="p">()</span> <span class="o">+</span>
+                                 <span class="p">[</span><span class="n">thomas_home_address</span><span class="p">,</span> <span class="n">today</span><span class="p">])</span>
+<span class="n">generator</span> <span class="o">=</span> <span class="n">PlantUMLGenerator</span><span class="p">()</span>
+<span class="n">generator</span><span class="o">.</span><span class="n">generate_object_models</span><span class="p">(</span><span class="s2">&quot;shopping_instance2&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">shopping_instance2_all</span><span class="p">,</span> <span class="p">{}])</span>
+</pre></div>
+</div>
+<p>The full code of the examples in this tutorial can be found in the sample <a class="reference internal" href="samples_overview.html#shopping-instances2"><span class="std std-ref">Shopping Instances Model 2</span></a>.
+The class-level coded model examples in this tutorial are realized in the sample <a class="reference internal" href="samples_overview.html#shopping-model4"><span class="std std-ref">Shopping Model 4</span></a>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="06_first_meta_model.html" class="btn btn-neutral float-right" title="A first meta-model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="04_first_object_model.html" class="btn btn-neutral float-left" title="A first object model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Uwe Zdun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

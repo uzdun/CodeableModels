@@ -1,0 +1,525 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>codeable_models.CClassifier &mdash; CodeableModels 0.99 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/sphinxcontrib-images\LightBox2\lightbox2\js\jquery-1.11.0.min.js"></script>
+        <script src="../_static/sphinxcontrib-images\LightBox2\lightbox2\js\lightbox.min.js"></script>
+        <script src="../_static/sphinxcontrib-images\LightBox2\lightbox2-customize\jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sphinxcontrib-images\LightBox2\lightbox2\css\lightbox.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="codeable_models.CEnum" href="codeable_models.CEnum.html" />
+    <link rel="prev" title="codeable_models.CClass" href="codeable_models.CClass.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> CodeableModels
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About Codeable Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials to learn Codeable Models by example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../samples_overview.html">Overview of the samples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metamodels_overview.html">Overview of predefined meta-model examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Codeable Models API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#classes">Classes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CAssociation.html">codeable_models.CAssociation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CAttribute.html">codeable_models.CAttribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CBundlable.html">codeable_models.CBundlable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CBundle.html">codeable_models.CBundle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CClass.html">codeable_models.CClass</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">codeable_models.CClassifier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CEnum.html">codeable_models.CEnum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CException.html">codeable_models.CException</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CLayer.html">codeable_models.CLayer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CLink.html">codeable_models.CLink</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CMetaclass.html">codeable_models.CMetaclass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CNamedElement.html">codeable_models.CNamedElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CObject.html">codeable_models.CObject</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CPackage.html">codeable_models.CPackage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CStereotype.html">codeable_models.CStereotype</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CodeableModels</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">Codeable Models API documentation</a> &raquo;</li>
+        
+      <li>codeable_models.CClassifier</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="codeable-models-cclassifier">
+<h1>codeable_models.CClassifier<a class="headerlink" href="#codeable-models-cclassifier" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="codeable_models.CClassifier">
+<em class="property">class </em><code class="sig-prename descclassname">codeable_models.</code><code class="sig-name descname">CClassifier</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CClassifier" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">CClassifier</span></code> is superclass of classifiers such as <a class="reference internal" href="codeable_models.CClass.html#codeable_models.CClass" title="codeable_models.CClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClass</span></code></a> and <a class="reference internal" href="codeable_models.CMetaclass.html#codeable_models.CMetaclass" title="codeable_models.CMetaclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CMetaclass</span></code></a>
+defining common features for
+classifiers. The class is usually not used directly but its features are used from the subclasses.</p>
+<p><strong>Superclasses:</strong>  <a class="reference internal" href="codeable_models.CBundlable.html#codeable_models.CBundlable" title="codeable_models.CBundlable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CBundlable</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – An optional name.</p></li>
+<li><p><strong>**kwargs</strong> – <p>Pass in any kwargs acceptable to superclasses. In addition, <code class="docutils literal notranslate"><span class="pre">CClassifier</span></code> accepts:
+<code class="docutils literal notranslate"><span class="pre">attributes</span></code>, <code class="docutils literal notranslate"><span class="pre">superclasses</span></code>.</p>
+<ul>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">attributes</span></code> kwarg accepts a dict of attributes in the form acceptable
+to the <code class="docutils literal notranslate"><span class="pre">attributes</span></code> property.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">superclasses</span></code> kwarg accepts a list of superclasses in the form
+acceptable to the <code class="docutils literal notranslate"><span class="pre">superclasses</span></code> property.</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<p>The following code uses the <code class="docutils literal notranslate"><span class="pre">superclasses</span></code> and <code class="docutils literal notranslate"><span class="pre">attributes</span></code> features of <code class="docutils literal notranslate"><span class="pre">CClassifier</span></code> during
+a class definition and then uses the <code class="docutils literal notranslate"><span class="pre">association</span></code> feature to define an association for a class:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">customer</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;Customer&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">person</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="s2">&quot;shipping addresses&quot;</span><span class="p">:</span> <span class="p">[],</span>
+<span class="p">})</span>
+
+<span class="n">customer</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">cart</span><span class="p">,</span> <span class="s2">&quot;shops with: [customer] 1 &lt;*&gt;- [cart] 1&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Main Relations:</strong></p>
+<p>The main relations of <code class="docutils literal notranslate"><span class="pre">CClassifier</span></code> are shown in the figure below.</p>
+<img alt="../_images/classifier_model.png" src="../_images/classifier_model.png" />
+<p>As can be seen,  <a class="reference internal" href="codeable_models.CClass.html#codeable_models.CClass" title="codeable_models.CClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClass</span></code></a>, <a class="reference internal" href="codeable_models.CMetaclass.html#codeable_models.CMetaclass" title="codeable_models.CMetaclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CMetaclass</span></code></a>, and <a class="reference internal" href="codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype"><code class="xref py py-class docutils literal notranslate"><span class="pre">CStereotype</span></code></a> are
+classifiers, as could be expected.
+In addition, <a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a> is a classifier, which might be a less obvious design choice. It is
+a classifier, so that a <a class="reference internal" href="codeable_models.CLink.html#codeable_models.CLink" title="codeable_models.CLink"><code class="xref py py-class docutils literal notranslate"><span class="pre">CLink</span></code></a> can be an object. That is, the association is the classifier
+of the link. This way links can be referenced and treated as objects.</p>
+<p>The associations, attributes, and inheritance hierarchy of a classifier are managed by
+the methods of <code class="docutils literal notranslate"><span class="pre">CClassifier</span></code>.</p>
+<dl class="py method">
+<dt id="codeable_models.CClassifier.all_associations">
+<em class="property">property </em><code class="sig-name descname">all_associations</code><a class="headerlink" href="#codeable_models.CClassifier.all_associations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter listing all associations of this classifier including those
+of superclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation">CAssociation</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.all_subclasses">
+<em class="property">property </em><code class="sig-name descname">all_subclasses</code><a class="headerlink" href="#codeable_models.CClassifier.all_subclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter that returns all subclasses of this classifier
+on the inheritance hierarchy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#codeable_models.CClassifier" title="codeable_models.CClassifier">CClassifier</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.all_superclasses">
+<em class="property">property </em><code class="sig-name descname">all_superclasses</code><a class="headerlink" href="#codeable_models.CClassifier.all_superclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter that returns all superclasses of this classifier
+on the inheritance hierarchy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#codeable_models.CClassifier" title="codeable_models.CClassifier">CClassifier</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.association">
+<code class="sig-name descname">association</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">descriptor</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CClassifier.association" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method used to create associations on this classifier.
+Returns the <a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a> that is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – The association target classifier.</p></li>
+<li><p><strong>descriptor</strong> – An optional descriptor making it easier to define associations with a simple string.</p></li>
+<li><p><strong>**kwargs</strong> – Accepts all keyword arguments acceptable to <a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a> to define associations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The created association.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation">CAssociation</a></p>
+</dd>
+</dl>
+<p>For explanation of descriptor syntax and supported keyword arguments see documentation of the
+constructor of <a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.associations">
+<em class="property">property </em><code class="sig-name descname">associations</code><a class="headerlink" href="#codeable_models.CClassifier.associations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter listing associations of this classifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation">CAssociation</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.attribute_names">
+<em class="property">property </em><code class="sig-name descname">attribute_names</code><a class="headerlink" href="#codeable_models.CClassifier.attribute_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all attribute names defined for this classifier.</p>
+<p>Examples are provided in the document <a class="reference internal" href="../02_class_attributes.html#class-attributes"><span class="std std-ref">Class attributes</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.attributes">
+<em class="property">property </em><code class="sig-name descname">attributes</code><a class="headerlink" href="#codeable_models.CClassifier.attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Property that gets the list of attributes
+of a classifier or sets them using a dictionary.</p>
+<p>All attributes are internally stored as <a class="reference internal" href="codeable_models.CAttribute.html#codeable_models.CAttribute" title="codeable_models.CAttribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAttribute</span></code></a> objects. The getter returns the list of
+all attributes as <a class="reference internal" href="codeable_models.CAttribute.html#codeable_models.CAttribute" title="codeable_models.CAttribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAttribute</span></code></a> objects.</p>
+<p>For the setter, <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">{}</span></code> can be used to remove all attributes from the classifier.</p>
+<p>Each attribute in the dict is specified using the form:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>attributeName: &lt;type|default-value|CAttribute&gt;
+</pre></div>
+</div>
+<p>Possible types of attributes are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool</span></code>: a boolean</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code>: an integer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">float</span></code>: a floating point number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: a string</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">list</span></code>: a Python list</p></li>
+<li><p>enumeration values: An object of type <a class="reference internal" href="codeable_models.CEnum.html#codeable_models.CEnum" title="codeable_models.CEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">CEnum</span></code></a> is the type and enumeration values are used
+as attribute values.</p></li>
+<li><p>objects: A class of type <a class="reference internal" href="#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a> is the type and <a class="reference internal" href="codeable_models.CObject.html#codeable_models.CObject" title="codeable_models.CObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">CObject</span></code></a>’s are used as
+attribute values. Please note this might be <a class="reference internal" href="codeable_models.CClass.html#codeable_models.CClass" title="codeable_models.CClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClass</span></code></a> as a type
+with <a class="reference internal" href="codeable_models.CObject.html#codeable_models.CObject" title="codeable_models.CObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">CObject</span></code></a> objects, or
+<a class="reference internal" href="codeable_models.CMetaclass.html#codeable_models.CMetaclass" title="codeable_models.CMetaclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CMetaclass</span></code></a> as a type with <a class="reference internal" href="codeable_models.CClass.html#codeable_models.CClass" title="codeable_models.CClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClass</span></code></a> objects.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CAttribute</span></code> objects: An <a class="reference internal" href="codeable_models.CAttribute.html#codeable_models.CAttribute" title="codeable_models.CAttribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAttribute</span></code></a> object describes an attribute, i.e., its type and
+default value.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Example:</strong> The following code initialized one <code class="docutils literal notranslate"><span class="pre">int</span></code> and one <code class="docutils literal notranslate"><span class="pre">bool</span></code> attribute,
+each with a default value,
+and it defines another string attribute using the <code class="docutils literal notranslate"><span class="pre">str</span></code> type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">game</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">metaclass</span><span class="p">,</span> <span class="s2">&quot;Game&quot;</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;number_of_players&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;game_started&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s2">&quot;player_id&quot;</span><span class="p">:</span> <span class="nb">str</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">game.attributes</span></code> returns the list of attributes as <a class="reference internal" href="codeable_models.CAttribute.html#codeable_models.CAttribute" title="codeable_models.CAttribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAttribute</span></code></a> objects.</p>
+<p>More examples are provided in the document <a class="reference internal" href="../02_class_attributes.html#class-attributes"><span class="std std-ref">Class attributes</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict[str, CAttribute | Attribute Type | Default Value]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.class_path">
+<em class="property">property </em><code class="sig-name descname">class_path</code><a class="headerlink" href="#codeable_models.CClassifier.class_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Superclasses are processed using a linerarized class path.
+This path unambiguously orders the superclasses for each classifier, from lower-level to higher-level
+classes. At the same level, classes will be ordered in the same order as specified in the <code class="docutils literal notranslate"><span class="pre">superclasses</span></code>
+definitions. If a classifier appears multiple times on the class path, i.e. it is reachable via
+different paths, the first appearance is chosen.</p>
+<p>This getter returns all superclasses in the order of the class path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#codeable_models.CClassifier" title="codeable_models.CClassifier">CClassifier</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CClassifier.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the classifier, removes superclasses, removes it from subclasses,
+removes all associations and attributes, and removes the classifier from bundles.
+Calls <code class="docutils literal notranslate"><span class="pre">delete()</span></code> on superclass.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.get_attribute">
+<code class="sig-name descname">get_attribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attribute_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CClassifier.get_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the <a class="reference internal" href="codeable_models.CAttribute.html#codeable_models.CAttribute" title="codeable_models.CAttribute"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAttribute</span></code></a> object that conforms to the provided attribute name. If none is found,
+<code class="docutils literal notranslate"><span class="pre">None</span></code> is returned.</p>
+<p>Examples are provided in the document <a class="reference internal" href="../02_class_attributes.html#class-attributes"><span class="std std-ref">Class attributes</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The attribute conforming to the attribute name.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="codeable_models.CAttribute.html#codeable_models.CAttribute" title="codeable_models.CAttribute">CAttribute</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.has_subclass">
+<code class="sig-name descname">has_subclass</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">classifier</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CClassifier.has_subclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">classifier</span></code> is subclass of this classifier, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>classifier</strong> – The classifier to test.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean result of the check</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.has_superclass">
+<code class="sig-name descname">has_superclass</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">classifier</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CClassifier.has_superclass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if <code class="docutils literal notranslate"><span class="pre">classifier</span></code> is superclass of this classifier, else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>classifier</strong> – The classifier to test.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean result of the check</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.is_classifier_of_type">
+<code class="sig-name descname">is_classifier_of_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">classifier</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CClassifier.is_classifier_of_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the classifier conforms to the provided classifier’s type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>classifier</strong> – A <a class="reference internal" href="#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a> to check against.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean result of the check.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.subclasses">
+<em class="property">property </em><code class="sig-name descname">subclasses</code><a class="headerlink" href="#codeable_models.CClassifier.subclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter that returns the subclasses of this classifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#codeable_models.CClassifier" title="codeable_models.CClassifier">CClassifier</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CClassifier.superclasses">
+<em class="property">property </em><code class="sig-name descname">superclasses</code><a class="headerlink" href="#codeable_models.CClassifier.superclasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setter to set and getter to return the superclasses of
+this classifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#codeable_models.CClassifier" title="codeable_models.CClassifier">CClassifier</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="codeable_models.CEnum.html" class="btn btn-neutral float-right" title="codeable_models.CEnum" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="codeable_models.CClass.html" class="btn btn-neutral float-left" title="codeable_models.CClass" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Uwe Zdun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

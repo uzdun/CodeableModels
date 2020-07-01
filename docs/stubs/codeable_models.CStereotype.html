@@ -1,0 +1,477 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>codeable_models.CStereotype &mdash; CodeableModels 0.99 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/sphinxcontrib-images\LightBox2\lightbox2\js\jquery-1.11.0.min.js"></script>
+        <script src="../_static/sphinxcontrib-images\LightBox2\lightbox2\js\lightbox.min.js"></script>
+        <script src="../_static/sphinxcontrib-images\LightBox2\lightbox2-customize\jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sphinxcontrib-images\LightBox2\lightbox2\css\lightbox.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="codeable_models.add_links" href="codeable_models.add_links.html" />
+    <link rel="prev" title="codeable_models.CPackage" href="codeable_models.CPackage.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> CodeableModels
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About Codeable Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials to learn Codeable Models by example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../samples_overview.html">Overview of the samples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metamodels_overview.html">Overview of predefined meta-model examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Codeable Models API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#classes">Classes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CAssociation.html">codeable_models.CAssociation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CAttribute.html">codeable_models.CAttribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CBundlable.html">codeable_models.CBundlable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CBundle.html">codeable_models.CBundle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CClass.html">codeable_models.CClass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CClassifier.html">codeable_models.CClassifier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CEnum.html">codeable_models.CEnum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CException.html">codeable_models.CException</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CLayer.html">codeable_models.CLayer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CLink.html">codeable_models.CLink</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CMetaclass.html">codeable_models.CMetaclass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CNamedElement.html">codeable_models.CNamedElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CObject.html">codeable_models.CObject</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CPackage.html">codeable_models.CPackage</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">codeable_models.CStereotype</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CodeableModels</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">Codeable Models API documentation</a> &raquo;</li>
+        
+      <li>codeable_models.CStereotype</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="codeable-models-cstereotype">
+<h1>codeable_models.CStereotype<a class="headerlink" href="#codeable-models-cstereotype" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="codeable_models.CStereotype">
+<em class="property">class </em><code class="sig-prename descclassname">codeable_models.</code><code class="sig-name descname">CStereotype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CStereotype" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">CStereotype</span></code> is used to define stereotypes and stereotype instances. Meta-classes and meta-class
+associations can be extended with stereotypes.</p>
+<p><strong>Superclasses:</strong>  <a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – An optional name.</p></li>
+<li><p><strong>**kwargs</strong> – <p>Pass in any kwargs acceptable to superclasses. In addition, <code class="docutils literal notranslate"><span class="pre">CStereotype</span></code> accepts:
+<code class="docutils literal notranslate"><span class="pre">extended</span></code>, <code class="docutils literal notranslate"><span class="pre">default_values</span></code>.</p>
+<ul>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">extended</span></code>:</dt><dd><p>Takes a single or a list of either <a class="reference internal" href="codeable_models.CMetaclass.html#codeable_models.CMetaclass" title="codeable_models.CMetaclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CMetaclass</span></code></a> objects or
+<a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a> objects to be extended with this stereotype.
+Association objects must be  meta-class associations. Using the <code class="docutils literal notranslate"><span class="pre">stereotypes</span></code>
+property on the meta-classes or association is an alternative method
+for defining the <code class="docutils literal notranslate"><span class="pre">extended</span></code> relation.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">default_values</span></code>:</dt><dd><p>Takes a dict of default values for the values of the extended meta-classes or
+meta-class associations. Those default values  shadow any default value
+defined for attributes on the meta-classes or
+meta-class associations themselves. That is, with <code class="docutils literal notranslate"><span class="pre">default_values</span></code> the stereotype
+can add or change default values of the extended classifiers.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<p>Consider a simple component meta-model is defined like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">component</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Component&quot;</span><span class="p">)</span>
+<span class="n">connectors_relation</span> <span class="o">=</span> <span class="n">component</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">component</span><span class="p">,</span>
+                                            <span class="s2">&quot;connected to: [source] * -&gt; [target] *&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If we want to use stereotypes to distinguish component types, we can extend the meta-class with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">component_type</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Component Type&quot;</span><span class="p">,</span> <span class="n">extended</span><span class="o">=</span><span class="n">component</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now more specific component types can be defined as sub-classes of the stereotype:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Service&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">component_type</span><span class="p">)</span>
+<span class="n">database</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Database&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">component_type</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can also extend the meta-class association with stereotypes, e.g.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">connector_type</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Connector Type&quot;</span><span class="p">,</span> <span class="n">extended</span><span class="o">=</span><span class="n">connectors_relation</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we can introduce more specific connector types based on this stereotype as sub-classes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">jdbc</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;JDBC&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">connector_type</span><span class="p">)</span>
+<span class="n">mongo_wire</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Mongo Wire&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">connector_type</span><span class="p">)</span>
+<span class="n">restful_http</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;RESTful HTTP&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">connector_type</span><span class="p">)</span>
+<span class="n">soap</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;SOAP&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">connector_type</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Main Relations:</strong></p>
+<p>The main relations of <code class="docutils literal notranslate"><span class="pre">CStereotype</span></code> are shown in the figure below.</p>
+<img alt="../_images/stereotype_model.png" src="../_images/stereotype_model.png" />
+<p>As can be seen,  each <a class="reference internal" href="#codeable_models.CStereotype" title="codeable_models.CStereotype"><code class="xref py py-class docutils literal notranslate"><span class="pre">CStereotype</span></code></a> is a <a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a>.
+Meta-classes and meta-class
+associations can be extended with stereotypes.
+If this is the case,
+those stereotypes can be used as stereotype instances on the classes of the meta-class or links of
+the association, respectively.</p>
+<dl class="py method">
+<dt id="codeable_models.CStereotype.all_extended_instances">
+<em class="property">property </em><code class="sig-name descname">all_extended_instances</code><a class="headerlink" href="#codeable_models.CStereotype.all_extended_instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter for all the extended instances, i.e. the classes or class links
+extended by this stereotype, including those on subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="codeable_models.CClass.html#codeable_models.CClass" title="codeable_models.CClass">CClass</a>] | list[<a class="reference internal" href="codeable_models.CLink.html#codeable_models.CLink" title="codeable_models.CLink">CLink</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CStereotype.association">
+<code class="sig-name descname">association</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target</span></em>, <em class="sig-param"><span class="n">descriptor</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CStereotype.association" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method used to create associations on this stereotype. See documentation of method <code class="docutils literal notranslate"><span class="pre">association</span></code>
+on <a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a> for details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target</strong> – The association target classifier.</p></li>
+<li><p><strong>descriptor</strong> – An optional descriptor making it easier to define associations with a simple string.</p></li>
+<li><p><strong>**kwargs</strong> – Accepts all keyword arguments acceptable to <a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a> to define associations.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The created association.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation">CAssociation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CStereotype.default_values">
+<em class="property">property </em><code class="sig-name descname">default_values</code><a class="headerlink" href="#codeable_models.CStereotype.default_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter and setter for default values.
+Takes a dict of default values for the values of the extended meta-classes or
+meta-class associations. Those default values shadow any default value
+defined for attributes on the meta-classes or
+meta-class associations themselves. That is, with <code class="docutils literal notranslate"><span class="pre">default_values</span></code> the stereotype
+can add or change default values of the extended classifiers.</p>
+<p>Stereotypes, as subclasses of <a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a>, can also define attributes,
+which are the definitions of the tagged values of the stereotype. Default values should not be
+confused with those tagged value attributes (and their defaults). The default values concern the attributes
+values defined on the meta-class that is extended by the stereotype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict[str, value]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CStereotype.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CStereotype.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the stereotype. Removes it from all meta-classes or meta-class associations
+it extends.
+Calls <code class="docutils literal notranslate"><span class="pre">delete()</span></code> on superclass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CStereotype.delete_default_value">
+<code class="sig-name descname">delete_default_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attribute_name</span></em>, <em class="sig-param"><span class="n">classifier</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CStereotype.delete_default_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a default value defined on the stereotype or its superclasses
+with the given <code class="docutils literal notranslate"><span class="pre">attribute_name</span></code>. Optionally the classifier
+to consider can be specified. This is needed, if one or more attributes of the same name are defined
+on the inheritance hierarchy. Then a shadowed attribute can be accessed by specifying its classifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute_name</strong> – The name of the attribute.</p></li>
+<li><p><strong>classifier</strong> – The optional classifier on which the attribute is defined.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value of the attribute.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Supported Attribute Types</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CStereotype.extended">
+<em class="property">property </em><code class="sig-name descname">extended</code><a class="headerlink" href="#codeable_models.CStereotype.extended" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter and setter for extended classifiers.
+Takes a single or a list of either <a class="reference internal" href="codeable_models.CMetaclass.html#codeable_models.CMetaclass" title="codeable_models.CMetaclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CMetaclass</span></code></a> objects or
+<a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a> objects to be extended with this stereotype.
+Association objects must be  meta-class associations. Using the <code class="docutils literal notranslate"><span class="pre">stereotypes</span></code>
+property on the meta-classes or association is an alternative method
+for defining the extended relation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>CMetaclass | list[<a class="reference internal" href="codeable_models.CMetaclass.html#codeable_models.CMetaclass" title="codeable_models.CMetaclass">CMetaclass</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CStereotype.extended_instances">
+<em class="property">property </em><code class="sig-name descname">extended_instances</code><a class="headerlink" href="#codeable_models.CStereotype.extended_instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter for the extended instances, i.e. the classes or class links
+extended by this stereotype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="codeable_models.CClass.html#codeable_models.CClass" title="codeable_models.CClass">CClass</a>] | list[<a class="reference internal" href="codeable_models.CLink.html#codeable_models.CLink" title="codeable_models.CLink">CLink</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CStereotype.get_default_value">
+<code class="sig-name descname">get_default_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attribute_name</span></em>, <em class="sig-param"><span class="n">classifier</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CStereotype.get_default_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a default value defined on the stereotype or its superclasses
+with the given <code class="docutils literal notranslate"><span class="pre">attribute_name</span></code>. Optionally the classifier
+to consider can be specified. This is needed, if one or more attributes of the same name are defined
+on the inheritance hierarchy. Then a shadowed attribute can be accessed by specifying its classifier.</p>
+<p>Stereotypes, as subclasses of <a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a>, can also define attributes,
+which are the definitions of the tagged values of the stereotype. Default values should not be
+confused with those tagged value attributes (and their defaults). The default values concern the attributes
+values defined on the meta-class that is extended by the stereotype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute_name</strong> – The name of the attribute.</p></li>
+<li><p><strong>classifier</strong> – The optional classifier on which the attribute is defined.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value of the attribute.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Supported Attribute Types</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CStereotype.set_default_value">
+<code class="sig-name descname">set_default_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attribute_name</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">classifier</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CStereotype.set_default_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a default value defined on the stereotype or its superclasses
+with the given <code class="docutils literal notranslate"><span class="pre">attribute_name</span></code> to <code class="docutils literal notranslate"><span class="pre">value</span></code>. Optionally the classifier
+to consider can be specified. This is needed, if one or more attributes of the same name are defined
+on the inheritance hierarchy. Then a shadowed attribute can be accessed by specifying its classifier.</p>
+<p>Stereotypes, as subclasses of <a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a>, can also define attributes,
+which are the definitions of the tagged values of the stereotype. Default values should not be
+confused with those tagged value attributes (and their defaults). The default values concern the attributes
+values defined on the meta-class that is extended by the stereotype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute_name</strong> – The name of the attribute.</p></li>
+<li><p><strong>value</strong> – The new value.</p></li>
+<li><p><strong>classifier</strong> – The optional classifier on which the attribute is defined.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="codeable_models.add_links.html" class="btn btn-neutral float-right" title="codeable_models.add_links" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="codeable_models.CPackage.html" class="btn btn-neutral float-left" title="codeable_models.CPackage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Uwe Zdun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

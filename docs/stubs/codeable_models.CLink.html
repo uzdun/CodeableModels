@@ -1,0 +1,472 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>codeable_models.CLink &mdash; CodeableModels 0.99 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/sphinxcontrib-images\LightBox2\lightbox2\js\jquery-1.11.0.min.js"></script>
+        <script src="../_static/sphinxcontrib-images\LightBox2\lightbox2\js\lightbox.min.js"></script>
+        <script src="../_static/sphinxcontrib-images\LightBox2\lightbox2-customize\jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/sphinxcontrib-images\LightBox2\lightbox2\css\lightbox.css" type="text/css" />
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="codeable_models.CMetaclass" href="codeable_models.CMetaclass.html" />
+    <link rel="prev" title="codeable_models.CLayer" href="codeable_models.CLayer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> CodeableModels
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About Codeable Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials to learn Codeable Models by example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../samples_overview.html">Overview of the samples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metamodels_overview.html">Overview of predefined meta-model examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Codeable Models API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#classes">Classes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CAssociation.html">codeable_models.CAssociation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CAttribute.html">codeable_models.CAttribute</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CBundlable.html">codeable_models.CBundlable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CBundle.html">codeable_models.CBundle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CClass.html">codeable_models.CClass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CClassifier.html">codeable_models.CClassifier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CEnum.html">codeable_models.CEnum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CException.html">codeable_models.CException</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CLayer.html">codeable_models.CLayer</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">codeable_models.CLink</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CMetaclass.html">codeable_models.CMetaclass</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CNamedElement.html">codeable_models.CNamedElement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CObject.html">codeable_models.CObject</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CPackage.html">codeable_models.CPackage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="codeable_models.CStereotype.html">codeable_models.CStereotype</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CodeableModels</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../api.html">Codeable Models API documentation</a> &raquo;</li>
+        
+      <li>codeable_models.CLink</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="codeable-models-clink">
+<h1>codeable_models.CLink<a class="headerlink" href="#codeable-models-clink" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="codeable_models.CLink">
+<em class="property">class </em><code class="sig-prename descclassname">codeable_models.</code><code class="sig-name descname">CLink</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">association</span></em>, <em class="sig-param"><span class="n">source_object</span></em>, <em class="sig-param"><span class="n">target_object</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CLink" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">CLink</span></code> is used to define object links.
+Objects can be linked if their respective classes have an association.
+When linking objects, the association definitions are checked for correctness.
+For example, linking three objects to an object in a 1:1 multiplicity relation, yields an exception.</p>
+<p><strong>Superclasses:</strong>  <a class="reference internal" href="codeable_models.CBundlable.html#codeable_models.CBundlable" title="codeable_models.CBundlable"><code class="xref py py-class docutils literal notranslate"><span class="pre">CBundlable</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>association</strong> (<a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><em>CAssociation</em></a>) – The association that defines the link and is the classifier of this link.</p></li>
+<li><p><strong>source_object</strong> (<a class="reference internal" href="codeable_models.CObject.html#codeable_models.CObject" title="codeable_models.CObject"><em>CObject</em></a>) – The object from which a link to another object shall be created;
+must be an instance of the respective class in the association.</p></li>
+<li><p><strong>target_object</strong> (<a class="reference internal" href="codeable_models.CObject.html#codeable_models.CObject" title="codeable_models.CObject"><em>CObject</em></a>) – The object to which a link to another object shall be created;
+must be an instance of the respective class in the association.</p></li>
+<li><p><strong>**kwargs</strong> – <p>Pass in any kwargs acceptable to superclasses. In addition <code class="docutils literal notranslate"><span class="pre">CLink</span></code> accepts
+<code class="docutils literal notranslate"><span class="pre">stereotype_instances</span></code>:</p>
+<ul>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">stereotype_instances</span></code>:</dt><dd><p>Any <a class="reference internal" href="codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype"><code class="xref py py-class docutils literal notranslate"><span class="pre">CStereotype</span></code></a> extending the association of this class can be defined on the link
+as a stereotype instance. That is, the list of stereotypes on the association defines the possible
+stereotypes instances of the link. The kwarg accepts a list of stereotype instances or a single
+stereotype instance as argument.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<p>The following defines for two cart objects links from the cart to its items via
+the <a class="reference internal" href="codeable_models.add_links.html#codeable_models.add_links" title="codeable_models.add_links"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_links()</span></code></a> function.
+It uses a role name to determine the correct association and association direction:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_links</span> <span class="o">=</span> <span class="n">add_links</span><span class="p">({</span><span class="n">cart1</span><span class="p">:</span> <span class="p">[</span><span class="n">item1</span><span class="p">,</span> <span class="n">item2</span><span class="p">],</span>
+                       <span class="n">cart2</span><span class="p">:</span> <span class="p">[</span><span class="n">item3</span><span class="p">,</span> <span class="n">item4</span><span class="p">,</span> <span class="n">item5</span><span class="p">]},</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;item in cart&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The list of created <code class="docutils literal notranslate"><span class="pre">CLink</span></code> objects is returned.</p>
+<p>The same links could be defined using <code class="docutils literal notranslate"><span class="pre">add_links</span></code> on <a class="reference internal" href="codeable_models.CObject.html#codeable_models.CObject" title="codeable_models.CObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">CObject</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_links_1</span> <span class="o">=</span> <span class="n">cart1</span><span class="o">.</span><span class="n">add_links</span><span class="p">([</span><span class="n">item1</span><span class="p">,</span> <span class="n">item2</span><span class="p">],</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;item in cart&quot;</span><span class="p">)</span>
+<span class="n">new_links_2</span> <span class="o">=</span> <span class="n">cart2</span><span class="o">.</span><span class="n">add_links</span><span class="p">([</span><span class="n">item3</span><span class="p">,</span> <span class="n">item4</span><span class="p">,</span> <span class="n">item5</span><span class="p">],</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;item in cart&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Both calls also return the list of created <code class="docutils literal notranslate"><span class="pre">CLink</span></code> objects.</p>
+<p><strong>Main Relations:</strong></p>
+<p>The main relations of <code class="docutils literal notranslate"><span class="pre">CLink</span></code> are shown in the figure below.</p>
+<img alt="../_images/link_model.png" src="../_images/link_model.png" />
+<p>Each object can be source or target of a link. Links are only valid, if there is an association between
+the classes of the objects to be linked (and multiplicities are correctly set on
+these associations).</p>
+<p>The association is the classifier of the link (thus it inherits from
+<a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClassifier</span></code></a>), and the link is treated as
+an instance of the association (thus it inherits from <a class="reference internal" href="codeable_models.CObject.html#codeable_models.CObject" title="codeable_models.CObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">CObject</span></code></a>).</p>
+<p>Links can have stereotype instances of the stereotypes defined for the <a class="reference internal" href="codeable_models.CAssociation.html#codeable_models.CAssociation" title="codeable_models.CAssociation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAssociation</span></code></a> of the link.</p>
+<dl class="py method">
+<dt id="codeable_models.CLink.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CLink.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the link, delete it from source and target, and delete its stereotype instances.
+Calls <code class="docutils literal notranslate"><span class="pre">delete()</span></code> on superclass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CLink.delete_tagged_value">
+<code class="sig-name descname">delete_tagged_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">stereotype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CLink.delete_tagged_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete tagged value of a stereotype attribute with the given <code class="docutils literal notranslate"><span class="pre">name</span></code>.  Optionally the stereotype
+to consider can be specified. This is needed, if one or more attributes of the same name are defined
+on the inheritance hierarchy. Then a shadowed attribute can be accessed by specifying its stereotype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – The name of the attribute.</p></li>
+<li><p><strong>stereotype</strong> – The optional stereotype on which the attribute is defined.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value of the attribute.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Supported Attribute Types</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CLink.get_opposite_object">
+<code class="sig-name descname">get_opposite_object</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cobject</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CLink.get_opposite_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given an object, this method returns the opposite in the link,
+i.e. the source if <code class="docutils literal notranslate"><span class="pre">object</span></code> is the
+target, and vice versa. Raises an exception if <code class="docutils literal notranslate"><span class="pre">object</span></code> is neither source nor target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cobject</strong> – The object from which we want to get the opposite in the link.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The opposite object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="codeable_models.CObject.html#codeable_models.CObject" title="codeable_models.CObject">CObject</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CLink.get_tagged_value">
+<code class="sig-name descname">get_tagged_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">stereotype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CLink.get_tagged_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the tagged value of a stereotype attribute with the given <code class="docutils literal notranslate"><span class="pre">name</span></code>. Optionally the stereotype
+to consider can be specified. This is needed, if one or more attributes of the same name are defined
+on the inheritance hierarchy. Then a shadowed attribute can be accessed by specifying its stereotype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – The name of the attribute.</p></li>
+<li><p><strong>stereotype</strong> – The optional stereotype on which the attribute is defined.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value of the attribute.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Supported Attribute Types</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CLink.is_class_link">
+<code class="sig-name descname">is_class_link</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CLink.is_class_link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if this is a link between classes (class objects), else <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Result of the check.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CLink.role_name">
+<em class="property">property </em><code class="sig-name descname">role_name</code><a class="headerlink" href="#codeable_models.CLink.role_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter for the (target) role name of this link.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CLink.set_tagged_value">
+<code class="sig-name descname">set_tagged_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">stereotype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CLink.set_tagged_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the tagged value of a stereotype attribute with the given <code class="docutils literal notranslate"><span class="pre">name</span></code> to <code class="docutils literal notranslate"><span class="pre">value</span></code>.  Optionally the
+stereotype to consider can be specified. This is needed, if one or more attributes of the same name are defined
+on the inheritance hierarchy. Then a shadowed attribute can be accessed by specifying its stereotype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – The name of the attribute.</p></li>
+<li><p><strong>value</strong> – The new value.</p></li>
+<li><p><strong>stereotype</strong> – The optional stereotype on which the attribute is defined.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CLink.source">
+<em class="property">property </em><code class="sig-name descname">source</code><a class="headerlink" href="#codeable_models.CLink.source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter for the source object of this link.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="codeable_models.CObject.html#codeable_models.CObject" title="codeable_models.CObject">CObject</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CLink.source_role_name">
+<em class="property">property </em><code class="sig-name descname">source_role_name</code><a class="headerlink" href="#codeable_models.CLink.source_role_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter for the source role name of this link.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CLink.stereotype_instances">
+<em class="property">property </em><code class="sig-name descname">stereotype_instances</code><a class="headerlink" href="#codeable_models.CLink.stereotype_instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter to get and setter to set the stereotype instances of this link.</p>
+<p>The stereotype instances must be stereotypes extending the association of the link.</p>
+<p>The setter takes a list of stereotype instances or a single stereotype instance as argument.
+The getter always returns a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype">CStereotype</a>]|CStereotype</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CLink.tagged_values">
+<em class="property">property </em><code class="sig-name descname">tagged_values</code><a class="headerlink" href="#codeable_models.CLink.tagged_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter for getting all tagged values of the link using a dict, and setter of setting
+all tagged values of the link based on a dict. The dict uses key/value pairs.
+The value types must conform to the types defined for the attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict[str, value]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CLink.target">
+<em class="property">property </em><code class="sig-name descname">target</code><a class="headerlink" href="#codeable_models.CLink.target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter for the target object of this link.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="codeable_models.CObject.html#codeable_models.CObject" title="codeable_models.CObject">CObject</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="codeable_models.CMetaclass.html" class="btn btn-neutral float-right" title="codeable_models.CMetaclass" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="codeable_models.CLayer.html" class="btn btn-neutral float-left" title="codeable_models.CLayer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Uwe Zdun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>A first meta-model &mdash; CodeableModels 0.99 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2\js\jquery-1.11.0.min.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2\js\lightbox.min.js"></script>
+        <script src="_static/sphinxcontrib-images\LightBox2\lightbox2-customize\jquery-noconflict.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/sphinxcontrib-images\LightBox2\lightbox2\css\lightbox.css" type="text/css" />
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="A meta-model with stereotypes" href="07_meta_model_with_stereotypes.html" />
+    <link rel="prev" title="Improving the models through code" href="05_improving_the_models_through_code.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> CodeableModels
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About Codeable Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials to learn Codeable Models by example</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="01_first_class_model.html">A first class model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_class_attributes.html">Class attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_class_relationships.html">Class relationships: associations and inheritance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_first_object_model.html">A first object model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05_improving_the_models_through_code.html">Improving the models through code</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">A first meta-model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#defining-a-basic-meta-model">Defining a basic meta-model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deriving-a-class-model">Deriving a class model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#introspecting-the-classes-relations">Introspecting the classes relations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#changing-the-classes-relations">Changing the classes relations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="07_meta_model_with_stereotypes.html">A meta-model with stereotypes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_combining_object_class_and_meta_model.html">Combining object, class, and meta-class model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="samples_overview.html">Overview of the samples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metamodels_overview.html">Overview of predefined meta-model examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Codeable Models API documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">CodeableModels</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="tutorials.html">Tutorials to learn Codeable Models by example</a> &raquo;</li>
+        
+      <li>A first meta-model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="a-first-meta-model">
+<span id="meta-modelling"></span><h1>A first meta-model<a class="headerlink" href="#a-first-meta-model" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="defining-a-basic-meta-model">
+<h2>Defining a basic meta-model<a class="headerlink" href="#defining-a-basic-meta-model" title="Permalink to this headline">¶</a></h2>
+<p>Basic meta-modelling in Codeable Models is very similar to class modelling. Instead of <a class="reference internal" href="stubs/codeable_models.CClass.html#codeable_models.CClass" title="codeable_models.CClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClass</span></code></a>, used
+to define classes, we use <a class="reference internal" href="stubs/codeable_models.CMetaclass.html#codeable_models.CMetaclass" title="codeable_models.CMetaclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CMetaclass</span></code></a> to define meta-classes.</p>
+<p>As a first example of a meta-model, let us consider a simple meta-model for basic features of
+activity meta-models defined in the folder <code class="docutils literal notranslate"><span class="pre">metamodels</span></code> of the Codeable Models distribution:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">activity_node</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Activity Node&quot;</span><span class="p">)</span>
+<span class="n">control_node</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Control Node&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">activity_node</span><span class="p">)</span>
+<span class="n">initial_node</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Initial Node&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">control_node</span><span class="p">)</span>
+<span class="n">final_node</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Final Node&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">control_node</span><span class="p">)</span>
+<span class="n">activity_final_node</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Activity Final Node&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">final_node</span><span class="p">)</span>
+<span class="n">fork_node</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Fork Node&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">control_node</span><span class="p">)</span>
+<span class="n">join_node</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Join Node&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">control_node</span><span class="p">)</span>
+<span class="n">decision_node</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Decision Node&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">control_node</span><span class="p">,</span>
+                           <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;decision&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">})</span>
+<span class="n">merge_node</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Merge Node&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">control_node</span><span class="p">)</span>
+<span class="n">action</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Action&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">activity_node</span><span class="p">)</span>
+<span class="n">accept_event_action</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Accept Event Action&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">action</span><span class="p">)</span>
+<span class="n">accept_time_event_action</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Accept Time Event Action&quot;</span><span class="p">,</span>
+                                      <span class="n">superclasses</span><span class="o">=</span><span class="n">accept_event_action</span><span class="p">,</span>
+                                      <span class="n">attributes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">})</span>
+<span class="n">send_signal_action</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Send Signal Action&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">action</span><span class="p">)</span>
+
+<span class="n">edge_relation</span> <span class="o">=</span> <span class="n">activity_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;next: [source] * -&gt; [target] *&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, we first define a number of node types, which are needed to define an activity diagram. <code class="docutils literal notranslate"><span class="pre">activity_node</span></code>
+is the common superclass of all of them, and it has one association <code class="docutils literal notranslate"><span class="pre">edge_relation</span></code> to itself, defined
+on the last line. <code class="docutils literal notranslate"><span class="pre">edge_relation</span></code> is used to define the directed links between nodes. Some of the nodes have
+attributes, such as the <code class="docutils literal notranslate"><span class="pre">decision_node</span></code>.</p>
+<p>We can use the the Plant UML class model renderer to draw the resulting model. The result would be:</p>
+<a class=""
+               data-lightbox="group-fe09e642-09fa-43e7-9506-3135531ddc8c"
+               href="_images/activity_metamodel_all.png"
+               title=""
+               data-title=""
+               ><img src="_images/activity_metamodel_all.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a><p>This image has been rendered using the following code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">activity_metamodel_all</span> <span class="o">=</span> <span class="n">CBundle</span><span class="p">(</span><span class="s2">&quot;activity_metamodel_all&quot;</span><span class="p">,</span>
+                                 <span class="n">elements</span><span class="o">=</span><span class="n">activity_node</span><span class="o">.</span><span class="n">get_connected_elements</span><span class="p">(</span>
+                                 <span class="n">add_stereotypes</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+<span class="n">generator</span> <span class="o">=</span> <span class="n">PlantUMLGenerator</span><span class="p">()</span>
+<span class="n">generator</span><span class="o">.</span><span class="n">generate_class_models</span><span class="p">(</span><span class="s2">&quot;activityMetamodel&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">activity_metamodel_all</span><span class="p">,</span> <span class="p">{}])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="deriving-a-class-model">
+<h2>Deriving a class model<a class="headerlink" href="#deriving-a-class-model" title="Permalink to this headline">¶</a></h2>
+<p>Next, let us create a class model with activities for filling a shopping cart based on the meta-model defined above.
+Here are the classes needed for a model inspired by a model from
+<a class="reference external" href="https://www.uml-diagrams.org/online-shopping-uml-activity-diagram-example.html">uml-diagrams.org</a>. First we
+define all required nodes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">initial_node_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">initial_node</span><span class="p">)</span>
+<span class="n">decision_node_search_browse</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">decision_node</span><span class="p">)</span>
+<span class="n">merge_node_search</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">merge_node</span><span class="p">)</span>
+<span class="n">search_item</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Search Items&quot;</span><span class="p">)</span>
+<span class="n">merge_node_browse</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">merge_node</span><span class="p">)</span>
+<span class="n">browse_item</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Browse Items&quot;</span><span class="p">)</span>
+<span class="n">decision_node_found</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">decision_node</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;decision&quot;</span><span class="p">:</span> <span class="s2">&quot;Item found?&quot;</span><span class="p">})</span>
+<span class="n">merge_node_view_item</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">merge_node</span><span class="p">)</span>
+<span class="n">view_item</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;View Item&quot;</span><span class="p">)</span>
+<span class="n">decision_node_decision_made</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">decision_node</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;decision&quot;</span><span class="p">:</span> <span class="s2">&quot;Decision made?&quot;</span><span class="p">})</span>
+<span class="n">add_to_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Add to Shopping Cart&quot;</span><span class="p">)</span>
+<span class="n">decision_node_proceed</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">decision_node</span><span class="p">)</span>
+<span class="n">merge_node_view_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">merge_node</span><span class="p">)</span>
+<span class="n">view_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;View Shopping Cart&quot;</span><span class="p">)</span>
+<span class="n">decision_node_done</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">decision_node</span><span class="p">)</span>
+<span class="n">update_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Update Shopping Cart&quot;</span><span class="p">)</span>
+<span class="n">checkout</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Checkout&quot;</span><span class="p">)</span>
+<span class="n">final_node_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">final_node</span><span class="p">)</span>
+<span class="n">checkout_merge_node</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">merge_node</span><span class="p">)</span>
+<span class="n">check_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">accept_event_action</span><span class="p">,</span> <span class="s2">&quot;Check Shopping Cart&quot;</span><span class="p">)</span>
+<span class="n">proceed_to_checkout</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">accept_event_action</span><span class="p">,</span> <span class="s2">&quot;Proceed to Checkout&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next we add all links that have no labels in one go:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">add_links</span><span class="p">({</span>
+    <span class="n">initial_node_shopping_cart</span><span class="p">:</span> <span class="n">decision_node_search_browse</span><span class="p">,</span>
+    <span class="n">merge_node_search</span><span class="p">:</span> <span class="n">search_item</span><span class="p">,</span>
+    <span class="n">merge_node_browse</span><span class="p">:</span> <span class="n">browse_item</span><span class="p">,</span>
+    <span class="n">search_item</span><span class="p">:</span> <span class="n">decision_node_found</span><span class="p">,</span>
+    <span class="n">browse_item</span><span class="p">:</span> <span class="n">merge_node_view_item</span><span class="p">,</span>
+    <span class="n">merge_node_view_item</span><span class="p">:</span> <span class="n">decision_node_search_browse</span><span class="p">,</span>
+    <span class="n">merge_node_view_item</span><span class="p">:</span> <span class="n">view_item</span><span class="p">,</span>
+    <span class="n">view_item</span><span class="p">:</span> <span class="n">decision_node_decision_made</span><span class="p">,</span>
+    <span class="n">decision_node_decision_made</span><span class="p">:</span> <span class="p">[</span><span class="n">merge_node_search</span><span class="p">,</span> <span class="n">merge_node_browse</span><span class="p">],</span>
+    <span class="n">add_to_shopping_cart</span><span class="p">:</span> <span class="n">decision_node_proceed</span><span class="p">,</span>
+    <span class="n">update_shopping_cart</span><span class="p">:</span> <span class="n">decision_node_proceed</span><span class="p">,</span>
+    <span class="n">merge_node_view_shopping_cart</span><span class="p">:</span> <span class="n">view_shopping_cart</span><span class="p">,</span>
+    <span class="n">view_shopping_cart</span><span class="p">:</span> <span class="n">decision_node_done</span><span class="p">,</span>
+    <span class="n">check_shopping_cart</span><span class="p">:</span> <span class="n">merge_node_view_shopping_cart</span><span class="p">,</span>
+    <span class="n">proceed_to_checkout</span><span class="p">:</span> <span class="n">checkout_merge_node</span><span class="p">,</span>
+    <span class="n">checkout_merge_node</span><span class="p">:</span> <span class="n">checkout</span><span class="p">,</span>
+    <span class="n">checkout</span><span class="p">:</span> <span class="n">final_node_shopping_cart</span><span class="p">,</span>
+<span class="p">},</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, we add the links which have labels:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">decision_node_search_browse</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">merge_node_search</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;[search]&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+<span class="n">decision_node_search_browse</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">merge_node_browse</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;[browse]&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+<span class="n">decision_node_found</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">merge_node_view_item</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;[found]&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+<span class="n">decision_node_found</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">decision_node_search_browse</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;[not found]&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+<span class="n">decision_node_decision_made</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">add_to_shopping_cart</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;[made decision]&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+<span class="n">decision_node_proceed</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">merge_node_view_shopping_cart</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;[view cart]&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+<span class="n">decision_node_proceed</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">decision_node_search_browse</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;[proceed]&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+<span class="n">decision_node_done</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">decision_node_search_browse</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;[more shopping]&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+<span class="n">decision_node_done</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">update_shopping_cart</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;[update needed]&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+<span class="n">decision_node_done</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">checkout_merge_node</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;[done with shopping]&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>With this we have interconnected the class object with links based on the meta-class association. We thus can
+use the object model renderer to create an object model with classes as instances and meta-classes as classifiers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">shopping_activity_model</span> <span class="o">=</span> <span class="n">CBundle</span><span class="p">(</span><span class="s2">&quot;shopping_activity_model&quot;</span><span class="p">,</span>
+                                  <span class="n">elements</span><span class="o">=</span><span class="n">initial_node_shopping_cart</span><span class="o">.</span><span class="n">class_object</span><span class="o">.</span><span class="n">get_connected_elements</span><span class="p">())</span>
+<span class="n">generator</span> <span class="o">=</span> <span class="n">PlantUMLGenerator</span><span class="p">()</span>
+<span class="n">generator</span><span class="o">.</span><span class="n">object_model_renderer</span><span class="o">.</span><span class="n">left_to_right</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">generator</span><span class="o">.</span><span class="n">generate_object_models</span><span class="p">(</span><span class="s2">&quot;shopping_activity_model&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">shopping_activity_model</span><span class="p">,</span> <span class="p">{}])</span>
+</pre></div>
+</div>
+<p>Please note that we need to compute the connected elements of the class object of one of the classes here,
+not one of the classes, as we want to visualize the links of the class (object) not
+its associations. That is, <code class="docutils literal notranslate"><span class="pre">initial_node_shopping_cart.get_connected_elements()</span></code> would
+yield the class relations such as class associations, which we have not yet defined.</p>
+<p>This creates the following model:</p>
+<a class=""
+               data-lightbox="group-53d47c0e-74d1-43de-8288-ae6e2df95c77"
+               href="_images/shopping_activity_model.png"
+               title=""
+               data-title=""
+               ><img src="_images/shopping_activity_model.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a></div>
+<div class="section" id="introspecting-the-classes-relations">
+<h2>Introspecting the classes relations<a class="headerlink" href="#introspecting-the-classes-relations" title="Permalink to this headline">¶</a></h2>
+<p>A meta-class has various methods that can be used to introspect the <code class="docutils literal notranslate"><span class="pre">classes</span></code> relation that manages its instances.
+First of all, the getter <code class="docutils literal notranslate"><span class="pre">classes</span></code> returns a list of all classes directly defined based on a meta-class.
+<code class="docutils literal notranslate"><span class="pre">all_classes</span></code> returns a list of all classes based on a meta-class, including those defined based on its
+sub-classes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Activity node classes: </span><span class="si">{</span><span class="n">activity_node</span><span class="o">.</span><span class="n">classes</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Activity node all classes: </span><span class="si">{</span><span class="n">activity_node</span><span class="o">.</span><span class="n">all_classes</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would print something like:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Activity node classes: [&lt;codeable_models.cclass.CClass object at 0x000001E3F490D148&gt;: Search Items, &lt;codeable_models.cclass.CClass object at 0x000001E3F490D948&gt;: Browse Items, &lt;codeable_models.cclass.CClass object at 0x000001E3F4910508&gt;: View Item, &lt;codeable_models.cclass.CClass object at 0x000001E3F4916848&gt;: Add to Shopping Cart, &lt;codeable_models.cclass.CClass object at 0x000001E3F4924048&gt;: View Shopping Cart, &lt;codeable_models.cclass.CClass object at 0x000001E3F4924648&gt;: Update Shopping Cart, &lt;codeable_models.cclass.CClass object at 0x000001E3F4924908&gt;: Checkout]
+Activity node classes: [&lt;codeable_models.cclass.CClass object at 0x000001E3F490D148&gt;: Search Items, &lt;codeable_models.cclass.CClass object at 0x000001E3F490D948&gt;: Browse Items, &lt;codeable_models.cclass.CClass object at 0x000001E3F4910508&gt;: View Item, &lt;codeable_models.cclass.CClass object at 0x000001E3F4916848&gt;: Add to Shopping Cart, &lt;codeable_models.cclass.CClass object at 0x000001E3F4924048&gt;: View Shopping Cart, &lt;codeable_models.cclass.CClass object at 0x000001E3F4924648&gt;: Update Shopping Cart, &lt;codeable_models.cclass.CClass object at 0x000001E3F4924908&gt;: Checkout, &lt;codeable_models.cclass.CClass object at 0x000001E3F490D308&gt;, &lt;codeable_models.cclass.CClass object at 0x000001E3F490D848&gt;, &lt;codeable_models.cclass.CClass object at 0x000001E3F490DDC8&gt;, &lt;codeable_models.cclass.CClass object at 0x000001E3F4916D48&gt;, &lt;codeable_models.cclass.CClass object at 0x000001E3F4924E88&gt;, &lt;codeable_models.cclass.CClass object at 0x000001E3F47DDB48&gt;, &lt;codeable_models.cclass.CClass object at 0x000001E3F4924BC8&gt;, &lt;codeable_models.cclass.CClass object at 0x000001E3F486BF08&gt;, &lt;codeable_models.cclass.CClass object at 0x000001E3F490DB88&gt;, &lt;codeable_models.cclass.CClass object at 0x000001E3F4910048&gt;, &lt;codeable_models.cclass.CClass object at 0x000001E3F4916A48&gt;, &lt;codeable_models.cclass.CClass object at 0x000001E3F4924348&gt;, &lt;codeable_models.cclass.CClass object at 0x000001E3F49271C8&gt;: Check Shopping Cart, &lt;codeable_models.cclass.CClass object at 0x000001E3F4927488&gt;: Proceed to Checkout]
+</pre></div>
+</div>
+<p>In addition, <code class="docutils literal notranslate"><span class="pre">get_classes(name)</span></code> gets all classes directly derived from this meta-class that have the specified name,
+and <code class="docutils literal notranslate"><span class="pre">get_class(name)</span></code> gets a class directly derived from this meta-class that has the specified name.</p>
+</div>
+<div class="section" id="changing-the-classes-relations">
+<h2>Changing the classes relations<a class="headerlink" href="#changing-the-classes-relations" title="Permalink to this headline">¶</a></h2>
+<p>Classes can be added or removed from a meta-class. For example, with <code class="docutils literal notranslate"><span class="pre">remove_class(class)</span></code> we can remove one
+class from the meta-class, and then we can add  a maybe different class with <code class="docutils literal notranslate"><span class="pre">add_class(class)</span></code>.</p>
+<p>The full code of the examples in this tutorial can be found in the sample <a class="reference internal" href="samples_overview.html#shopping-activity-model1"><span class="std std-ref">Shopping Activity Model 1</span></a>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="07_meta_model_with_stereotypes.html" class="btn btn-neutral float-right" title="A meta-model with stereotypes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="05_improving_the_models_through_code.html" class="btn btn-neutral float-left" title="Improving the models through code" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Uwe Zdun
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
