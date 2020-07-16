@@ -34,6 +34,15 @@ this directory comprise the test suite.
 On Unix, please be aware that nosetests does not consider executable files. If running the tests fails, make 
 sure that the scripts in `tests` are not executable, e.g., run: `chmod -x $(find . -name '*.py')` in `tests`.
 
+## Building the documentation
+
+To build the documentation Sphinx and the extensions configured in `docsrc/source/conf.py`
+need to be installed first, e.g. using `pip`.
+
+The documentation is build in the folder `docsrc`. Use `make html` to build the `html` 
+pages into the subfolder `build`, and `make docs` to copy the built into the `docs` folder.
+The distribution contains the latest built of the documentation in the `docs` folder.
+
 ## Deployment
 
 No specific instructions so far; simply import from the `codeable_models` module like:
