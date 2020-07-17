@@ -62,6 +62,7 @@ alternative_to = CStereotype("Alternative To", superclasses=design_solution_depe
 rules_out = CStereotype("Rules Out", superclasses=design_solution_dependency_type)
 influences = CStereotype("Influences", superclasses=design_solution_dependency_type)
 leads_to = CStereotype("Leads To", superclasses=design_solution_dependency_type)
+enables = CStereotype("Enables", superclasses=design_solution_dependency_type)
 
 solutions_to_next_decisions_relation = design_solution.association(decision,
                                                                    "is next: [prior solution] * -> [next decision] *")
