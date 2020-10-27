@@ -72,7 +72,7 @@ solutions_to_next_decisions_relation_type = CStereotype("Solutions To Decisions 
 mandatory_next = CStereotype("Mandatory Next", superclasses=solutions_to_next_decisions_relation_type)
 optional_next = CStereotype("Optional Next", superclasses=solutions_to_next_decisions_relation_type)
 # unspecified if the next decision is mandatory or optional
-nextDecision = CStereotype("Next", superclasses=solutions_to_next_decisions_relation_type)
+next_decision = CStereotype("Next", superclasses=solutions_to_next_decisions_relation_type)
 consider_if_not_decided_yet = CStereotype("Consider If Not Decided Yet",
                                           superclasses=solutions_to_next_decisions_relation_type)
 
