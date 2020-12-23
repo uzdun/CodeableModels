@@ -156,7 +156,7 @@ def add_stereotyped_link_with_role_tagged_value(link_from, link_to, stereotype_i
     return links
 
 
-def add_decision_option_link(decision_, design_solution_, option_name):
+def add_decision_option_link(decision_, design_solution_, option_name=None):
     links = decision_.add_links(design_solution_, association=decision_solution_relation)[0]
     links.stereotype_instances = [option]
     if option_name is not None:
