@@ -26,7 +26,7 @@ class CMetaclass(CClassifier):
 
             component = CMetaclass("Component")
 
-        Using a simple relation we can use the meta-class to define component and connector models::
+        Using a simple relation we can use the meta-class to define component and connector del::
 
             connectors_relation = component.association(component,
                                                         "connected to: [source] * -> [target] *")

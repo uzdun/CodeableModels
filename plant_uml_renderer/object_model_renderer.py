@@ -16,7 +16,7 @@ class ObjectRenderingContext(RenderingContext):
 
 
 class ObjectModelRenderer(ModelRenderer):
-    def render_object_name_with_classifier(self, object_):
+    def render_object_specification(self, context, object_):
         obj_name = object_.name
         if obj_name is None:
             obj_name = ""
@@ -24,24 +24,28 @@ class ObjectModelRenderer(ModelRenderer):
             object_ = object_.class_object
 
         stereotype_string = ""
+        tagged_value_string = ""
         if object_.class_object_class is not None:
-            stereotype_string = self.render_stereotypes(object_.class_object_class,
-                                                        object_.class_object_class.stereotype_instances)
+            stereotype_string = self.render_stereotypes(object_.class_object_class.stereotype_instances)
+            tagged_value_string = self.render_tagged_values(object_.class_object_class,
+                                                            object_.class_object_class.stereotype_instances)
+            if len(tagged_value_string) > 0:
+                tagged_value_string = tagged_value_string + "\\n"
 
         cl_name = object_.classifier.name
         if cl_name is None:
             cl_name = ""
-        obj_class_string = self.pad_and_break_name(" : " + cl_name)
-        if obj_name != "":
-            obj_string = self.pad_and_break_name(obj_name)
-            if len(obj_string + obj_class_string) > self.name_break_length:
-                obj_class_string = "\\n" + obj_class_string
-            obj_class_string = obj_string + obj_class_string
-        return '"' + stereotype_string + obj_class_string + '"'
 
-    def render_object_specification(self, context, obj):
-        context.add_line("class " + self.render_object_name_with_classifier(obj) +
-                         " as " + self.get_node_id(context, obj) + self.render_attribute_values(context, obj))
+        obj_string = " : " + cl_name
+        if obj_name != "":
+            obj_string = obj_name + obj_string
+
+        if len(stereotype_string) > 0:
+            stereotype_string = " " + stereotype_string + " "
+
+        context.add_line("class \"" + tagged_value_string + self.pad_and_break_name(obj_string, None, True) + "\" as " +
+                         self.get_node_id(context, object_) + stereotype_string + self.render_attribute_values(
+            context, object_))
 
     def render_link(self, context, link):
         association = link.association
@@ -52,21 +56,22 @@ class ObjectModelRenderer(ModelRenderer):
         elif association.composition:
             arrow = " *-- "
 
-        stereotype_string = self.render_stereotypes(link, link.stereotype_instances)
+        stereotype_string = self.render_stereotypes(link.stereotype_instances, True)
+        tagged_value_string = self.render_tagged_values(link, link.stereotype_instances)
+        if len(tagged_value_string) > 0:
+            stereotype_string += "\\n" + tagged_value_string
 
         label = ""
-        if stereotype_string != "":
-            label = stereotype_string
         if link.label is not None and len(link.label) != 0:
-            if len(label) > 0:
-                label = label + " "
-            label = label + link.label
+            label = link.label
         elif context.render_association_names_when_no_label_is_given and association.name is not None and len(
                 association.name) != 0:
-            if len(label) > 0:
-                label = label + " "
-            label = label + association.name
-        label = ": \"" + self.break_name(label) + "\" "
+            label = association.name
+        if stereotype_string != "" and len(label) > 0:
+            stereotype_string = stereotype_string + "\\n"
+        label = stereotype_string + self.break_name(label)
+        if len(label) > 0:
+            label = ": " + label
 
         context.add_line(
             self.get_node_id(context, link.source) + arrow + self.get_node_id(context, link.target) + label)

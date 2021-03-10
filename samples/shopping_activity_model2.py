@@ -6,7 +6,7 @@ workflow trace model derived from it.
 
 It is used to explain meta-modelling by using meta-classes and their relations from the :ref:`activity_metamodel`.
 
-In particular, it looks into how to combine object, class, and meta-class models. That is, an activity class
+In particular, it looks into how to combine object, class, and meta-class del. That is, an activity class
 model is derived from an activity meta-model. The activity class model is used to define an object model
 for workflow traces. The trace objects are linked to domain model elements from :ref:`shopping_instances2`
 (derived themselves from the class model in  :ref:`shopping_model4`).
@@ -156,7 +156,7 @@ shopping_trace_object_model_with_objects = CBundle("shopping_trace_object_model_
 
 def run():
     print("***************** Shopping Activity Model 2: " +
-          "Example combining object, class, and meta-models *****************")
+          "Example combining object, class, and meta-del *****************")
 
     print('*** Plant UML Generation')
     generator = PlantUMLGenerator()

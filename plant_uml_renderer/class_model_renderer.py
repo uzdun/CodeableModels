@@ -24,9 +24,12 @@ class ClassModelRenderer(ModelRenderer):
             stereotype_string = self.render_stereotypes_string("stereotype")
         if is_cmetaclass(cl):
             stereotype_string = self.render_stereotypes_string("metaclass")
-        name_label = '"' + stereotype_string + self.pad_and_break_name(cl.name) + '"'
+        if len(stereotype_string) > 0:
+            stereotype_string = " " + stereotype_string + " "
+        name_label = '"' + self.pad_and_break_name(cl.name, None, True) + '"'
         context.add_line(
-            "class " + name_label + " as " + self.get_node_id(context, cl) + self.render_attributes(context, cl))
+            "class " + name_label + " as " + self.get_node_id(context, cl) + stereotype_string + self.render_attributes(
+                context, cl))
 
     def render_attributes(self, context, cl):
         if not context.render_attributes:
@@ -105,7 +108,7 @@ class ClassModelRenderer(ModelRenderer):
             if stereotype in class_list:
                 if first_loop_iteration:
                     extended_by_string = extended_by_string + "\\n" + \
-                                         self.render_stereotypes_string("stereotypes") + ""
+                                         self.render_stereotypes_string("stereotypes") + "\\n"
                     first_loop_iteration = False
                 else:
                     extended_by_string = extended_by_string + ", "

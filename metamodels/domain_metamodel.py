@@ -1,7 +1,7 @@
 """
 *File Name:* metamodels/domain_metamodel.py
 
-This is a simple domain class meta-model that models domain classes and groups of those (generic groups,
+This is a simple domain class meta-model that del domain classes and groups of those (generic groups,
 and-combined and or-combined groups).
 
 """

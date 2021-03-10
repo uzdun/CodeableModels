@@ -43,6 +43,9 @@ The documentation is build in the folder `docsrc`. Use `make html` to build the 
 pages into the subfolder `build`, and `make docs` to copy the built into the `docs` folder.
 The distribution contains the latest built of the documentation in the `docs` folder.
 
+The documentation can also be found at:
+[Github Pages Documentation](https://uzdun.github.io/CodeableModels/)
+
 ## Deployment
 
 No specific instructions so far; simply import from the `codeable_models` module like:

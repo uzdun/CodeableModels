@@ -63,6 +63,10 @@ class ModelStyle(Enum):
     ORIGINAL = 2
 
 
+def render_stereotypes_string(stereotypes_string):
+    return "<<" + stereotypes_string + ">>"
+
+
 class ModelRenderer(object):
     def __init__(self, **kwargs):
         # defaults for config parameters
@@ -102,7 +106,7 @@ class ModelRenderer(object):
             if self.style == ModelStyle.PLAIN:
                 context.add_line("skinparam defaultFontName Arial")
                 context.add_line("skinparam defaultFontSize 11")
-                context.add_line("skinparam classfontstyle bold")
+                # context.add_line("skinparam classfontstyle bold")
         if self.left_to_right:
             context.add_line("left to right direction")
 
@@ -110,24 +114,33 @@ class ModelRenderer(object):
     def render_end_graph(context):
         context.add_line("@enduml")
 
-    def render_stereotypes_string(self, stereotypes_string):
-        return "«" + self.break_name(stereotypes_string) + "»\\n"
+    @staticmethod
+    def render_stereotypes_string(stereotypes_string):
+        return "<<" + stereotypes_string + ">>"
 
-    def render_stereotypes(self, stereotyped_element_instance, stereotypes):
+    @staticmethod
+    def render_stereotypes(stereotypes, add_line_breaks=False):
         if len(stereotypes) == 0:
             return ""
-
-        result = "«"
-        tagged_values_string = "\\n{"
-        rendered_tagged_values = []
-
+        result = ""
         first_stereotype = True
         for stereotype in stereotypes:
             if first_stereotype:
                 first_stereotype = False
             else:
-                result += ", "
+                if add_line_breaks:
+                    result += "\\n"
+            result += "<<" + stereotype.name + ">>"
+        return result
 
+    def render_tagged_values(self, stereotyped_element_instance, stereotypes):
+        if len(stereotypes) == 0:
+            return ""
+
+        tagged_values_string = "{"
+        rendered_tagged_values = []
+
+        for stereotype in stereotypes:
             stereotype_class_path = stereotype.class_path
 
             for stereotypeClass in stereotype_class_path:
@@ -136,21 +149,15 @@ class ModelRenderer(object):
                         value = stereotyped_element_instance.get_tagged_value(taggedValue.name, stereotypeClass)
                         if value is not None:
                             if len(rendered_tagged_values) != 0:
-                                tagged_values_string += ", "
+                                tagged_values_string += ", \\n"
                             tagged_values_string += self.render_attribute_value(taggedValue, taggedValue.name, value)
                             rendered_tagged_values.append([taggedValue.name, stereotypeClass])
-
-            result += stereotype.name
-
-        result = self.break_name(result)
 
         if len(rendered_tagged_values) != 0:
             tagged_values_string += "}"
         else:
             tagged_values_string = ""
-        result += "» " + tagged_values_string
-        result += "\\n"
-        return result
+        return tagged_values_string
 
     def render_attribute_values(self, context, obj):
         if not context.render_attribute_values:
@@ -195,7 +202,7 @@ class ModelRenderer(object):
         _check_for_illegal_value_characters(str(value))
         return self.break_name(name + ' = ' + str(value))
 
-    def pad_and_break_name(self, name, name_padding=None):
+    def pad_and_break_name(self, name, name_padding=None, make_bold=False):
         if name_padding is None:
             name_padding = self.name_padding
 
@@ -203,7 +210,10 @@ class ModelRenderer(object):
             name = " "
 
         if len(name) <= self.name_break_length:
-            return name_padding + name + name_padding
+            line = name_padding + name + name_padding
+            if make_bold:
+                line = "<b>" + line + "</b>"
+            return line
 
         result = ""
         count = 0
@@ -218,10 +228,16 @@ class ModelRenderer(object):
                     # undocumented font size increase in plant uml, break on next occasion
                     continue
                 count = 0
-                result = result + name_padding + name[current_first_index:i] + name_padding + "\\n"
+                new_line = name_padding + name[current_first_index:i] + name_padding
+                if make_bold:
+                    new_line = "<b>" + new_line + "</b>"
+                result = result + new_line + "\\n"
                 current_first_index = i + 1
             count += 1
-        result = result + name_padding + name[current_first_index:len(name)] + name_padding
+        new_line = name_padding + name[current_first_index:len(name)] + name_padding
+        if make_bold:
+            new_line = "<b>" + new_line + "</b>"
+        result = result + new_line
         return result
 
     def break_name(self, name):

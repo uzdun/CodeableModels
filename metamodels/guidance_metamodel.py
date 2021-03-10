@@ -1,7 +1,7 @@
 """
 *File Name:* metamodels/guidance_metamodel.py
 
-This is a meta-model for modelling architectural guidance models, aka reusable architectural decision models.
+This is a meta-model for modelling architectural guidance del, aka reusable architectural decision del.
 
 """
 

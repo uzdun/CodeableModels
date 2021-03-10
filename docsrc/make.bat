@@ -9,6 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=source
 set BUILDDIR=build
+set BUILDDIR_HTML=build/html
 
 if "%1" == "" goto help
 
@@ -17,11 +18,11 @@ if "%1" == "docs" (
     DEL /F/Q/S "../docs/*.*" > nul
     RMDIR /Q/S "../docs/"
     MKDIR "../docs/"
-    robocopy %BUILDDIR%/_images/ ../docs/_images /E > nul
-    robocopy %BUILDDIR%/_static/ ../docs/_static /E > nul
-    robocopy %BUILDDIR%/stubs/ ../docs/stubs /E > nul
-    robocopy %BUILDDIR%/ ../docs/ *.html > nul
-    robocopy %BUILDDIR%/ ../docs/ *.js > nul
+    robocopy %BUILDDIR_HTML%/_images/ ../docs/_images /E > nul
+    robocopy %BUILDDIR_HTML%/_static/ ../docs/_static /E > nul
+    robocopy %BUILDDIR_HTML%/stubs/ ../docs/stubs /E > nul
+    robocopy %BUILDDIR_HTML% ../docs/ *.html > nul
+    robocopy %BUILDDIR_HTML% ../docs/ *.js > nul
     robocopy %SOURCEDIR%/ ../docs/ .nojekyll  > nul
 
     echo.Generated files copied to ../docs

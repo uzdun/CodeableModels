@@ -246,7 +246,7 @@ for the ``stateless`` attribute is ``False`` for such stereotyped ``stateless`` 
 that they are stateless. With the ``default_values`` dict, a stereotype can redefine default values of the
 extended meta-class::
 
-    stateless_service = CStereotype("Service", extended=distributed_component, superclasses=service,
+    stateless_service = CStereotype("Stateless Service", extended=distributed_component, superclasses=service,
                                     default_values={"stateless": True})
 
 Please note that we must specify that ``distributed_component`` is extended, in order
@@ -255,7 +255,7 @@ for the superclass ``component`` which ``service`` extends. Of course, alternati
 this can also be done by letting ``service`` extend ``distributed component`` in the first place like this::
 
     service = CStereotype("Service", extended=distributed_component)
-    stateless_service = CStereotype("Service", superclasses=service,
+    stateless_service = CStereotype("Stateless Service", superclasses=service,
                                     default_values={"stateless": True})
 
 Now consider we model the components and connectors like this::

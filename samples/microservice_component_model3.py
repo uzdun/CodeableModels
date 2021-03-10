@@ -25,7 +25,7 @@ service = CStereotype("Service", extended=component, attributes={
     "host_name": str,
     "port": int
 })
-stateless_service = CStereotype("Service", extended=distributed_component, superclasses=service,
+stateless_service = CStereotype("Stateless Service", extended=distributed_component, superclasses=service,
                                 default_values={"stateless": True})
 
 # service = CStereotype("Service", extended=distributed_component, attributes={
@@ -75,10 +75,10 @@ shipping_service_zip_code_service_link = restful_links[0]
 add_links({inventory_service: inventory_db, shipping_service: shipping_db},
           role_name="target", stereotype_instances=jdbc)
 
-microservice_component_model2 = CBundle("microservice_component_model3",
+microservice_component_model3 = CBundle("microservice_component_model3",
                                         elements=api_gateway.class_object.get_connected_elements())
 
-component_meta_model = CBundle("component_meta_model",
+component_meta_model3 = CBundle("component_meta_model2",
                                elements=(component.get_connected_elements(add_stereotypes=True) +
                                          [jdbc, restful_http]))
 
@@ -128,8 +128,8 @@ def run():
     print('*** Plant UML Generation')
     generator = PlantUMLGenerator()
     generator.object_model_renderer.left_to_right = True
-    generator.generate_object_models("microservice_component_model3", [microservice_component_model2, {}])
-    generator.generate_class_models("microservice_component_model3", [component_meta_model, {}])
+    generator.generate_object_models("microservice_component_model3", [microservice_component_model3, {}])
+    generator.generate_class_models("microservice_component_model3", [component_meta_model3, {}])
     print(f"... Generated models in {generator.directory!s}/microservice_component_model3")
 
 

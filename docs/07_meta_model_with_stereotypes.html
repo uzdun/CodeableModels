@@ -260,7 +260,7 @@ or may not be facades. This can be modelled with the following stereotype extens
 </div>
 <p>Below you can see the meta-model with extensions rendered:</p>
 <a class=""
-               data-lightbox="group-c9651b3c-1a1d-4792-9f38-93b292969014"
+               data-lightbox="group-cc58c0cb-6de3-4638-9d7b-4e04b5871c95"
                href="_images/component_meta_model.png"
                title=""
                data-title=""
@@ -323,7 +323,7 @@ extends the component and connector meta-classes with a component type and conne
 stereotype hierarchies. For example the <a class="reference internal" href="metamodels_overview.html#microservice-components-metamodel"><span class="std std-ref">Microservice Components Metamodel</span></a> for modelling
 microservice component models, at the time of this writing had the following component types defined:</p>
 <a class=""
-               data-lightbox="group-7cf56f65-4f0b-4da6-a7e8-cb40099dfcc5"
+               data-lightbox="group-efd46947-178c-43d5-9515-dab18430fdd8"
                href="_images/Component_Stereotypes.png"
                title=""
                data-title=""
@@ -334,7 +334,7 @@ microservice component models, at the time of this writing had the following com
                      alt=""/>
                 </a><p>It defines also the following connector types:</p>
 <a class=""
-               data-lightbox="group-d2f96105-4a3e-48a9-87bf-519b3ba8ee1a"
+               data-lightbox="group-ed6549aa-c1ab-4a4c-9d35-c4855ab55ed7"
                href="_images/Connector_Stereotypes.png"
                title=""
                data-title=""
@@ -417,7 +417,7 @@ stateless service stereotype from <code class="docutils literal notranslate"><sp
 for the <code class="docutils literal notranslate"><span class="pre">stateless</span></code> attribute is <code class="docutils literal notranslate"><span class="pre">False</span></code> for such stereotyped <code class="docutils literal notranslate"><span class="pre">stateless</span></code> components of which we know
 that they are stateless. With the <code class="docutils literal notranslate"><span class="pre">default_values</span></code> dict, a stereotype can redefine default values of the
 extended meta-class:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stateless_service</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Service&quot;</span><span class="p">,</span> <span class="n">extended</span><span class="o">=</span><span class="n">distributed_component</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">service</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stateless_service</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Stateless Service&quot;</span><span class="p">,</span> <span class="n">extended</span><span class="o">=</span><span class="n">distributed_component</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">service</span><span class="p">,</span>
                                 <span class="n">default_values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;stateless&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
 </pre></div>
 </div>
@@ -426,7 +426,7 @@ to redefine a default value of it, as the default value is unknown
 for the superclass <code class="docutils literal notranslate"><span class="pre">component</span></code> which <code class="docutils literal notranslate"><span class="pre">service</span></code> extends. Of course, alternatively,
 this can also be done by letting <code class="docutils literal notranslate"><span class="pre">service</span></code> extend <code class="docutils literal notranslate"><span class="pre">distributed</span> <span class="pre">component</span></code> in the first place like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Service&quot;</span><span class="p">,</span> <span class="n">extended</span><span class="o">=</span><span class="n">distributed_component</span><span class="p">)</span>
-<span class="n">stateless_service</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Service&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">service</span><span class="p">,</span>
+<span class="n">stateless_service</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Stateless Service&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">service</span><span class="p">,</span>
                                 <span class="n">default_values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;stateless&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
 </pre></div>
 </div>
@@ -542,7 +542,7 @@ sample <a class="reference internal" href="samples_overview.html#microservice-co
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Uwe Zdun
+        &copy; Copyright 2020-2021, Uwe Zdun
 
     </p>
   </div>

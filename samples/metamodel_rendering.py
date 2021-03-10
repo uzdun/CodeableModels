@@ -2,7 +2,7 @@
 *File Name:* samples/metamodel_rendering.py
 
 This is a Codeable Models example realizing the Plant UML rendering of
-predefined meta-models such as :ref:`activity_metamodel`,
+predefined meta-del such as :ref:`activity_metamodel`,
 :ref:`component_metamodel`, and :ref:`microservice_components_metamodel` used in
 the documentation.
 

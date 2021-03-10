@@ -2,7 +2,7 @@
 *File Name:* samples/shopping_model4.py
 
 This is a Codeable Models example realizing a simple sample shopping domain model.
-This is a cleaned-up version of the previous class models :ref:`shopping_model1`, :ref:`shopping_model2`,
+This is a cleaned-up version of the previous class del :ref:`shopping_model1`, :ref:`shopping_model2`,
 and :ref:`shopping_model3` which uses coded model features. Those parts are explained in :ref:`coded_model`.
 
 The model is inspired by the model at:

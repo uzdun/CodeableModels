@@ -4,7 +4,7 @@
 This is a simple activity metamodel. As it is used for explaining basic meta-modelling, it is
 described in :ref:`meta_modelling`.
 
-It provide a couple of standard node types in activity models as sub-classes of ``activity_node``
+It provide a couple of standard node types in activity del as sub-classes of ``activity_node``
 as well as an ``edge_relation`` to define a graph of such nodes.
 
 """
