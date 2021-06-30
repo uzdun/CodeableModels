@@ -20,6 +20,8 @@ event_sourcing = CStereotype("Event Sourcing", superclasses=component_type)
 # stream-processing platforms like Kafka process events and messages, and keep a persistent distributed
 # log of those, which can be used for eventSourcing; thus they combine abilities of all of those
 stream_processing = CStereotype("Stream Processing", superclasses=[pub_sub_component, message_broker, event_sourcing])
+# intermediary as in https://microservices.io/patterns/data/transactional-outbox.html
+transactional_outbox_message_relay = CStereotype("Transactional Outbox Message Relay", superclasses=component_type)
 
 external_component = CStereotype("External Component", superclasses=component_type)
 facade = CStereotype("Facade", superclasses=component_type)
@@ -68,6 +70,7 @@ one_way = CStereotype("One Way", superclasses=asynchronous_connector)
 indirect_relation_via_api = CStereotype("Indirect Relation via API", superclasses=connector_type)
 
 in_memory_connector = CStereotype("In-Memory Connector", superclasses=connector_type)
+contains = CStereotype("contains", superclasses=in_memory_connector)
 database_connector = CStereotype("Database Connector", superclasses=connector_type,
                                  attributes={"read": list, "write": list, "read + write": list})
 service_connector = CStereotype("Service Connector", superclasses=connector_type)
@@ -77,6 +80,7 @@ ldap = CStereotype("LDAP", superclasses=connector_type)
 memcached_connector = CStereotype("Memcached Connector", superclasses=connector_type)
 messaging = CStereotype("Messaging", superclasses=connector_type)
 event_based_connector = CStereotype("Event-Based Connector", superclasses=loosely_coupled_connector)
+kafka_protocol = CStereotype("Kafka Protocol", superclasses=messaging)
 
 publisher = CStereotype("Publisher", superclasses=event_based_connector,
                         attributes={"publishes": list})
