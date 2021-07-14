@@ -23,6 +23,9 @@ stream_processing = CStereotype("Stream Processing", superclasses=[pub_sub_compo
 # intermediary as in https://microservices.io/patterns/data/transactional-outbox.html
 transactional_outbox_message_relay = CStereotype("Transactional Outbox Message Relay", superclasses=component_type)
 
+# a discovery or lookup service like Eureka
+discovery_service = CStereotype("Discovery Service", superclasses=service)
+
 external_component = CStereotype("External Component", superclasses=component_type)
 facade = CStereotype("Facade", superclasses=component_type)
 
