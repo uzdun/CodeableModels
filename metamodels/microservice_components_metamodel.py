@@ -25,6 +25,8 @@ transactional_outbox_message_relay = CStereotype("Transactional Outbox Message R
 
 # a discovery or lookup service like Eureka
 discovery_service = CStereotype("Discovery Service", superclasses=service)
+# services handling the configuration of a microservice system, as in Spring boot
+configuration_service = CStereotype("Configuration Service", superclasses=service)
 
 external_component = CStereotype("External Component", superclasses=component_type)
 facade = CStereotype("Facade", superclasses=component_type)
@@ -43,11 +45,18 @@ memcached_db = CStereotype("Memcached DB", superclasses=database)
 redis_db = CStereotype("Redis DB", superclasses=database)
 event_store = CStereotype("Event Store", superclasses=database)
 
+replicated = CStereotype("Replicated", superclasses=component_type,
+                                attributes={"number of replicas": int})
+
 monitoring_component = CStereotype("Monitoring", superclasses=component_type)
 tracing_component = CStereotype("Tracing", superclasses=component_type)
 logging_component = CStereotype("Logging", superclasses=component_type)
 monitoring_dashboard = CStereotype("Monitoring Dashboard", superclasses=component_type)
 monitoring_data_provider = CStereotype("Monitoring/Logging Data Provider", superclasses=component_type)
+
+circuit_breaker = CStereotype("Circuit Breaker", superclasses=component_type)
+load_balancer = CStereotype("Load Balancer", superclasses=component_type)
+
 
 orchestrator = CStereotype("Orchestrator", superclasses=component_type)
 saga_orchestrator = CStereotype("Saga Orchestrator", superclasses=orchestrator,
