@@ -32,9 +32,11 @@ external_component = CStereotype("External Component", superclasses=component_ty
 facade = CStereotype("Facade", superclasses=component_type)
 
 client = CStereotype("Client", superclasses=external_component)
+web_browser_client = CStereotype("Web Browser Client", superclasses=[external_component, client])
 web_ui = CStereotype("Web UI", superclasses=facade)
 
 in_memory_data_store = CStereotype("In-Memory Data Store", superclasses=database)
+local_file_based_data_store = CStereotype("Local File-Based Data Store", superclasses=database)
 postgresql_db = CStereotype("PostgreSQL DB", superclasses=database)
 mysql_db = CStereotype("MySQL DB", superclasses=database)
 sql_server = CStereotype("SQL Server", superclasses=database)
