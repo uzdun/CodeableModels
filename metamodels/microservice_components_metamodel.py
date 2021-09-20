@@ -23,17 +23,25 @@ stream_processing = CStereotype("Stream Processing", superclasses=[pub_sub_compo
 # intermediary as in https://microservices.io/patterns/data/transactional-outbox.html
 transactional_outbox_message_relay = CStereotype("Transactional Outbox Message Relay", superclasses=component_type)
 
+# Middleware services (i.e. third-party services provided by the middleware)
+middleware_service = CStereotype("Middleware Service", superclasses=service)
 # a discovery or lookup service like Eureka
-discovery_service = CStereotype("Discovery Service", superclasses=service)
+discovery_service = CStereotype("Discovery Service", superclasses=middleware_service)
 # services handling the configuration of a microservice system, as in Spring boot
-configuration_service = CStereotype("Configuration Service", superclasses=service)
+configuration_service = CStereotype("Configuration Service", superclasses=middleware_service)
 
 external_component = CStereotype("External Component", superclasses=component_type)
 facade = CStereotype("Facade", superclasses=component_type)
+api_gateway = CStereotype("API Gateway", superclasses=facade)
+backends_for_frontends_gateway = CStereotype("Backends for Frontends Gateway", superclasses=facade)
 
 client = CStereotype("Client", superclasses=external_component)
-web_browser_client = CStereotype("Web Browser Client", superclasses=[external_component, client])
-web_ui = CStereotype("Web UI", superclasses=facade)
+web_browser = CStereotype("Web Browser", superclasses=[external_component])
+service_client_in_web_ui = CStereotype("Service Client in Web UI", superclasses=[external_component, client])
+ui = CStereotype("UI", superclasses=facade)
+web_ui = CStereotype("Web UI", superclasses=[facade, ui])
+application = CStereotype("Application", superclasses=external_component)
+mobile_application = CStereotype("Mobile Application", superclasses=application)
 
 in_memory_data_store = CStereotype("In-Memory Data Store", superclasses=database)
 local_file_based_data_store = CStereotype("Local File-Based Data Store", superclasses=database)
@@ -48,7 +56,7 @@ redis_db = CStereotype("Redis DB", superclasses=database)
 event_store = CStereotype("Event Store", superclasses=database)
 
 replicated = CStereotype("Replicated", superclasses=component_type,
-                                attributes={"number of replicas": int})
+                         attributes={"number of replicas": int})
 
 monitoring_component = CStereotype("Monitoring", superclasses=component_type)
 tracing_component = CStereotype("Tracing", superclasses=component_type)
@@ -58,7 +66,6 @@ monitoring_data_provider = CStereotype("Monitoring/Logging Data Provider", super
 
 circuit_breaker = CStereotype("Circuit Breaker", superclasses=component_type)
 load_balancer = CStereotype("Load Balancer", superclasses=component_type)
-
 
 orchestrator = CStereotype("Orchestrator", superclasses=component_type)
 saga_orchestrator = CStereotype("Saga Orchestrator", superclasses=orchestrator,
