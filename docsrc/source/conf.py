@@ -22,7 +22,7 @@ copyright = '2016-2021, Uwe Zdun'
 author = 'Uwe Zdun'
 
 # The full version, including alpha/beta/rc tags
-release = '0.99'
+release = '1.00'
 
 # -- General configuration ---------------------------------------------------
 
