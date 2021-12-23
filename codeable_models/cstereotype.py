@@ -1,3 +1,4 @@
+from codeable_models.cclass import CClass
 from codeable_models.cassociation import CAssociation
 from codeable_models.cclassifier import CClassifier
 from codeable_models.cmetaclass import CMetaclass
@@ -118,7 +119,7 @@ class CStereotype(CClassifier):
             extended_type = CAssociation
             elements = [elements]
         elif not isinstance(elements, list):
-            raise CException(f"extended requires a list or a metaclass as input")
+            raise CException(f"extended requires a list, a metaclass, an association as input")
         else:
             extended_type = _determine_extended_type_of_list(elements)
 
@@ -207,7 +208,16 @@ class CStereotype(CClassifier):
                 if element.association in superclass.extended:
                     return True
             return False
-        raise CException("element is neither a class nor an link")
+        elif is_cassociation(element):
+            if element.derived_from in self.extended:
+                return True
+            for superclass in self.get_all_superclasses_():
+                if element.derived_from in superclass.extended:
+                    return True
+            return False
+
+        raise CException("element is neither a class, nor a link, " +
+                         "nor an association derived from a meta-class association")
 
     def association(self, target, descriptor=None, **kwargs):
         """Method used to create associations on this stereotype. See documentation of method ``association``

@@ -2,8 +2,11 @@ import re
 
 from codeable_models.cexception import CException
 from codeable_models.cclassifier import CClassifier
-from codeable_models.internal.commons import is_cmetaclass, is_cstereotype
-from codeable_models.internal.stereotype_holders import CStereotypesHolder
+from codeable_models.internal.commons import is_cmetaclass, is_cstereotype, is_cassociation, check_is_cmetaclass, \
+    check_is_cclass
+from codeable_models.internal.stereotype_holders import CStereotypesHolder, CStereotypeInstancesHolder
+from codeable_models.internal.var_values import get_var_value, VarValueKind, delete_var_value, set_var_value, \
+    get_var_values, set_var_values
 
 
 def _check_for_classifier_and_role_name_match(classifier, role_name, association_classifier, association_role_name):
@@ -137,11 +140,18 @@ class CAssociation(CClassifier):
         self.aggregation_ = False
         self.composition_ = False
         self.stereotypes_holder = CStereotypesHolder(self)
-        name = kwargs.pop("name", None)
+        self.derived_from_ = None
+        self.derived_associations_ = []
+        self.stereotype_instances_holder = CStereotypeInstancesHolder(self)
+        self.tagged_values_ = {}
+        # we set the name here already so that either the name=... name or the descriptor name go into
+        # super().__init__(self.name, ...)
+        self.name = kwargs.pop("name", None)
         self.ends = None
-        super().__init__(name, **kwargs)
         if descriptor is not None:
+            # note that descriptor might overwrite self.name, if it has the form "name: ..."
             self._eval_descriptor(descriptor)
+        super().__init__(self.name, **kwargs)
 
         source.associations_.append(self)
         if source != target:
@@ -151,7 +161,8 @@ class CAssociation(CClassifier):
         if legal_keyword_args is None:
             legal_keyword_args = []
         legal_keyword_args.extend(["multiplicity", "role_name", "source_multiplicity",
-                                   "source_role_name", "aggregation", "composition", "stereotypes"])
+                                   "source_role_name", "aggregation", "composition", "stereotypes",
+                                   "derived_from", "stereotype_instances", "tagged_values"])
         super()._init_keyword_args(legal_keyword_args, **kwargs)
 
     def __str__(self):
@@ -303,9 +314,269 @@ class CAssociation(CClassifier):
             raise CException("stereotypes on associations can only be defined for metaclass associations")
         self.stereotypes_holder.stereotypes = elements
 
+    @property
+    def stereotype_instances(self):
+        """list[CStereotype]|CStereotype: Getter to get and setter to set the stereotype instances of this association.
+
+        The stereotype instances must be stereotypes extending an association that this association is derived from.
+
+        The setter takes a list of stereotype instances or a single stereotype instance as argument.
+        The getter always returns a list.
+        """
+        return self.stereotype_instances_holder.stereotypes
+
+    @stereotype_instances.setter
+    def stereotype_instances(self, elements):
+        self.stereotype_instances_holder.stereotypes = elements
+
+    def get_tagged_value(self, name, stereotype=None):
+        """Get the tagged value of a stereotype attribute with the given ``name``. Optionally the stereotype
+        to consider can be specified. This is needed, if one or more attributes of the same name are defined
+        on the inheritance hierarchy. Then a shadowed attribute can be accessed by specifying its stereotype.
+
+        Args:
+            name: The name of the attribute.
+            stereotype: The optional stereotype on which the attribute is defined.
+
+        Returns:
+            Supported Attribute Types: Value of the attribute.
+        """
+        if self.is_deleted:
+            raise CException(f"can't get tagged value '{name!s}' on deleted link")
+        return get_var_value(self, self.stereotype_instances_holder.get_stereotype_instance_path(), self.tagged_values_,
+                             name, VarValueKind.TAGGED_VALUE, stereotype)
+
+    def delete_tagged_value(self, name, stereotype=None):
+        """Delete tagged value of a stereotype attribute with the given ``name``.  Optionally the stereotype
+        to consider can be specified. This is needed, if one or more attributes of the same name are defined
+        on the inheritance hierarchy. Then a shadowed attribute can be accessed by specifying its stereotype.
+
+        Args:
+            name: The name of the attribute.
+            stereotype: The optional stereotype on which the attribute is defined.
+
+        Returns:
+            Supported Attribute Types: Value of the attribute.
+        """
+        if self.is_deleted:
+            raise CException(f"can't delete tagged value '{name!s}' on deleted link")
+        return delete_var_value(self, self.stereotype_instances_holder.get_stereotype_instance_path(),
+                                self.tagged_values_, name, VarValueKind.TAGGED_VALUE, stereotype)
+
+    def set_tagged_value(self, name, value, stereotype=None):
+        """Set the tagged value of a stereotype attribute with the given ``name`` to ``value``.  Optionally the
+        stereotype to consider can be specified. This is needed, if one or more attributes of the same name are defined
+        on the inheritance hierarchy. Then a shadowed attribute can be accessed by specifying its stereotype.
+
+        Args:
+            name: The name of the attribute.
+            value: The new value.
+            stereotype: The optional stereotype on which the attribute is defined.
+
+        Returns:
+            None
+        """
+        if self.is_deleted:
+            raise CException(f"can't set tagged value '{name!s}' on deleted link")
+        return set_var_value(self, self.stereotype_instances_holder.get_stereotype_instance_path(), self.tagged_values_,
+                             name, value, VarValueKind.TAGGED_VALUE, stereotype)
+
+    @property
+    def tagged_values(self):
+        """dict[str, value]: Getter for getting all tagged values of the association using a dict, and setter of
+        setting all tagged values of the association based on a dict. The dict uses key/value pairs.
+        The value types must conform to the types defined for the attributes.
+        """
+        if self.is_deleted:
+            raise CException("can't get tagged values on deleted link")
+        return get_var_values(self.stereotype_instances_holder.get_stereotype_instance_path(), self.tagged_values_)
+
+    @tagged_values.setter
+    def tagged_values(self, new_values):
+        if self.is_deleted:
+            raise CException("can't set tagged values on deleted link")
+        set_var_values(self, new_values, VarValueKind.TAGGED_VALUE)
+
+    @staticmethod
+    def _check_association_class_derived_from_association_metaclass(class_, metaclass_, direction_string):
+        try:
+            check_is_cclass(class_)
+        except CException:
+            raise CException("association 'derived_from' is called on is not a class-level association")
+        try:
+            check_is_cmetaclass(metaclass_)
+        except CException:
+            raise CException("association used as 'derived_from' parameter is not a metaclass-level association")
+
+        if not class_.metaclass.is_classifier_of_type(metaclass_):
+            raise CException(f"association {direction_string!s} class '{class_!s}' is not " +
+                             f"derived {direction_string!s} metaclass '{metaclass_!s}'")
+
+    def check_derived_association_multiplicities_(self, metaclass_association, add_to_source_upper=0,
+                                                  add_to_upper=0):
+        # Before we can check the multiplicities we need to collect other derived associations of the
+        # same kind (= same classes or their superclasses are used, derived from the same metaclass association).
+        # All their upper multiplicities and upper source multiplicities need to be added to the
+        # upper multiplicities and upper source multiplicities of self, respectively.
+        # For example, an consider a meta-class association
+        #   a = m1.association(m2, "a: [m1] * -> [m2] 1")
+        # If we would derive two associations from it:
+        #   c1.association(c2, "a1: [c1] * -> [c2] 1", derived_from=a)
+        #   c1.association(c2, "a1: [c1] * -> [c2] 1", derived_from=a)
+        # without adding up the multiplicities, an upper (target) multiplicity of 2 could be reached, violating
+        # the meta-class target upper multiplicity of 1.
+        other_derived_associations_requiring_checking = []
+        source_upper_multiplicity = self.source_upper_multiplicity + add_to_source_upper
+        if add_to_source_upper == CAssociation.STAR_MULTIPLICITY:
+            source_upper_multiplicity = CAssociation.STAR_MULTIPLICITY
+        upper_multiplicity = self.upper_multiplicity + add_to_upper
+        if add_to_upper == CAssociation.STAR_MULTIPLICITY:
+            upper_multiplicity = CAssociation.STAR_MULTIPLICITY
+
+        for derived_association in metaclass_association.derived_associations:
+            if derived_association == self:
+                continue
+            if self.source in derived_association.source.class_path and \
+                    self.target in derived_association.target.class_path:
+                if upper_multiplicity != CAssociation.STAR_MULTIPLICITY:
+                    if derived_association.upper_multiplicity == CAssociation.STAR_MULTIPLICITY:
+                        upper_multiplicity = CAssociation.STAR_MULTIPLICITY
+                    else:
+                        upper_multiplicity += derived_association.upper_multiplicity
+                if source_upper_multiplicity != CAssociation.STAR_MULTIPLICITY:
+                    if derived_association.source_upper_multiplicity == CAssociation.STAR_MULTIPLICITY:
+                        source_upper_multiplicity = CAssociation.STAR_MULTIPLICITY
+                    else:
+                        source_upper_multiplicity += derived_association.source_upper_multiplicity
+
+            # if the derived association is composed out of superclasses of self's source and target,
+            # it needs to be checked, too; else we might add a violation by adding the superclass association
+            # later on, e.g. on a metaclass association:
+            #         a = self.m1.association(self.m2, "a: [m1] 1 -> [m2] *")
+            # we add an unproblematic association:
+            #         c1_c2 = c1.association(c2, "a2: [c1] 1 -> [c2] *", derived_from=a)
+            # but, by adding another association that is composed out of superclasses of self's source and target,
+            # a violation is created:
+            #        c3.association(c4, "a1: [c3] 1 -> [c4] *", derived_from=a)
+            if derived_association.source in self.source.all_superclasses and \
+                    derived_association.target in self.target.all_superclasses:
+                other_derived_associations_requiring_checking.append(derived_association)
+
+        # Check each multiplicity value (lower and upper for source and target multiplicities)
+        if self.lower_multiplicity < metaclass_association.lower_multiplicity:
+            raise CException(f"lower multiplicity '{self.lower_multiplicity!s}' smaller than metaclass' lower " +
+                             f"multiplicity '{metaclass_association.lower_multiplicity!s}' " +
+                             "this association is derived from")
+        if metaclass_association.upper_multiplicity != CAssociation.STAR_MULTIPLICITY:
+            if upper_multiplicity == CAssociation.STAR_MULTIPLICITY or \
+                    upper_multiplicity > metaclass_association.upper_multiplicity:
+                upper = "*" if upper_multiplicity == self.STAR_MULTIPLICITY else upper_multiplicity
+                meta_upper = "*" if metaclass_association.upper_multiplicity == self.STAR_MULTIPLICITY \
+                    else metaclass_association.upper_multiplicity
+                raise CException(f"upper multiplicity '{upper!s}' (of this association, maybe combined with " +
+                                 f"other derived associations of the same kind) is larger than metaclass' upper " +
+                                 f"multiplicity '{meta_upper!s}' " +
+                                 "this association is derived from")
+
+        if self.source_lower_multiplicity < metaclass_association.source_lower_multiplicity:
+            raise CException(f"source lower multiplicity '{self.source_lower_multiplicity!s}' smaller than " +
+                             "metaclass' source lower multiplicity " +
+                             f"'{metaclass_association.source_lower_multiplicity!s}' this association is derived from")
+        if metaclass_association.source_upper_multiplicity != CAssociation.STAR_MULTIPLICITY:
+            if source_upper_multiplicity == CAssociation.STAR_MULTIPLICITY or \
+                    source_upper_multiplicity > metaclass_association.source_upper_multiplicity:
+                upper = "*" if source_upper_multiplicity == self.STAR_MULTIPLICITY else source_upper_multiplicity
+                meta_upper = "*" if metaclass_association.source_upper_multiplicity == self.STAR_MULTIPLICITY \
+                    else metaclass_association.source_upper_multiplicity
+                raise CException(f"source upper multiplicity '{upper!s}' (of this association, maybe combined with " +
+                                 f"other derived associations of the same kind) is larger than " +
+                                 f"metaclass' source upper multiplicity '{meta_upper!s}' " +
+                                 "this association is derived from")
+
+        # perform the check for associations that are composed out of superclasses of self's source and target
+        # we need to add self.source_upper_multiplicity and self.upper_multiplicity to the multiplicities,
+        # as self is not yet added in derived_from
+        for other_association in other_derived_associations_requiring_checking:
+            other_association.check_derived_association_multiplicities_(metaclass_association,
+                                                                        self.source_upper_multiplicity,
+                                                                        self.upper_multiplicity)
+
+    def _check_derived_association_has_same_aggregation_state(self, metaclass_association):
+        if metaclass_association.aggregation and not self.aggregation:
+            raise CException(f"metaclass association is an aggregation, but derived association is not")
+        if self.aggregation and not metaclass_association.aggregation:
+            raise CException(f"derived association is an aggregation, but metaclass association is not")
+        if metaclass_association.composition and not self.composition:
+            raise CException(f"metaclass association is a composition, but derived association is not")
+        if self.composition and not metaclass_association.composition:
+            raise CException(f"derived association is a composition, but metaclass association is not")
+
+    @property
+    def derived_from(self):
+        """CAssociation: Getter to get and setter to set a metaclass association this class-level association
+        is derived from.
+
+        Please note that parameter has to be a metaclass association, and this association needs to be a
+        class-level association. An association can be derived from a metaclass association, if the association
+        is of the same type as the metaclass association, i.e., both are
+        either ``association``, ``composition``, or ``aggregation``.
+
+        Both for source and target multiplicities,the lower multiplicity must be equal or higher than the
+        metaclass association's lower multiplicity, and the upper multiplicity must be equal or lower than
+        the metaclass association's upper multiplicity.
+
+        For the upper multiplicities (source and target), we need to consider other derived associations of the
+        same kind (i.e., same classes or their superclasses are used, derived from the same metaclass association),
+        as well. For example, an consider a meta-class association::
+
+            a = m1.association(m2, "a: [m1] * -> [m2] 1")
+
+        If we would derive two associations from it::
+
+            c1.association(c2, "a1: [c1] * -> [c2] 1", derived_from=a)
+            c1.association(c2, "a1: [c1] * -> [c2] 1", derived_from=a)
+
+        without adding up the multiplicities of all those associations, an upper (target) multiplicity of
+        2 could be reached, violating the meta-class target upper multiplicity of 1.
+
+        The stereotype instances must be stereotypes extending an association that this association is derived from.
+
+        The setter takes a CAssociation as argument. Can be ``None`` (the default value) to remove the
+        ``derived_from`` relation.
+        The getter always returns a CAssociation or ``None``.
+        """
+        return self.derived_from_
+
+    @derived_from.setter
+    def derived_from(self, metaclass_association):
+        if metaclass_association is not None:
+            if not is_cassociation(metaclass_association):
+                raise CException(f"'{metaclass_association!s}' is not an association")
+            self._check_association_class_derived_from_association_metaclass(self.source, metaclass_association.source,
+                                                                             "source")
+            self._check_association_class_derived_from_association_metaclass(self.target, metaclass_association.target,
+                                                                             "target")
+
+            self.check_derived_association_multiplicities_(metaclass_association)
+            self._check_derived_association_has_same_aggregation_state(metaclass_association)
+
+        if self.derived_from_ is not None:
+            self.derived_from_.derived_associations_.remove(self)
+            self.derived_from_ = None
+
+        self.derived_from_ = metaclass_association
+        if metaclass_association is not None:
+            metaclass_association.derived_associations_.append(self)
+
+    @property
+    def derived_associations(self):
+        """list[CAssociation]: Getter for the list of associations this association is derived from."""
+        return self.derived_associations_
+
     def delete(self):
-        """Deletes this association. Removes the association from all classifiers and links. Removes it from
-        all stereotypes, too.  Calls ``delete()`` on superclass.
+        """Deletes this association. Removes the association from all classifiers, links, and derived associations.
+        Removes it from all stereotypes, too. Removes it from associations it is derived from.
+        Calls ``delete()`` on superclass.
 
         Returns:
             None.
@@ -328,6 +599,16 @@ class CAssociation(CClassifier):
         for s in self.stereotypes_holder.stereotypes:
             s.extended_.remove(self)
         self.stereotypes_holder.stereotypes_ = []
+        for si in self.stereotype_instances:
+            si.extended_instances_.remove(self)
+        self.stereotype_instances_holder.stereotypes_ = []
+        if self.derived_from_ is not None:
+            self.derived_from_.derived_associations_.remove(self)
+            self.derived_from_ = None
+        if self.derived_associations_:
+            for a in self.derived_associations_:
+                a.derived_from_ = None
+            self.derived_associations_ = []
         super().delete()
 
     def check_multiplicity_(self, obj, actual_length, actual_opposite_length, check_target_multiplicity):

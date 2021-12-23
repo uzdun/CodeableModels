@@ -20,22 +20,32 @@ The activity model is inspired by the model at:
 
 from codeable_models import CBundle, CClass, add_links, CObject, set_links
 from metamodels.activity_metamodel import activity_node, initial_node, decision_node, merge_node, final_node, \
-    accept_event_action
+    accept_event_action, edge_relation
+from metamodels.domain_metamodel import domain_metaclass
 from plant_uml_renderer import PlantUMLGenerator
 from samples.shopping_instances2 import premium_pen, thomas_customer, cart1, order1
 from samples.shopping_model4 import product, cart, add_items_to_cart, customer_cart_relation, \
     place_order, order, item
 
+# new meta-class relation between activity_nodes and the respective domain objects they access
+node_domain_object_relation = \
+    activity_node.association(domain_metaclass, "accessed_objects: [node] * -> [object] *")
+
 workflow_node = CClass(activity_node, "Workflow Node")
-workflow_trace = workflow_node.association(workflow_node, "next: 1 [from] -> 1 [to]")
+workflow_trace = workflow_node.association(workflow_node, "next: 1 [from] -> 1 [to]",
+                                           derived_from=edge_relation)
 view_product_node = CClass(activity_node, "View Product", superclasses=workflow_node)
-view_product_node.association(product, "product: * -> [product] 1")
+view_product_node.association(product, "product: * -> [product] 1",
+                              derived_from=node_domain_object_relation)
 view_cart_node = CClass(activity_node, "View Cart", superclasses=workflow_node)
-view_product_node.association(cart, "cart: * -> [cart] 1", superclasses=workflow_node)
+view_product_node.association(cart, "cart: * -> [cart] 1", superclasses=workflow_node,
+                              derived_from=node_domain_object_relation)
 access_order_node = CClass(activity_node, "Access Order", superclasses=workflow_node)
-access_order_node.association(order, "order: * -> [order] 1", superclasses=workflow_node)
+access_order_node.association(order, "order: * -> [order] 1", superclasses=workflow_node,
+                              derived_from=node_domain_object_relation)
 create_item_node = CClass(activity_node, "Create Item", superclasses=workflow_node)
-create_item_node.association(item, "item: * -> [item] 1", superclasses=workflow_node)
+create_item_node.association(item, "item: * -> [item] 1", superclasses=workflow_node,
+                             derived_from=node_domain_object_relation)
 
 initial_node_shopping_cart = CClass(initial_node, superclasses=workflow_node)
 decision_node_search_browse = CClass(decision_node, superclasses=workflow_node)
@@ -156,7 +166,7 @@ shopping_trace_object_model_with_objects = CBundle("shopping_trace_object_model_
 
 def run():
     print("***************** Shopping Activity Model 2: " +
-          "Example combining object, class, and meta-del *****************")
+          "Example combining object, class, and meta-level *****************")
 
     print('*** Plant UML Generation')
     generator = PlantUMLGenerator()

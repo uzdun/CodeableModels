@@ -96,7 +96,8 @@
 <li class="toctree-l2"><a class="reference internal" href="05_improving_the_models_through_code.html">Improving the models through code</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">A first meta-model</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#defining-a-basic-meta-model">Defining a basic meta-model</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#deriving-a-class-model">Deriving a class model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deriving-a-class-model-modelled-in-a-class-diagram">Deriving a class model modelled in a class diagram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deriving-a-class-model-modelled-as-an-instance-model">Deriving a class model modelled as an instance model</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#introspecting-the-classes-relations">Introspecting the classes relations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#changing-the-classes-relations">Changing the classes relations</a></li>
 </ul>
@@ -179,7 +180,7 @@
 <p>Basic meta-modelling in Codeable Models is very similar to class modelling. Instead of <a class="reference internal" href="stubs/codeable_models.CClass.html#codeable_models.CClass" title="codeable_models.CClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CClass</span></code></a>, used
 to define classes, we use <a class="reference internal" href="stubs/codeable_models.CMetaclass.html#codeable_models.CMetaclass" title="codeable_models.CMetaclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">CMetaclass</span></code></a> to define meta-classes.</p>
 <p>As a first example of a meta-model, let us consider a simple meta-model for basic features of
-activity meta-models defined in the folder <code class="docutils literal notranslate"><span class="pre">metamodels</span></code> of the Codeable Models distribution:</p>
+activity models defined in the folder <code class="docutils literal notranslate"><span class="pre">metamodels</span></code> of the Codeable Models distribution:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">activity_node</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Activity Node&quot;</span><span class="p">)</span>
 <span class="n">control_node</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Control Node&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">activity_node</span><span class="p">)</span>
 <span class="n">initial_node</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Initial Node&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">control_node</span><span class="p">)</span>
@@ -200,13 +201,13 @@ activity meta-models defined in the folder <code class="docutils literal notrans
 <span class="n">edge_relation</span> <span class="o">=</span> <span class="n">activity_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;next: [source] * -&gt; [target] *&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Here, we first define a number of node types, which are needed to define an activity diagram. <code class="docutils literal notranslate"><span class="pre">activity_node</span></code>
+<p>Here, we first define a number of node types, which are needed to define an activity model. <code class="docutils literal notranslate"><span class="pre">activity_node</span></code>
 is the common superclass of all of them, and it has one association <code class="docutils literal notranslate"><span class="pre">edge_relation</span></code> to itself, defined
 on the last line. <code class="docutils literal notranslate"><span class="pre">edge_relation</span></code> is used to define the directed links between nodes. Some of the nodes have
 attributes, such as the <code class="docutils literal notranslate"><span class="pre">decision_node</span></code>.</p>
-<p>We can use the the Plant UML class model renderer to draw the resulting model. The result would be:</p>
+<p>We can use the the Plant UML class model renderer to draw the resulting model. The result is:</p>
 <a class=""
-               data-lightbox="group-f828cac4-dff7-47aa-b103-d6c7f02a30c7"
+               data-lightbox="group-1b851432-f5e4-41ff-bd3c-0a038308c215"
                href="_images/activity_metamodel_all.png"
                title=""
                data-title=""
@@ -225,11 +226,129 @@ attributes, such as the <code class="docutils literal notranslate"><span class="
 </pre></div>
 </div>
 </div>
-<div class="section" id="deriving-a-class-model">
-<h2>Deriving a class model<a class="headerlink" href="#deriving-a-class-model" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="deriving-a-class-model-modelled-in-a-class-diagram">
+<h2>Deriving a class model modelled in a class diagram<a class="headerlink" href="#deriving-a-class-model-modelled-in-a-class-diagram" title="Permalink to this headline">¶</a></h2>
 <p>Next, let us create a class model with activities for filling a shopping cart based on the meta-model defined above.
-Here are the classes needed for a model inspired by a model from
-<a class="reference external" href="https://www.uml-diagrams.org/online-shopping-uml-activity-diagram-example.html">uml-diagrams.org</a>. First we
+Below are the classes needed for a model inspired by a model from
+<a class="reference external" href="https://www.uml-diagrams.org/online-shopping-uml-activity-diagram-example.html">uml-diagrams.org</a>.</p>
+<p>Please note that class models derived from meta-models can be further used to derive object models. If this is
+intended, usually a class model is modeled and then depicted in class diagram notation, which is explained
+in this section. An alternative way to depict classes as instances of meta-class is to show them in an
+instance model (object diagram) of the meta-class. This is explained in the next section.</p>
+<p>First we define all required nodes of our class model:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">initial_node_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">initial_node</span><span class="p">,</span> <span class="s2">&quot;[Initial]&quot;</span><span class="p">)</span>
+<span class="n">decision_node_search_browse</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">decision_node</span><span class="p">,</span> <span class="s2">&quot;Search or Browse?&quot;</span><span class="p">)</span>
+<span class="n">merge_node_search</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">merge_node</span><span class="p">,</span> <span class="s2">&quot;[Merge]&quot;</span><span class="p">)</span>
+<span class="n">search_item</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Search Items&quot;</span><span class="p">)</span>
+<span class="n">merge_node_browse</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">merge_node</span><span class="p">,</span> <span class="s2">&quot;[Merge]&quot;</span><span class="p">)</span>
+<span class="n">browse_item</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Browse Items&quot;</span><span class="p">)</span>
+<span class="n">decision_node_found</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">decision_node</span><span class="p">,</span> <span class="s2">&quot;Item Found?&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;decision&quot;</span><span class="p">:</span> <span class="s2">&quot;Item found?&quot;</span><span class="p">})</span>
+<span class="n">merge_node_view_item</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">merge_node</span><span class="p">,</span> <span class="s2">&quot;[Merge]&quot;</span><span class="p">)</span>
+<span class="n">view_item</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;View Item&quot;</span><span class="p">)</span>
+<span class="n">decision_node_decision_made</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">decision_node</span><span class="p">,</span> <span class="s2">&quot;Decision Made?&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;decision&quot;</span><span class="p">:</span> <span class="s2">&quot;Decision made?&quot;</span><span class="p">})</span>
+<span class="n">add_to_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Add to Shopping Cart&quot;</span><span class="p">)</span>
+<span class="n">decision_node_proceed</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">decision_node</span><span class="p">,</span> <span class="s2">&quot;Proceed?&quot;</span><span class="p">)</span>
+<span class="n">merge_node_view_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">merge_node</span><span class="p">,</span> <span class="s2">&quot;[Merge]&quot;</span><span class="p">)</span>
+<span class="n">view_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;View Shopping Cart&quot;</span><span class="p">)</span>
+<span class="n">decision_node_done</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">decision_node</span><span class="p">,</span> <span class="s2">&quot;Done?&quot;</span><span class="p">)</span>
+<span class="n">update_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Update Shopping Cart&quot;</span><span class="p">)</span>
+<span class="n">checkout</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Checkout&quot;</span><span class="p">)</span>
+<span class="n">final_node_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">final_node</span><span class="p">,</span> <span class="s2">&quot;[Final]&quot;</span><span class="p">)</span>
+<span class="n">checkout_merge_node</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">merge_node</span><span class="p">,</span> <span class="s2">&quot;[Merge]&quot;</span><span class="p">)</span>
+<span class="n">check_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">accept_event_action</span><span class="p">,</span> <span class="s2">&quot;Check Shopping Cart&quot;</span><span class="p">)</span>
+<span class="n">proceed_to_checkout</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">accept_event_action</span><span class="p">,</span> <span class="s2">&quot;Proceed to Checkout&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Next we add numerous associations between those classes to connect the classes into a complex process model:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">targets</span> <span class="ow">in</span> <span class="p">{</span><span class="n">initial_node_shopping_cart</span><span class="p">:</span> <span class="p">[</span><span class="n">decision_node_search_browse</span><span class="p">],</span>
+                        <span class="n">merge_node_search</span><span class="p">:</span> <span class="p">[</span><span class="n">search_item</span><span class="p">],</span>
+                        <span class="n">merge_node_browse</span><span class="p">:</span> <span class="p">[</span><span class="n">browse_item</span><span class="p">],</span>
+                        <span class="n">search_item</span><span class="p">:</span> <span class="p">[</span><span class="n">decision_node_found</span><span class="p">],</span>
+                        <span class="n">browse_item</span><span class="p">:</span> <span class="p">[</span><span class="n">merge_node_view_item</span><span class="p">],</span>
+                        <span class="n">merge_node_view_item</span><span class="p">:</span> <span class="p">[</span><span class="n">decision_node_search_browse</span><span class="p">,</span> <span class="n">view_item</span><span class="p">],</span>
+                        <span class="n">view_item</span><span class="p">:</span> <span class="p">[</span><span class="n">decision_node_decision_made</span><span class="p">],</span>
+                        <span class="n">decision_node_decision_made</span><span class="p">:</span> <span class="p">[</span><span class="n">merge_node_search</span><span class="p">,</span> <span class="n">merge_node_browse</span><span class="p">],</span>
+                        <span class="n">add_to_shopping_cart</span><span class="p">:</span> <span class="p">[</span><span class="n">decision_node_proceed</span><span class="p">],</span>
+                        <span class="n">update_shopping_cart</span><span class="p">:</span> <span class="p">[</span><span class="n">decision_node_proceed</span><span class="p">],</span>
+                        <span class="n">merge_node_view_shopping_cart</span><span class="p">:</span> <span class="p">[</span><span class="n">view_shopping_cart</span><span class="p">],</span>
+                        <span class="n">view_shopping_cart</span><span class="p">:</span> <span class="p">[</span><span class="n">decision_node_done</span><span class="p">],</span>
+                        <span class="n">check_shopping_cart</span><span class="p">:</span> <span class="p">[</span><span class="n">merge_node_view_shopping_cart</span><span class="p">],</span>
+                        <span class="n">proceed_to_checkout</span><span class="p">:</span> <span class="p">[</span><span class="n">checkout_merge_node</span><span class="p">],</span>
+                        <span class="n">checkout_merge_node</span><span class="p">:</span> <span class="p">[</span><span class="n">checkout</span><span class="p">],</span>
+                        <span class="n">checkout</span><span class="p">:</span> <span class="p">[</span><span class="n">final_node_shopping_cart</span><span class="p">]}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
+        <span class="n">source</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">edge_relation</span><span class="p">)</span>
+
+<span class="n">decision_node_search_browse</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">merge_node_search</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;[search]&quot;</span><span class="p">,</span> <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                                        <span class="n">derived_from</span><span class="o">=</span><span class="n">edge_relation</span><span class="p">)</span>
+<span class="n">decision_node_search_browse</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">merge_node_browse</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;[browse]&quot;</span><span class="p">,</span> <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                                        <span class="n">derived_from</span><span class="o">=</span><span class="n">edge_relation</span><span class="p">)</span>
+<span class="n">decision_node_found</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">merge_node_view_item</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;[found]&quot;</span><span class="p">,</span> <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                                <span class="n">derived_from</span><span class="o">=</span><span class="n">edge_relation</span><span class="p">)</span>
+<span class="n">decision_node_found</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">decision_node_search_browse</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;[not found]&quot;</span><span class="p">,</span> <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                                <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">edge_relation</span><span class="p">)</span>
+<span class="n">decision_node_decision_made</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">add_to_shopping_cart</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;[made decision]&quot;</span><span class="p">,</span> <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                                        <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">edge_relation</span><span class="p">)</span>
+<span class="n">decision_node_proceed</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">merge_node_view_shopping_cart</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;[view cart]&quot;</span><span class="p">,</span> <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                                  <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">edge_relation</span><span class="p">)</span>
+<span class="n">decision_node_proceed</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">decision_node_search_browse</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;[proceed]&quot;</span><span class="p">,</span> <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                                  <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">edge_relation</span><span class="p">)</span>
+<span class="n">decision_node_done</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">decision_node_search_browse</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;[more shopping]&quot;</span><span class="p">,</span> <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                               <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">edge_relation</span><span class="p">)</span>
+<span class="n">decision_node_done</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">update_shopping_cart</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;[update needed]&quot;</span><span class="p">,</span> <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                               <span class="n">derived_from</span><span class="o">=</span><span class="n">edge_relation</span><span class="p">)</span>
+<span class="n">decision_node_done</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">checkout_merge_node</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;[done with shopping]&quot;</span><span class="p">,</span> <span class="n">source_multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                               <span class="n">multiplicity</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">edge_relation</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Please note that we connect each of the associations in this code to the corresponding meta-class association
+<code class="docutils literal notranslate"><span class="pre">edge_relation</span></code>. This is done using the method <code class="docutils literal notranslate"><span class="pre">derived_from</span></code>, in a similar way as we link the class to its
+metaclass in a class definition. A derived association has a number of constraints imposed by the
+meta-class association:
+An association can be derived from a metaclass association, if the association is of the same type, i.e., both are
+either <code class="docutils literal notranslate"><span class="pre">association</span></code>, <code class="docutils literal notranslate"><span class="pre">composition</span></code>, or <code class="docutils literal notranslate"><span class="pre">aggregation</span></code>. Both for source and target multiplicities,
+the lower multiplicity must be equal or higher than the metaclass association’s lower multiplicity, and the
+upper multiplicity must be equal or lower than the metaclass association’s upper multiplicity.</p>
+<p>Here all multiplicities are <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">--</span> <span class="pre">1</span></code> because an instance-level process model should be instantiated without
+further levels of freedom in this regard. But, for example, if instance models of this class diagram could
+decide if they want to have parallel executions of a specific task, then offering a <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">--</span> <span class="pre">*</span></code> multiplicity
+could be modelled here as well.</p>
+<p>We can next use the class model renderer to create a class diagram:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">shopping_activity_class_model</span> <span class="o">=</span> <span class="n">CBundle</span><span class="p">(</span><span class="s2">&quot;shopping_activity_class_model&quot;</span><span class="p">,</span>
+                                        <span class="n">elements</span><span class="o">=</span><span class="n">initial_node_shopping_cart</span><span class="o">.</span><span class="n">get_connected_elements</span><span class="p">())</span>
+<span class="n">generator</span> <span class="o">=</span> <span class="n">PlantUMLGenerator</span><span class="p">()</span>
+<span class="n">generator</span><span class="o">.</span><span class="n">class_model_renderer</span><span class="o">.</span><span class="n">left_to_right</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">generator</span><span class="o">.</span><span class="n">generate_class_models</span><span class="p">(</span><span class="n">shopping_activity_class_model</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                <span class="p">[</span><span class="n">shopping_activity_class_model</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;render_metaclass_as_stereotype&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}])</span>
+</pre></div>
+</div>
+<p>Please note that we use the option <code class="docutils literal notranslate"><span class="pre">render_metaclass_as_stereotype</span></code> to show the metaclass the class was
+derived from as a stereotype, so that we can see the relation class-metaclass in the resulting diagram as stereotypes.
+This creates the following model:</p>
+<a class=""
+               data-lightbox="group-1831b937-308e-47c6-8c5f-3f555b14dac2"
+               href="_images/shopping_activity_class_model.png"
+               title=""
+               data-title=""
+               ><img src="_images/shopping_activity_class_model.png"
+                     class=""
+                     width="100%"
+                     height="auto"
+                     alt=""/>
+                </a><p>The full code of this example in this tutorial can be found in the sample <a class="reference internal" href="samples_overview.html#shopping-activities1-class-model"><span class="std std-ref">Shopping Activity Model 1 as Class Model</span></a>.</p>
+</div>
+<div class="section" id="deriving-a-class-model-modelled-as-an-instance-model">
+<h2>Deriving a class model modelled as an instance model<a class="headerlink" href="#deriving-a-class-model-modelled-as-an-instance-model" title="Permalink to this headline">¶</a></h2>
+<p>Next, let us create the same class model as an metaclass-instance model (which can be depicted as object diagram
+with classes as metaclass instances as objects). That is, while showing class models
+as class diagrams is the usual way to depict derived classes, an alternative way to depict classes as instances of
+metaclasses is to show them in an instance model (object diagram) of the metaclass. This is explained in this section.
+This method is useful if you want to show a (maybe complex) instance-level relation of (maybe multiple) classes that
+maybe shall be depicted in a class diagram using a single relation. For example, the UML standard
+sometimes uses instance model of the UML meta-model to show the detailed interactions of the metaclass instances, and
+then introduces higher-level associations and/or new notations to abstract relations of a couple of classes and
+their links.</p>
+<p>To enable comparison, here we want to show the same model as the one from the previous section. Again, first we
 define all required nodes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">initial_node_shopping_cart</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">initial_node</span><span class="p">)</span>
 <span class="n">decision_node_search_browse</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">decision_node</span><span class="p">)</span>
@@ -254,7 +373,7 @@ define all required nodes:</p>
 <span class="n">proceed_to_checkout</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">accept_event_action</span><span class="p">,</span> <span class="s2">&quot;Proceed to Checkout&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Next we add all links that have no labels in one go:</p>
+<p>Next we add all links (instead of associations used in the previous section) that have no labels in one go:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">add_links</span><span class="p">({</span>
     <span class="n">initial_node_shopping_cart</span><span class="p">:</span> <span class="n">decision_node_search_browse</span><span class="p">,</span>
     <span class="n">merge_node_search</span><span class="p">:</span> <span class="n">search_item</span><span class="p">,</span>
@@ -289,7 +408,7 @@ define all required nodes:</p>
 <span class="n">decision_node_done</span><span class="o">.</span><span class="n">add_links</span><span class="p">(</span><span class="n">checkout_merge_node</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;[done with shopping]&quot;</span><span class="p">,</span> <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>With this we have interconnected the class object with links based on the meta-class association. We thus can
+<p>With this we have interconnected the class objects with links based on the meta-class association. We thus can
 use the object model renderer to create an object model with classes as instances and meta-classes as classifiers:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">shopping_activity_model</span> <span class="o">=</span> <span class="n">CBundle</span><span class="p">(</span><span class="s2">&quot;shopping_activity_model&quot;</span><span class="p">,</span>
                                   <span class="n">elements</span><span class="o">=</span><span class="n">initial_node_shopping_cart</span><span class="o">.</span><span class="n">class_object</span><span class="o">.</span><span class="n">get_connected_elements</span><span class="p">())</span>
@@ -301,19 +420,20 @@ use the object model renderer to create an object model with classes as instance
 <p>Please note that we need to compute the connected elements of the class object of one of the classes here,
 not one of the classes, as we want to visualize the links of the class (object) not
 its associations. That is, <code class="docutils literal notranslate"><span class="pre">initial_node_shopping_cart.get_connected_elements()</span></code> would
-yield the class relations such as class associations, which we have not yet defined.</p>
+yield the class relations such as class associations (as e.g. defined in the example in the previous section).</p>
 <p>This creates the following model:</p>
 <a class=""
-               data-lightbox="group-f649fe09-56c3-4d1a-bf6e-4cc0ecd44c73"
-               href="_images/shopping_activity_model.png"
+               data-lightbox="group-c4c1b569-4d24-431f-897b-14e47276849b"
+               href="_images/shopping_activity_instance_model.png"
                title=""
                data-title=""
-               ><img src="_images/shopping_activity_model.png"
+               ><img src="_images/shopping_activity_instance_model.png"
                      class=""
                      width="100%"
                      height="auto"
                      alt=""/>
-                </a></div>
+                </a><p>The full code of this object-level model can be found in the sample <a class="reference internal" href="samples_overview.html#shopping-activities1-instance-model"><span class="std std-ref">Shopping Activity Model 1 as Instance Model</span></a>.</p>
+</div>
 <div class="section" id="introspecting-the-classes-relations">
 <h2>Introspecting the classes relations<a class="headerlink" href="#introspecting-the-classes-relations" title="Permalink to this headline">¶</a></h2>
 <p>A meta-class has various methods that can be used to introspect the <code class="docutils literal notranslate"><span class="pre">classes</span></code> relation that manages its instances.
@@ -336,7 +456,8 @@ and <code class="docutils literal notranslate"><span class="pre">get_class(name)
 <h2>Changing the classes relations<a class="headerlink" href="#changing-the-classes-relations" title="Permalink to this headline">¶</a></h2>
 <p>Classes can be added or removed from a meta-class. For example, with <code class="docutils literal notranslate"><span class="pre">remove_class(class)</span></code> we can remove one
 class from the meta-class, and then we can add  a maybe different class with <code class="docutils literal notranslate"><span class="pre">add_class(class)</span></code>.</p>
-<p>The full code of the examples in this tutorial can be found in the sample <a class="reference internal" href="samples_overview.html#shopping-activity-model1"><span class="std std-ref">Shopping Activity Model 1</span></a>.</p>
+<p>The  code of the introspection examples in this tutorial can be found in
+the sample <a class="reference internal" href="samples_overview.html#shopping-activities1-instance-model"><span class="std std-ref">Shopping Activity Model 1 as Instance Model</span></a> (and also in <a class="reference internal" href="samples_overview.html#shopping-activities1-class-model"><span class="std std-ref">Shopping Activity Model 1 as Class Model</span></a>).</p>
 </div>
 </div>
 

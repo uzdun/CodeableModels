@@ -26,6 +26,7 @@ class RenderingContext(object):
         self.indent_cache_string = ""
         self.node_ids = {}
         self.current_node_id = 0
+        self.render_tagged_values = True
 
     def get_node_id(self, element):
         if is_cobject(element) and element.class_object_class is not None:
@@ -60,11 +61,8 @@ class RenderingContext(object):
 class ModelStyle(Enum):
     PLAIN = 0
     HANDWRITTEN = 1
-    ORIGINAL = 2
-
-
-def render_stereotypes_string(stereotypes_string):
-    return "<<" + stereotypes_string + ">>"
+    PLAIN_HELVETICA = 2
+    ORIGINAL = 3
 
 
 class ModelRenderer(object):
@@ -92,7 +90,8 @@ class ModelRenderer(object):
 
     def render_start_graph(self, context):
         context.add_line("@startuml")
-        if self.style == ModelStyle.HANDWRITTEN or self.style == ModelStyle.PLAIN:
+        if (self.style == ModelStyle.HANDWRITTEN or self.style == ModelStyle.PLAIN or
+                self.style == ModelStyle.PLAIN_HELVETICA):
             context.add_line("skinparam monochrome true")
             context.add_line("skinparam ClassBackgroundColor White")
             context.add_line("hide empty members")
@@ -105,6 +104,10 @@ class ModelRenderer(object):
                 context.add_line("skinparam shadowing false")
             if self.style == ModelStyle.PLAIN:
                 context.add_line("skinparam defaultFontName Arial")
+                context.add_line("skinparam defaultFontSize 11")
+                # context.add_line("skinparam classfontstyle bold")
+            if self.style == ModelStyle.PLAIN_HELVETICA:
+                context.add_line("skinparam defaultFontName Helvetica")
                 context.add_line("skinparam defaultFontSize 11")
                 # context.add_line("skinparam classfontstyle bold")
         if self.left_to_right:

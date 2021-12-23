@@ -48,11 +48,18 @@ Shopping Instances Model 2
 .. automodule:: samples.shopping_instances2
 
 
-.. _shopping_activity_model1:
+.. _shopping_activities1_class_model:
 
-Shopping Activity Model 1
-=========================
-.. automodule:: samples.shopping_activity_model1
+Shopping Activity Model 1 as Class Model
+========================================
+.. automodule:: samples.shopping_activities1_class_model
+
+
+.. _shopping_activities1_instance_model:
+
+Shopping Activity Model 1 as Instance Model
+===========================================
+.. automodule:: samples.shopping_activities1_instance_model
 
 
 .. _shopping_activity_model2:
@@ -62,25 +69,45 @@ Shopping Activity Model 2
 .. automodule:: samples.shopping_activity_model2
 
 
-.. _microservice_component_model1:
+.. _microservice_component_model1_class_model:
 
-Microservice Component Model 1
-==============================
-.. automodule:: samples.microservice_component_model1
-
-
-.. _microservice_component_model2:
-
-Microservice Component Model 2
-==============================
-.. automodule:: samples.microservice_component_model2
+Microservice Component Model 1 as Class Model
+=============================================
+.. automodule:: samples.microservice_component_model1_class_model
 
 
-.. _microservice_component_model3:
+.. _microservice_component_model1_instance_model:
 
-Microservice Component Model 3
-==============================
-.. automodule:: samples.microservice_component_model3
+Microservice Component Model 1 as Instance Model
+================================================
+.. automodule:: samples.microservice_component_model1_instance_model
+
+.. _microservice_component_model2_class_model:
+
+Microservice Component Model 2 as Class Model
+=============================================
+.. automodule:: samples.microservice_component_model2_class_model
+
+
+.. _microservice_component_model2_instance_model:
+
+Microservice Component Model 2 as Instance Model
+================================================
+.. automodule:: samples.microservice_component_model2_instance_model
+
+
+.. _microservice_component_model3_class_model:
+
+Microservice Component Model 3 as Class Model
+=============================================
+.. automodule:: samples.microservice_component_model3_class_model
+
+
+.. _microservice_component_model3_instance_model:
+
+Microservice Component Model 3 as Instance Model
+================================================
+.. automodule:: samples.microservice_component_model3_instance_model
 
 
 .. _metamodel_rendering:

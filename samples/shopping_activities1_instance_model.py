@@ -1,7 +1,8 @@
 """
-*File Name:* samples/shopping_activity_model1.py
+*File Name:* samples/shopping_activities1_instance_model.py
 
-This is a Codeable Models example realizing a sample shopping activity model.
+This is a Codeable Models example realizing a sample shopping activity model
+as an object diagram (classes as instances of meta-classes).
 It is used to explain meta-modelling by using meta-classes and their relations
 from the :ref:`activity_metamodel`.
 
@@ -69,8 +70,8 @@ decision_node_done.add_links(decision_node_search_browse, label="[more shopping]
 decision_node_done.add_links(update_shopping_cart, label="[update needed]", role_name="target")
 decision_node_done.add_links(checkout_merge_node, label="[done with shopping]", role_name="target")
 
-shopping_activity_model = CBundle("shopping_activity_model",
-                                  elements=initial_node_shopping_cart.class_object.get_connected_elements())
+shopping_activity_instance_model = CBundle("shopping_activity_instance_model",
+                                           elements=initial_node_shopping_cart.class_object.get_connected_elements())
 
 
 # Classes Introspection
@@ -80,7 +81,7 @@ def print_classes_introspection_examples():
 
 
 def run():
-    print("***************** Shopping Activity Model 1: Meta-modelling example *****************")
+    print("***************** Shopping Activity Model 1: Meta-modelling example (Instance Model) *****************")
 
     print("*** Classes introspection")
     print_classes_introspection_examples()
@@ -88,8 +89,8 @@ def run():
     print('*** Plant UML Generation')
     generator = PlantUMLGenerator()
     generator.object_model_renderer.left_to_right = True
-    generator.generate_object_models(shopping_activity_model.name, [shopping_activity_model, {}])
-    print(f"... Generated models in {generator.directory!s}/{shopping_activity_model.name!s}")
+    generator.generate_object_models(shopping_activity_instance_model.name, [shopping_activity_instance_model, {}])
+    print(f"... Generated models in {generator.directory!s}/{shopping_activity_instance_model.name!s}")
 
 
 if __name__ == "__main__":

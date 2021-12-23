@@ -169,41 +169,57 @@
   <div class="section" id="combining-object-class-and-meta-class-model">
 <span id="combining-object-class-and-meta-class-modelling"></span><h1>Combining object, class, and meta-class model<a class="headerlink" href="#combining-object-class-and-meta-class-model" title="Permalink to this headline">¶</a></h1>
 <p>Many models are defined as class models. Sometimes object models are derived from class models.
-In other cases, only a meta-model is defined. In some of these cases
+In other cases, a meta-model is defined. In some of these cases
 a class model is derived from it, and used only as an instance model of the
 meta-model, as in the previous meta-modelling examples. For modelling tasks, where a class and
 instance level need to be combined, the decision to model
 with class and object models  or meta-class and class instance models
 depends on the nature of the modelling task at hand.
-It also depends on available modelling means. For example, if stereotype instances are needed at the instance level,
-a meta-model needs to be used at the class level.</p>
+It also depends on available modelling means. For example, if stereotype instances shall be applied,
+the respective stereotypes need to be defined in a meta-model first. As we have seen, we can then
+model classes at the instance-level (depicted as an object diagram) or at the class-model-level
+(depicted as an class diagram).</p>
 <p>In some cases, we want to model at all three levels. That is, we derive a meaningful class instance level from a
 meta-model, but also use class features such as class association, inheritance, and attributes at the class
 model level, to be used in a derived object model.</p>
 <p>Let us consider such an example. We will base this on the previously introduced shopping activity and shopping cart
 class models. The <a class="reference internal" href="metamodels_overview.html#activity-metamodel"><span class="std std-ref">Activity Metamodel</span></a> was used as a meta-model for the shopping activity class model.
-Consider the shopping activity class model describe a workflow. Then instances of the workflow would be individual
-workflow traces of one customer performing a shopping session. Such as session would create objects of the types used
+Consider the shopping activity class model describes a workflow. Then instances of the workflow would be individual
+workflow traces of one customer performing a shopping session. Such a session would create objects of the types used
 in our shopping cart class model.</p>
 <p>To enable this, firstly, we define a superclass for all classes used in our class model, and
-give it the ability to define workflow traces that describe the linear steps take in
+give it the ability to define workflow traces. The traces would describe the linear steps taken in
 one workflow run (i.e., 1:1 relations between nodes):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">workflow_node</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Workflow Node&quot;</span><span class="p">)</span>
-<span class="n">workflow_trace</span> <span class="o">=</span> <span class="n">workflow_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">workflow_node</span><span class="p">,</span> <span class="s2">&quot;next: 1 [from] -&gt; 1 [to]&quot;</span><span class="p">)</span>
+<span class="n">workflow_trace</span> <span class="o">=</span> <span class="n">workflow_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">workflow_node</span><span class="p">,</span> <span class="s2">&quot;next: 1 [from] -&gt; 1 [to]&quot;</span><span class="p">,</span>
+                                           <span class="n">derived_from</span><span class="o">=</span><span class="n">edge_relation</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Please note that the <code class="docutils literal notranslate"><span class="pre">workflow_trace</span></code> association is derived from the generic association of nodes <code class="docutils literal notranslate"><span class="pre">edge_relation</span></code>,
+but constrains workflow traces to be <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-&gt;</span> <span class="pre">1</span></code> relations (whereas edge relation is <code class="docutils literal notranslate"><span class="pre">*</span> <span class="pre">-&gt;</span> <span class="pre">*</span></code>).</p>
 <p>Next, to easily extend the previously defined activity class model, we first define how some of the nodes
 in the workflow can link to the elements of the shopping cart domain models by defining classes for viewing a product,
 viewing a cart, accessing an orders, and creating an item. Further, for each of those, we define a relation from
-the workflow node to the respective shopping cart model element:</p>
+the workflow node to the respective shopping cart model element. In order to do this, we first link the two meta-models
+we a new association:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">node_domain_object_relation</span> <span class="o">=</span> \
+    <span class="n">activity_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">domain_metaclass</span><span class="p">,</span> <span class="s2">&quot;accessed_objects: [node] * -&gt; [object] *&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The associations linking shopping cart model elements to workflow nodes are then all derived from this meta-class
+association:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">view_product_node</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;View Product&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">workflow_node</span><span class="p">)</span>
-<span class="n">view_product_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="s2">&quot;product: * -&gt; [product] 1&quot;</span><span class="p">)</span>
+<span class="n">view_product_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="s2">&quot;product: * -&gt; [product] 1&quot;</span><span class="p">,</span>
+                              <span class="n">derived_from</span><span class="o">=</span><span class="n">node_domain_object_relation</span><span class="p">)</span>
 <span class="n">view_cart_node</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;View Cart&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">workflow_node</span><span class="p">)</span>
-<span class="n">view_product_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">cart</span><span class="p">,</span> <span class="s2">&quot;cart: * -&gt; [cart] 1&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">workflow_node</span><span class="p">)</span>
+<span class="n">view_product_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">cart</span><span class="p">,</span> <span class="s2">&quot;cart: * -&gt; [cart] 1&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">workflow_node</span><span class="p">,</span>
+                              <span class="n">derived_from</span><span class="o">=</span><span class="n">node_domain_object_relation</span><span class="p">)</span>
 <span class="n">access_order_node</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Access Order&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">workflow_node</span><span class="p">)</span>
-<span class="n">access_order_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="s2">&quot;order: * -&gt; [order] 1&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">workflow_node</span><span class="p">)</span>
+<span class="n">access_order_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="s2">&quot;order: * -&gt; [order] 1&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">workflow_node</span><span class="p">,</span>
+                              <span class="n">derived_from</span><span class="o">=</span><span class="n">node_domain_object_relation</span><span class="p">)</span>
 <span class="n">create_item_node</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">activity_node</span><span class="p">,</span> <span class="s2">&quot;Create Item&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">workflow_node</span><span class="p">)</span>
-<span class="n">create_item_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;item: * -&gt; [item] 1&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">workflow_node</span><span class="p">)</span>
+<span class="n">create_item_node</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s2">&quot;item: * -&gt; [item] 1&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">workflow_node</span><span class="p">,</span>
+                             <span class="n">derived_from</span><span class="o">=</span><span class="n">node_domain_object_relation</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Now we change all of the activity classes in our previous activity model to be subclasses of the workflow class,
@@ -236,7 +252,7 @@ item activity node a <code class="docutils literal notranslate"><span class="pre
 </pre></div>
 </div>
 <p>Please note that those activity classes have the same links as defined in <a class="reference internal" href="06_first_meta_model.html#meta-modelling"><span class="std std-ref">A first meta-model</span></a> (not shown here).</p>
-<p>Lets define a small helper function to create a trace from a list of nodes:</p>
+<p>Lets further define a small helper function to create a trace from a list of nodes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_trace</span><span class="p">(</span><span class="n">node_list</span><span class="p">):</span>
     <span class="n">trace</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_list</span><span class="p">:</span>
@@ -249,8 +265,8 @@ item activity node a <code class="docutils literal notranslate"><span class="pre
 </div>
 <p>A trace is a recording of all nodes used during a shopping session in linear order. A trace would likely be
 recorded by a shopping application, e.g. in its log files. Thus it would contain all nodes (also control nodes)
-that have been used. In the function above, we filter out the control nodes to
-only use the meaningful user activities in our trace model. In addition, a shopping session would produce objects
+that have been used. In the function above, we filter out the control nodes (i.e. the nodes without a classifier name)
+to only use the meaningful user activities in our trace model. In addition, a shopping session would produce objects
 such as a cart, items, and an order. As we do not have a shopping application in which we can record such a trace,
 we manually code the trace and the orders created during a shopping session, in which one product is searched,
 viewed, added to a shopping cart, and then bought:</p>
@@ -295,7 +311,7 @@ viewed, added to a shopping cart, and then bought:</p>
 <img alt="_images/shopping_trace_object_model.png" src="_images/shopping_trace_object_model.png" />
 <p>We can also render the trace with the linked shopping cart model objects:</p>
 <a class=""
-               data-lightbox="group-32e4abde-80c1-4800-9a70-10bbd4f20963"
+               data-lightbox="group-5a16122d-3c2a-4869-a40f-749fb2de21fd"
                href="_images/shopping_trace_object_model_with_objects.png"
                title=""
                data-title=""
@@ -307,7 +323,7 @@ viewed, added to a shopping cart, and then bought:</p>
                 </a><p>Finally, the resulting class model for the workflow nodes together with linked nodes (leaving out the unnamed
 control activity node classes) is the following:</p>
 <a class=""
-               data-lightbox="group-38ad4ffb-c643-4299-b16e-84f8a6eaeb79"
+               data-lightbox="group-dbbe04bf-eb26-4380-87aa-105fef3aa81f"
                href="_images/workflow_class_model.png"
                title=""
                data-title=""

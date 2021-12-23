@@ -98,12 +98,14 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">A meta-model with stereotypes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#the-need-for-stereotypes-in-meta-models">The need for stereotypes in meta-models</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#using-stereotypes-in-meta-models">Using stereotypes in meta-models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#stereotype-instances">Stereotype instances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stereotype-instances-on-class-models">Stereotype instances on class models</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#using-stereotype-superclasses-for-extensions">Using stereotype superclasses for extensions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#tagged-values">Tagged values</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#default-values-on-stereotypes">Default values on stereotypes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#stereotype-introspection">Stereotype introspection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#stereotype-instance-introspection">Stereotype instance introspection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stereotype-instance-introspection-on-class-models">Stereotype instance introspection on class models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stereotype-instances-on-instance-models">Stereotype instances on instance models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#default-values-on-stereotypes">Default values on stereotypes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stereotype-instance-introspection-on-instance-models">Stereotype instance introspection on instance models</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="08_combining_object_class_and_meta_model.html">Combining object, class, and meta-class model</a></li>
@@ -199,6 +201,25 @@ services:</p>
 <span class="n">inventory_db</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Inventory DB&quot;</span><span class="p">)</span>
 <span class="n">shipping_db</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Shipping DB&quot;</span><span class="p">)</span>
 
+<span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="p">[</span><span class="n">inventory_service</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">]:</span>
+    <span class="n">api_gateway</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;* -&gt; *&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">connectors_relation</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="p">[</span><span class="n">inventory_service</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">]:</span>
+    <span class="n">web_frontend</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;1 -&gt; *&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">connectors_relation</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="p">{</span><span class="n">inventory_service</span><span class="p">:</span> <span class="n">inventory_db</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">:</span> <span class="n">shipping_db</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;1 -&gt; *&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">connectors_relation</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here is the model rendered as a class model:</p>
+<img alt="_images/microservice_component_model1_class_model.png" src="_images/microservice_component_model1_class_model.png" />
+<p>Again, it is also possible to model at the meta-class instance level and depict the classes and their links in an
+object diagram:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">api_gateway</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;API Gateway&quot;</span><span class="p">)</span>
+<span class="n">inventory_service</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Inventory Service&quot;</span><span class="p">)</span>
+<span class="n">shipping_service</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Shipping Service&quot;</span><span class="p">)</span>
+<span class="n">web_frontend</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Web Frontend&quot;</span><span class="p">)</span>
+<span class="n">inventory_db</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Inventory DB&quot;</span><span class="p">)</span>
+<span class="n">shipping_db</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Shipping DB&quot;</span><span class="p">)</span>
+
 <span class="n">add_links</span><span class="p">({</span><span class="n">api_gateway</span><span class="p">:</span> <span class="p">[</span><span class="n">inventory_service</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">],</span>
            <span class="n">web_frontend</span><span class="p">:</span> <span class="p">[</span><span class="n">inventory_service</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">],</span>
            <span class="n">inventory_service</span><span class="p">:</span> <span class="n">inventory_db</span><span class="p">,</span>
@@ -207,8 +228,8 @@ services:</p>
 </pre></div>
 </div>
 <p>Here is the model rendered as an meta-class instance model:</p>
-<img alt="_images/microservice_component_model1.png" src="_images/microservice_component_model1.png" />
-<p>To make the model more meaningful and also to be able to automatically process it, be it for analysis or
+<img alt="_images/microservice_component_model1_instance_model.png" src="_images/microservice_component_model1_instance_model.png" />
+<p>To make such  models more meaningful and also to be able to automatically process them, be it for analysis or
 code generation, we might need a bit more information about the components and connectors. For example, we might
 want to distinguish service, database, Web, and gateway components. The obvious way to do this is subclassing:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Service&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">component</span><span class="p">)</span>
@@ -236,7 +257,7 @@ three of the many possible combinations:</p>
 we might want to specify the type of the connector, such as a Restful HTTP or JDBC connector.
 Extending associations as done above would be more tricky.</p>
 <p>The full code of the examples in this first part of this tutorial can be found in the
-sample <a class="reference internal" href="samples_overview.html#microservice-component-model1"><span class="std std-ref">Microservice Component Model 1</span></a>.</p>
+samples <a class="reference internal" href="samples_overview.html#microservice-component-model1-class-model"><span class="std std-ref">Microservice Component Model 1 as Class Model</span></a> and <a class="reference internal" href="samples_overview.html#microservice-component-model1-instance-model"><span class="std std-ref">Microservice Component Model 1 as Instance Model</span></a>.</p>
 </div>
 <div class="section" id="using-stereotypes-in-meta-models">
 <h2>Using stereotypes in meta-models<a class="headerlink" href="#using-stereotypes-in-meta-models" title="Permalink to this headline">¶</a></h2>
@@ -260,7 +281,7 @@ or may not be facades. This can be modelled with the following stereotype extens
 </div>
 <p>Below you can see the meta-model with extensions rendered:</p>
 <a class=""
-               data-lightbox="group-cc58c0cb-6de3-4638-9d7b-4e04b5871c95"
+               data-lightbox="group-4183bf06-d361-4790-8f4b-3f3aae020fe1"
                href="_images/component_meta_model.png"
                title=""
                data-title=""
@@ -275,37 +296,43 @@ of meta-classes using an <code class="docutils literal notranslate"><span class=
 association is not shown as a meta-class, we put a <code class="docutils literal notranslate"><span class="pre">stereotypes</span></code> stereotype on the label of the association that
 is extended.</p>
 </div>
-<div class="section" id="stereotype-instances">
-<h2>Stereotype instances<a class="headerlink" href="#stereotype-instances" title="Permalink to this headline">¶</a></h2>
-<p>To use stereotypes in a class model, the <code class="docutils literal notranslate"><span class="pre">stereotype_instances</span></code> property of the class or of the class link
-shall be used. It accepts a single or a list of stereotypes. Any <a class="reference internal" href="stubs/codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype"><code class="xref py py-class docutils literal notranslate"><span class="pre">CStereotype</span></code></a> extending the
-meta-class can be defined on classes derived from
-that meta-class as a stereotype instance.  Any <a class="reference internal" href="stubs/codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype"><code class="xref py py-class docutils literal notranslate"><span class="pre">CStereotype</span></code></a> extending a
-meta-class association can be defined on a class link derived from that association as a stereotype instance.
+<div class="section" id="stereotype-instances-on-class-models">
+<h2>Stereotype instances on class models<a class="headerlink" href="#stereotype-instances-on-class-models" title="Permalink to this headline">¶</a></h2>
+<p>To use stereotypes in a class model, the <code class="docutils literal notranslate"><span class="pre">stereotype_instances</span></code> property of the class or a derived
+association of the class should be used. It accepts a single or a list of stereotypes.
+Any <a class="reference internal" href="stubs/codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype"><code class="xref py py-class docutils literal notranslate"><span class="pre">CStereotype</span></code></a> extending the meta-class can be used as a stereotype instance on classes derived from
+that meta-class.  Any <a class="reference internal" href="stubs/codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype"><code class="xref py py-class docutils literal notranslate"><span class="pre">CStereotype</span></code></a> extending a meta-class association can be used as a stereotype
+instance on a derived class-level association.
 That is, the list of stereotypes on the meta-class or meta-class association (or on their superclasses)
-defines the possible stereotypes instances of a class or class link.</p>
-<p>With the meta-model extension above, we can define the class model as follows:</p>
+defines the possible stereotypes instances of a class or a class’ derived associations.</p>
+<p>With the meta-model extension above, we can define a sample class model as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">api_gateway</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;API Gateway&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="p">[</span><span class="n">gateway</span><span class="p">,</span> <span class="n">facade</span><span class="p">])</span>
+<span class="n">zip_code_service</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Zip Code Service&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
 <span class="n">inventory_service</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Inventory Service&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
 <span class="n">shipping_service</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Shipping Service&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
 <span class="n">web_frontend</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Web Frontend&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">web_ui</span><span class="p">)</span>
 <span class="n">inventory_db</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Inventory DB&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">database</span><span class="p">)</span>
 <span class="n">shipping_db</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Shipping DB&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">database</span><span class="p">)</span>
 
-<span class="n">add_links</span><span class="p">({</span><span class="n">api_gateway</span><span class="p">:</span> <span class="p">[</span><span class="n">inventory_service</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">],</span>
-           <span class="n">web_frontend</span><span class="p">:</span> <span class="p">[</span><span class="n">inventory_service</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">]},</span>
-          <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">restful_http</span><span class="p">)</span>
-
-<span class="n">add_links</span><span class="p">({</span><span class="n">inventory_service</span><span class="p">:</span> <span class="n">inventory_db</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">:</span> <span class="n">shipping_db</span><span class="p">},</span>
-          <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">jdbc</span><span class="p">)</span>
+<span class="n">shipping_service_zip_code_association</span> <span class="o">=</span> \
+    <span class="n">shipping_service</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">zip_code_service</span><span class="p">,</span> <span class="s2">&quot;1 -&gt; 1&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">connectors_relation</span><span class="p">,</span>
+                                 <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">restful_http</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="p">[</span><span class="n">inventory_service</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">,</span> <span class="n">zip_code_service</span><span class="p">]:</span>
+    <span class="n">api_gateway</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;* -&gt; *&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">connectors_relation</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">restful_http</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="p">[</span><span class="n">inventory_service</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">]:</span>
+    <span class="n">web_frontend</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;1 -&gt; *&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">connectors_relation</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">restful_http</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="p">{</span><span class="n">inventory_service</span><span class="p">:</span> <span class="n">inventory_db</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">:</span> <span class="n">shipping_db</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;1 -&gt; *&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">connectors_relation</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">jdbc</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Here is the model rendered as an instance model:</p>
-<img alt="_images/microservice_component_model2.png" src="_images/microservice_component_model2.png" />
+<p>Here is the model rendered as an class diagram:</p>
+<img alt="_images/microservice_component_model2_class_model.png" src="_images/microservice_component_model2_class_model.png" />
+<p>The full code of the example can be found in the
+sample <a class="reference internal" href="samples_overview.html#microservice-component-model2-class-model"><span class="std std-ref">Microservice Component Model 2 as Class Model</span></a>.</p>
 </div>
 <div class="section" id="using-stereotype-superclasses-for-extensions">
 <h2>Using stereotype superclasses for extensions<a class="headerlink" href="#using-stereotype-superclasses-for-extensions" title="Permalink to this headline">¶</a></h2>
-<p>In this example, all stereotypes extend the meta-classes and meta-class associations directly. In our own work,
+<p>So far, all stereotypes extend the meta-classes and meta-class associations directly. In our own work,
 we usually introduce a superclass for each kind of stereotype to better organize meta-models.</p>
 <p>For example, the meta-model in the Codeable Models distribution in folder <code class="docutils literal notranslate"><span class="pre">metamodels/component_metamodel.py</span></code>
 extends the component and connector meta-classes with a component type and connector type stereotype:</p>
@@ -323,7 +350,7 @@ extends the component and connector meta-classes with a component type and conne
 stereotype hierarchies. For example the <a class="reference internal" href="metamodels_overview.html#microservice-components-metamodel"><span class="std std-ref">Microservice Components Metamodel</span></a> for modelling
 microservice component models, at the time of this writing had the following component types defined:</p>
 <a class=""
-               data-lightbox="group-efd46947-178c-43d5-9515-dab18430fdd8"
+               data-lightbox="group-a10cd404-7a54-4b5f-af66-65946455d064"
                href="_images/Component_Stereotypes.png"
                title=""
                data-title=""
@@ -334,7 +361,7 @@ microservice component models, at the time of this writing had the following com
                      alt=""/>
                 </a><p>It defines also the following connector types:</p>
 <a class=""
-               data-lightbox="group-ed6549aa-c1ab-4a4c-9d35-c4855ab55ed7"
+               data-lightbox="group-00fb29cb-f5b2-4803-9cac-e15ee9ceb220"
                href="_images/Connector_Stereotypes.png"
                title=""
                data-title=""
@@ -343,14 +370,13 @@ microservice component models, at the time of this writing had the following com
                      width="100%"
                      height="auto"
                      alt=""/>
-                </a><p>The full code of the examples for this part of the tutorial can be found in the
-sample <a class="reference internal" href="samples_overview.html#microservice-component-model2"><span class="std std-ref">Microservice Component Model 2</span></a>.</p>
-</div>
+                </a></div>
 <div class="section" id="tagged-values">
 <h2>Tagged values<a class="headerlink" href="#tagged-values" title="Permalink to this headline">¶</a></h2>
 <p>As in UML, stereotypes can introduce new attributes only valid for stereotyped instances. Those are called
-tagged values on the instances, i.e. classes or class links. Tagged values can simply be defined as <code class="docutils literal notranslate"><span class="pre">attributes</span></code>
-on the stereotype. For example, we might want to extend components which are services with host name and port values:</p>
+tagged values on the instances, i.e. classes or their derived associations.
+Tagged values can simply be defined as <code class="docutils literal notranslate"><span class="pre">attributes</span></code> on the stereotype. For example, we might want to
+extend components which are services with host name and port values:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Service&quot;</span><span class="p">,</span> <span class="n">extended</span><span class="o">=</span><span class="n">component</span><span class="p">,</span> <span class="n">attributes</span><span class="o">=</span><span class="p">{</span>
     <span class="s2">&quot;host_name&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="nb">int</span>
@@ -366,9 +392,10 @@ connection:</p>
 </pre></div>
 </div>
 <p>The property <code class="docutils literal notranslate"><span class="pre">tagged_values</span></code> and the methods <code class="docutils literal notranslate"><span class="pre">get_tagged_value()</span></code>, <code class="docutils literal notranslate"><span class="pre">set_tagged_value()</span></code>,
-and <code class="docutils literal notranslate"><span class="pre">delete_tagged_value()</span></code> can be used on any class or class link that has one of those stereotypes
-as a stereotype instance. Those properties and methods work exactly like the respective
-ordinary operations on <code class="docutils literal notranslate"><span class="pre">values</span></code>.</p>
+and <code class="docutils literal notranslate"><span class="pre">delete_tagged_value()</span></code> can be used on any class or derived association (or link).
+Those properties and methods work exactly like the respective ordinary operations on <code class="docutils literal notranslate"><span class="pre">values</span></code>.
+The tagged value can be accessed on a class, derived assocation, or link if a stereotype instance
+is derived from a stereotype that has defined the tagged values as attributes.</p>
 <p>For example, lets consider we want to set host name and port of the shipping services:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">shipping_service</span><span class="o">.</span><span class="n">set_tagged_value</span><span class="p">(</span><span class="s2">&quot;host_name&quot;</span><span class="p">,</span> <span class="s2">&quot;www.example.com&quot;</span><span class="p">)</span>
 <span class="n">shipping_service</span><span class="o">.</span><span class="n">set_tagged_value</span><span class="p">(</span><span class="s2">&quot;port&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
@@ -384,12 +411,12 @@ ordinary operations on <code class="docutils literal notranslate"><span class="p
 </pre></div>
 </div>
 <p>Consider we want to change the link between shipping service and zip code service to HTTP. Then we need to
-call <code class="docutils literal notranslate"><span class="pre">set_tagged_value()</span></code> on the class link object:</p>
+call <code class="docutils literal notranslate"><span class="pre">set_tagged_value()</span></code> on the derived association:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;old protocol shipping service to zip code: &quot;</span> <span class="o">+</span>
-      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">shipping_service_zip_code_service_link</span><span class="o">.</span><span class="n">get_tagged_value</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="n">shipping_service_zip_code_service_link</span><span class="o">.</span><span class="n">set_tagged_value</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">,</span> <span class="s2">&quot;HTTP&quot;</span><span class="p">)</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">shipping_service_zip_code_association</span><span class="o">.</span><span class="n">get_tagged_value</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">shipping_service_zip_code_association</span><span class="o">.</span><span class="n">set_tagged_value</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">,</span> <span class="s2">&quot;HTTP&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;new protocol shipping service to zip code: &quot;</span> <span class="o">+</span>
-      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">shipping_service_zip_code_service_link</span><span class="o">.</span><span class="n">get_tagged_value</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">shipping_service_zip_code_association</span><span class="o">.</span><span class="n">get_tagged_value</span><span class="p">(</span><span class="s1">&#39;protocol&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Here we also print the old and the new tagged value, which yields the following result:</p>
@@ -397,11 +424,110 @@ call <code class="docutils literal notranslate"><span class="pre">set_tagged_val
 new protocol shipping service to zip code: HTTP
 </pre></div>
 </div>
+<p>Here is the model rendered as an class diagram with tagged values on classes and associations displayed:</p>
+<img alt="_images/microservice_component_model3_class_model.png" src="_images/microservice_component_model3_class_model.png" />
+</div>
+<div class="section" id="stereotype-introspection">
+<h2>Stereotype introspection<a class="headerlink" href="#stereotype-introspection" title="Permalink to this headline">¶</a></h2>
+<p>A meta-class or association can be queried for its stereotypes using the <code class="docutils literal notranslate"><span class="pre">stereotypes</span></code> property. For example,
+we could print the stereotypes of the <code class="docutils literal notranslate"><span class="pre">component</span></code> and <code class="docutils literal notranslate"><span class="pre">connector_relation</span></code> meta-classes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;component stereotypes = </span><span class="si">{</span><span class="n">component</span><span class="o">.</span><span class="n">stereotypes</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;connector stereotypes = </span><span class="si">{</span><span class="n">connectors_relation</span><span class="o">.</span><span class="n">stereotypes</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would print something like:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>component stereotypes = [&lt;codeable_models.cstereotype.CStereotype object at 0x00000229793B8608&gt;: Component Type, &lt;codeable_models.cstereotype.CStereotype object at 0x000002297945A708&gt;: Service, &lt;codeable_models.cstereotype.CStereotype object at 0x000002297945AE88&gt;: Database, &lt;codeable_models.cstereotype.CStereotype object at 0x000002297945E0C8&gt;: Facade, &lt;codeable_models.cstereotype.CStereotype object at 0x000002297945E208&gt;: Gateway]
+connector stereotypes = [&lt;codeable_models.cstereotype.CStereotype object at 0x00000229793B8C88&gt;: Connector Type, &lt;codeable_models.cstereotype.CStereotype object at 0x000002297945E548&gt;: JDBC, &lt;codeable_models.cstereotype.CStereotype object at 0x0000022979464DC8&gt;: RESTful HTTP]
+</pre></div>
+</div>
+<p>In addition, <code class="docutils literal notranslate"><span class="pre">get_stereotypes(name)</span></code> can find all stereotypes with a given name, and
+<code class="docutils literal notranslate"><span class="pre">get_stereotype(name)</span></code> the first stereotype with a name, respectively.</p>
+<p>On the stereotype we can introspect the same relation using the <code class="docutils literal notranslate"><span class="pre">extended</span></code> property returning all extended
+meta-classes or associations. For example, we could print this information for two of the stereotypes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;facade extended = </span><span class="si">{</span><span class="n">facade</span><span class="o">.</span><span class="n">extended</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;restful_http extended = </span><span class="si">{</span><span class="n">restful_http</span><span class="o">.</span><span class="n">extended</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would print something like:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>facade extended = [&lt;codeable_models.cmetaclass.CMetaclass object at 0x000001F4E8C27448&gt;: Component]
+restful_http extended = [CAssociation name = connected to, source = Component -&gt; target = Component]
+</pre></div>
+</div>
+</div>
+<div class="section" id="stereotype-instance-introspection-on-class-models">
+<h2>Stereotype instance introspection on class models<a class="headerlink" href="#stereotype-instance-introspection-on-class-models" title="Permalink to this headline">¶</a></h2>
+<p>With the <code class="docutils literal notranslate"><span class="pre">stereotype_instances</span></code> property we can get the stereotype instances defined on a class or a derived
+association. For example, we can print the stereotype instances for one of the database classes and
+one of the Restful HTTP links:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shipping DB stereotype instances: </span><span class="si">{</span><span class="n">shipping_db</span><span class="o">.</span><span class="n">stereotype_instances</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shipping service to zip code association stereotype instances: &quot;</span> <span class="o">+</span>
+      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">shipping_service_zip_code_association</span><span class="o">.</span><span class="n">stereotype_instances</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would print something like:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Shipping DB stereotype instances: [&lt;codeable_models.cstereotype.CStereotype object at 0x0000024FA3B37F08&gt;: Database]
+Shipping service to zip code association stereotype instances: [&lt;codeable_models.cstereotype.CStereotype object at 0x0000024FA3B72DC8&gt;: RESTful HTTP]
+</pre></div>
+</div>
+<p>The extended instances of a stereotype can be introspected with <code class="docutils literal notranslate"><span class="pre">extended_instances</span></code>. It gets the
+extended instances, i.e. the classes or derived associations (and/or class links)
+extended by the stereotype. <code class="docutils literal notranslate"><span class="pre">all_extended_instances</span></code>
+is a getter to get all the extended instances, i.e. the classes or class links
+extended by a stereotype, including those on subclasses. For example, we can print extended instances
+for a few stereotypes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;extended instances of database: </span><span class="si">{</span><span class="n">database</span><span class="o">.</span><span class="n">extended_instances</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;all extended instances of component: </span><span class="si">{</span><span class="n">service</span><span class="o">.</span><span class="n">extended_instances</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;extended instances of restful_http: </span><span class="si">{</span><span class="n">restful_http</span><span class="o">.</span><span class="n">extended_instances</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This would print something like:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>extended instances of database: [&lt;codeable_models.cclass.CClass object at 0x0000024285F83FC8&gt;: Inventory DB, &lt;codeable_models.cclass.CClass object at 0x0000024285F83E08&gt;: Shipping DB]
+all extended instances of component: [&lt;codeable_models.cclass.CClass object at 0x0000024285F80E08&gt;: Inventory Service, &lt;codeable_models.cclass.CClass object at 0x0000024285F83908&gt;: Shipping Service]
+extended instances of restful_http: [CAssociation name = , source = Shipping Service -&gt; target = Zip Code Service, CAssociation name = , source = API Gateway -&gt; target = Inventory Service, CAssociation name = , source = API Gateway -&gt; target = Shipping Service, CAssociation name = , source = API Gateway -&gt; target = Zip Code Service, CAssociation name = , source = Web Frontend -&gt; target = Inventory Service, CAssociation name = , source = Web Frontend -&gt; target = Shipping Service]
+</pre></div>
+</div>
+<p>The full code of these examples of class-level models can be found in the
+sample <a class="reference internal" href="samples_overview.html#microservice-component-model3-class-model"><span class="std std-ref">Microservice Component Model 3 as Class Model</span></a>.</p>
+</div>
+<div class="section" id="stereotype-instances-on-instance-models">
+<h2>Stereotype instances on instance models<a class="headerlink" href="#stereotype-instances-on-instance-models" title="Permalink to this headline">¶</a></h2>
+<p>Just as explain in <a class="reference internal" href="06_first_meta_model.html#meta-modelling"><span class="std std-ref">A first meta-model</span></a>, an alternative to deriving as class-level model
+from a meta-model is to provide an instance-level model, which would be depicted as an
+object diagram. Again, the classes can be defined exactly in the same way as for the
+class-level model, only links with the respective stereotype instances need to
+be used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">api_gateway</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;API Gateway&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="p">[</span><span class="n">gateway</span><span class="p">,</span> <span class="n">facade</span><span class="p">])</span>
+<span class="n">zip_code_service</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Zip Code Service&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
+<span class="n">inventory_service</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Inventory Service&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
+<span class="n">shipping_service</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Shipping Service&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">service</span><span class="p">)</span>
+<span class="n">web_frontend</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Web Frontend&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">web_ui</span><span class="p">)</span>
+<span class="n">inventory_db</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Inventory DB&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">database</span><span class="p">)</span>
+<span class="n">shipping_db</span> <span class="o">=</span> <span class="n">CClass</span><span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="s2">&quot;Shipping DB&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">database</span><span class="p">)</span>
+
+<span class="n">add_links</span><span class="p">({</span><span class="n">shipping_service</span><span class="p">:</span> <span class="n">zip_code_service</span><span class="p">,</span>
+           <span class="n">api_gateway</span><span class="p">:</span> <span class="p">[</span><span class="n">inventory_service</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">,</span> <span class="n">zip_code_service</span><span class="p">],</span>
+           <span class="n">web_frontend</span><span class="p">:</span> <span class="p">[</span><span class="n">inventory_service</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">]},</span>
+          <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">restful_http</span><span class="p">)</span>
+<span class="n">add_links</span><span class="p">({</span><span class="n">inventory_service</span><span class="p">:</span> <span class="n">inventory_db</span><span class="p">,</span> <span class="n">shipping_service</span><span class="p">:</span> <span class="n">shipping_db</span><span class="p">},</span>
+          <span class="n">role_name</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">,</span> <span class="n">stereotype_instances</span><span class="o">=</span><span class="n">jdbc</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here is the model rendered as an instance model (object diagram):</p>
+<img alt="_images/microservice_component_model2_instance_model.png" src="_images/microservice_component_model2_instance_model.png" />
+<p>Stereotype superclasses, tagged values, and stereotype introspection work on instance-level models
+in the same way as explained above for class-level models. For tagged values, the class links must have
+the stereotype instances defined on them, instead of the derived associations used in the examples above.</p>
+<p>The full code of these examples for instance level models can be found in the
+sample <a class="reference internal" href="samples_overview.html#microservice-component-model2-instance-model"><span class="std std-ref">Microservice Component Model 2 as Instance Model</span></a>.</p>
 </div>
 <div class="section" id="default-values-on-stereotypes">
 <h2>Default values on stereotypes<a class="headerlink" href="#default-values-on-stereotypes" title="Permalink to this headline">¶</a></h2>
+<p>A feature that makes more sense to be used on instance-level models (even though it works in class-level
+models as well) are default values on stereotypes. They enable us to use stereotype default
+values to overwrite those of meta-classes. Among other things, this feature make more sense
+to be used on instance-level models, as object diagrams show these values, whereas class diagrams do not.</p>
 <p>Consider we want to build our system from distributed components. For example, for the purpose of
-for selecting the proper code generation and deployment tasks in our tool chain,  it shall be modeled,
+selecting the proper code generation and deployment tasks in our tool chain,  it shall be modeled,
 whether these components are mock components or not, and whether they are stateless or not.
 This can be modelled using a special component class with those attributes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">distributed_component</span> <span class="o">=</span> <span class="n">CMetaclass</span><span class="p">(</span><span class="s2">&quot;Distributed Component&quot;</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">component</span><span class="p">,</span>
@@ -411,13 +537,14 @@ This can be modelled using a special component class with those attributes:</p>
                                     <span class="p">})</span>
 </pre></div>
 </div>
-<p>Assuming that the distributed component classes in the class model are
-derived from this meta-class, we could derive a
+<p>Assuming that the distributed component classes are derived from this meta-class, we could derive a
 stateless service stereotype from <code class="docutils literal notranslate"><span class="pre">service</span></code> as a subclass. Here, it is undesirable that the default value
-for the <code class="docutils literal notranslate"><span class="pre">stateless</span></code> attribute is <code class="docutils literal notranslate"><span class="pre">False</span></code> for such stereotyped <code class="docutils literal notranslate"><span class="pre">stateless</span></code> components of which we know
-that they are stateless. With the <code class="docutils literal notranslate"><span class="pre">default_values</span></code> dict, a stereotype can redefine default values of the
+for the <code class="docutils literal notranslate"><span class="pre">stateless</span></code> attribute is <code class="docutils literal notranslate"><span class="pre">False</span></code> for such stereotyped <code class="docutils literal notranslate"><span class="pre">stateless</span></code> components of which
+we already know that they are stateless, once the stereotype is used.
+With the <code class="docutils literal notranslate"><span class="pre">default_values</span></code> dictionary, a stereotype can redefine default values of the
 extended meta-class:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stateless_service</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Stateless Service&quot;</span><span class="p">,</span> <span class="n">extended</span><span class="o">=</span><span class="n">distributed_component</span><span class="p">,</span> <span class="n">superclasses</span><span class="o">=</span><span class="n">service</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stateless_service</span> <span class="o">=</span> <span class="n">CStereotype</span><span class="p">(</span><span class="s2">&quot;Stateless Service&quot;</span><span class="p">,</span> <span class="n">extended</span><span class="o">=</span><span class="n">distributed_component</span><span class="p">,</span>
+                                <span class="n">superclasses</span><span class="o">=</span><span class="n">service</span><span class="p">,</span>
                                 <span class="n">default_values</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;stateless&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
 </pre></div>
 </div>
@@ -459,38 +586,15 @@ whereas other services still have <code class="docutils literal notranslate"><sp
 zip code service values = {&#39;stateless&#39;: True, &#39;mock&#39;: False}
 </pre></div>
 </div>
+<p>Here is the model with attributes set from default values shown as an instance model (object diagram).
+The diagram also shows tagged values (assuming exactly the same tagged values are used as in
+the class-level model above).</p>
+<img alt="_images/microservice_component_model3_instance_model.png" src="_images/microservice_component_model3_instance_model.png" />
 </div>
-<div class="section" id="stereotype-introspection">
-<h2>Stereotype introspection<a class="headerlink" href="#stereotype-introspection" title="Permalink to this headline">¶</a></h2>
-<p>A meta-class or association can be queried for its stereotypes using the <code class="docutils literal notranslate"><span class="pre">stereotypes</span></code> property. For example,
-we could print the stereotypes of the <code class="docutils literal notranslate"><span class="pre">component</span></code> and <code class="docutils literal notranslate"><span class="pre">connector_relation</span></code> meta-classes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;component stereotypes = </span><span class="si">{</span><span class="n">component</span><span class="o">.</span><span class="n">stereotypes</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;connector stereotypes = </span><span class="si">{</span><span class="n">connectors_relation</span><span class="o">.</span><span class="n">stereotypes</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>This would print something like:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>component stereotypes = [&lt;codeable_models.cstereotype.CStereotype object at 0x00000229793B8608&gt;: Component Type, &lt;codeable_models.cstereotype.CStereotype object at 0x000002297945A708&gt;: Service, &lt;codeable_models.cstereotype.CStereotype object at 0x000002297945AE88&gt;: Database, &lt;codeable_models.cstereotype.CStereotype object at 0x000002297945E0C8&gt;: Facade, &lt;codeable_models.cstereotype.CStereotype object at 0x000002297945E208&gt;: Gateway]
-connector stereotypes = [&lt;codeable_models.cstereotype.CStereotype object at 0x00000229793B8C88&gt;: Connector Type, &lt;codeable_models.cstereotype.CStereotype object at 0x000002297945E548&gt;: JDBC, &lt;codeable_models.cstereotype.CStereotype object at 0x0000022979464DC8&gt;: RESTful HTTP]
-</pre></div>
-</div>
-<p>In addition, <code class="docutils literal notranslate"><span class="pre">get_stereotypes(name)</span></code> can find all stereotypes with a given name, and
-<code class="docutils literal notranslate"><span class="pre">get_stereotype(name)</span></code> the first stereotype with a name, respectively.</p>
-<p>On the stereotype we can introspect the same relation using the <code class="docutils literal notranslate"><span class="pre">extended</span></code> property returning all extended
-meta-classes or associations. For example, we could print this information for two of the stereotypes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;facade extended = </span><span class="si">{</span><span class="n">facade</span><span class="o">.</span><span class="n">extended</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;restful_http extended = </span><span class="si">{</span><span class="n">restful_http</span><span class="o">.</span><span class="n">extended</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>This would print something like:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>facade extended = [&lt;codeable_models.cmetaclass.CMetaclass object at 0x000001F4E8C27448&gt;: Component]
-restful_http extended = [CAssociation name = connected to, source = Component -&gt; target = Component]
-</pre></div>
-</div>
-</div>
-<div class="section" id="stereotype-instance-introspection">
-<h2>Stereotype instance introspection<a class="headerlink" href="#stereotype-instance-introspection" title="Permalink to this headline">¶</a></h2>
-<p>With the <code class="docutils literal notranslate"><span class="pre">stereotype_instances</span></code> property we can get the stereotype instances defined on a class or link. For example,
-we can print the stereotype instances for one of the database classes and one of the Restful HTTP links:</p>
+<div class="section" id="stereotype-instance-introspection-on-instance-models">
+<h2>Stereotype instance introspection on instance models<a class="headerlink" href="#stereotype-instance-introspection-on-instance-models" title="Permalink to this headline">¶</a></h2>
+<p>With the <code class="docutils literal notranslate"><span class="pre">stereotype_instances</span></code> property we can get the stereotype instances defined on a link of a class, too.
+For example, we can print the stereotype instances for one of the database classes and one of the Restful HTTP links:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shipping DB stereotype instances: </span><span class="si">{</span><span class="n">shipping_db</span><span class="o">.</span><span class="n">stereotype_instances</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shipping service to zip code link stereotype instances: &quot;</span> <span class="o">+</span>
       <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">shipping_service_zip_code_service_link</span><span class="o">.</span><span class="n">stereotype_instances</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -501,24 +605,17 @@ we can print the stereotype instances for one of the database classes and one of
 Shipping service to zip code link stereotype instances: [&lt;codeable_models.cstereotype.CStereotype object at 0x00000242DFAC4E48&gt;: RESTful HTTP]
 </pre></div>
 </div>
-<p>The extended instances of a stereotype can be introspected with <code class="docutils literal notranslate"><span class="pre">extended_instances</span></code>. It gets the
-extended instances, i.e. the classes or class links extended by the stereotype. <code class="docutils literal notranslate"><span class="pre">all_extended_instances</span></code>
-is a getter to get all the extended instances, i.e. the classes or class links
-extended by a stereotype, including those on subclasses. For example, we can print extended instances
-for a few stereotypes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;extended instances of database: </span><span class="si">{</span><span class="n">database</span><span class="o">.</span><span class="n">extended_instances</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;all extended instances of component: </span><span class="si">{</span><span class="n">service</span><span class="o">.</span><span class="n">extended_instances</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;extended instances of restful_http: </span><span class="si">{</span><span class="n">restful_http</span><span class="o">.</span><span class="n">extended_instances</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+<p>The extended instances of a stereotype can be introspected with <code class="docutils literal notranslate"><span class="pre">extended_instances</span></code>, as explained above. For
+the link it would be called as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;extended instances of restful_http: </span><span class="si">{</span><span class="n">restful_http</span><span class="o">.</span><span class="n">extended_instances</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This would print something like:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>extended instances of database: [&lt;codeable_models.cclass.CClass object at 0x0000024285F83FC8&gt;: Inventory DB, &lt;codeable_models.cclass.CClass object at 0x0000024285F83E08&gt;: Shipping DB]
-all extended instances of component: [&lt;codeable_models.cclass.CClass object at 0x0000024285F80E08&gt;: Inventory Service, &lt;codeable_models.cclass.CClass object at 0x0000024285F83908&gt;: Shipping Service]
-extended instances of restful_http: [`CLink &lt;codeable_models.clink.CLink object at 0x0000024285F86908&gt; source = &lt;codeable_models.cobject.CObject object at 0x0000024285F83508&gt;: Shipping Service -&gt; target = &lt;codeable_models.cobject.CObject object at 0x0000024285F80AC8&gt;: Zip Code Service`, `CLink &lt;codeable_models.clink.CLink object at 0x0000024285F86B48&gt; source = &lt;codeable_models.cobject.CObject object at 0x0000024285F800C8&gt;: API Gateway -&gt; target = &lt;codeable_models.cobject.CObject object at 0x0000024285F835C8&gt;: Inventory Service`, `CLink &lt;codeable_models.clink.CLink object at 0x0000024285F86C88&gt; source = &lt;codeable_models.cobject.CObject object at 0x0000024285F800C8&gt;: API Gateway -&gt; target = &lt;codeable_models.cobject.CObject object at 0x0000024285F83508&gt;: Shipping Service`, `CLink &lt;codeable_models.clink.CLink object at 0x0000024285F86B08&gt; source = &lt;codeable_models.cobject.CObject object at 0x0000024285F800C8&gt;: API Gateway -&gt; target = &lt;codeable_models.cobject.CObject object at 0x0000024285F80AC8&gt;: Zip Code Service`, `CLink &lt;codeable_models.clink.CLink object at 0x0000024285F86E88&gt; source = &lt;codeable_models.cobject.CObject object at 0x0000024285F834C8&gt;: Web Frontend -&gt; target = &lt;codeable_models.cobject.CObject object at 0x0000024285F835C8&gt;: Inventory Service`, `CLink &lt;codeable_models.clink.CLink object at 0x0000024285F86F48&gt; source = &lt;codeable_models.cobject.CObject object at 0x0000024285F834C8&gt;: Web Frontend -&gt; target = &lt;codeable_models.cobject.CObject object at 0x0000024285F83508&gt;: Shipping Service`]
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>extended instances of restful_http: [`CLink &lt;codeable_models.clink.CLink object at 0x0000024285F86908&gt; source = &lt;codeable_models.cobject.CObject object at 0x0000024285F83508&gt;: Shipping Service -&gt; target = &lt;codeable_models.cobject.CObject object at 0x0000024285F80AC8&gt;: Zip Code Service`, `CLink &lt;codeable_models.clink.CLink object at 0x0000024285F86B48&gt; source = &lt;codeable_models.cobject.CObject object at 0x0000024285F800C8&gt;: API Gateway -&gt; target = &lt;codeable_models.cobject.CObject object at 0x0000024285F835C8&gt;: Inventory Service`, `CLink &lt;codeable_models.clink.CLink object at 0x0000024285F86C88&gt; source = &lt;codeable_models.cobject.CObject object at 0x0000024285F800C8&gt;: API Gateway -&gt; target = &lt;codeable_models.cobject.CObject object at 0x0000024285F83508&gt;: Shipping Service`, `CLink &lt;codeable_models.clink.CLink object at 0x0000024285F86B08&gt; source = &lt;codeable_models.cobject.CObject object at 0x0000024285F800C8&gt;: API Gateway -&gt; target = &lt;codeable_models.cobject.CObject object at 0x0000024285F80AC8&gt;: Zip Code Service`, `CLink &lt;codeable_models.clink.CLink object at 0x0000024285F86E88&gt; source = &lt;codeable_models.cobject.CObject object at 0x0000024285F834C8&gt;: Web Frontend -&gt; target = &lt;codeable_models.cobject.CObject object at 0x0000024285F835C8&gt;: Inventory Service`, `CLink &lt;codeable_models.clink.CLink object at 0x0000024285F86F48&gt; source = &lt;codeable_models.cobject.CObject object at 0x0000024285F834C8&gt;: Web Frontend -&gt; target = &lt;codeable_models.cobject.CObject object at 0x0000024285F83508&gt;: Shipping Service`]
 </pre></div>
 </div>
-<p>The full code of the examples for last part of the tutorial can be found in the
-sample <a class="reference internal" href="samples_overview.html#microservice-component-model3"><span class="std std-ref">Microservice Component Model 3</span></a>.</p>
+<p>The full code of these examples of instance level models can be found in the
+sample <a class="reference internal" href="samples_overview.html#microservice-component-model3-instance-model"><span class="std std-ref">Microservice Component Model 3 as Instance Model</span></a>.</p>
 </div>
 </div>
 

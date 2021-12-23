@@ -27,6 +27,27 @@ services::
     inventory_db = CClass(component, "Inventory DB")
     shipping_db = CClass(component, "Shipping DB")
 
+    for target in [inventory_service, shipping_service]:
+        api_gateway.association(target, "* -> *", derived_from=connectors_relation)
+    for target in [inventory_service, shipping_service]:
+        web_frontend.association(target, "1 -> *", derived_from=connectors_relation)
+    for source, target in {inventory_service: inventory_db, shipping_service: shipping_db}.items():
+        source.association(target, "1 -> *", derived_from=connectors_relation)
+
+Here is the model rendered as a class model:
+
+.. image:: images/microservice_component_model1_class_model.png
+
+Again, it is also possible to model at the meta-class instance level and depict the classes and their links in an
+object diagram::
+
+    api_gateway = CClass(component, "API Gateway")
+    inventory_service = CClass(component, "Inventory Service")
+    shipping_service = CClass(component, "Shipping Service")
+    web_frontend = CClass(component, "Web Frontend")
+    inventory_db = CClass(component, "Inventory DB")
+    shipping_db = CClass(component, "Shipping DB")
+
     add_links({api_gateway: [inventory_service, shipping_service],
                web_frontend: [inventory_service, shipping_service],
                inventory_service: inventory_db,
@@ -35,9 +56,9 @@ services::
 
 Here is the model rendered as an meta-class instance model:
 
-.. image:: images/microservice_component_model1.png
+.. image:: images/microservice_component_model1_instance_model.png
 
-To make the model more meaningful and also to be able to automatically process it, be it for analysis or
+To make such  models more meaningful and also to be able to automatically process them, be it for analysis or
 code generation, we might need a bit more information about the components and connectors. For example, we might
 want to distinguish service, database, Web, and gateway components. The obvious way to do this is subclassing::
 
@@ -67,7 +88,7 @@ we might want to specify the type of the connector, such as a Restful HTTP or JD
 Extending associations as done above would be more tricky.
 
 The full code of the examples in this first part of this tutorial can be found in the
-sample :ref:`microservice_component_model1`.
+samples :ref:`microservice_component_model1_class_model` and :ref:`microservice_component_model1_instance_model`.
 
 Using stereotypes in meta-models
 ================================
@@ -101,41 +122,50 @@ of meta-classes using an ``extended`` stereotype on the extension relation. As i
 association is not shown as a meta-class, we put a ``stereotypes`` stereotype on the label of the association that
 is extended.
 
-Stereotype instances
-====================
+Stereotype instances on class models
+====================================
 
-To use stereotypes in a class model, the ``stereotype_instances`` property of the class or of the class link
-shall be used. It accepts a single or a list of stereotypes. Any :py:class:`.CStereotype` extending the
-meta-class can be defined on classes derived from
-that meta-class as a stereotype instance.  Any :py:class:`.CStereotype` extending a
-meta-class association can be defined on a class link derived from that association as a stereotype instance.
+To use stereotypes in a class model, the ``stereotype_instances`` property of the class or a derived
+association of the class should be used. It accepts a single or a list of stereotypes.
+Any :py:class:`.CStereotype` extending the meta-class can be used as a stereotype instance on classes derived from
+that meta-class.  Any :py:class:`.CStereotype` extending a meta-class association can be used as a stereotype
+instance on a derived class-level association.
 That is, the list of stereotypes on the meta-class or meta-class association (or on their superclasses)
-defines the possible stereotypes instances of a class or class link.
+defines the possible stereotypes instances of a class or a class' derived associations.
 
-With the meta-model extension above, we can define the class model as follows::
+With the meta-model extension above, we can define a sample class model as follows::
 
     api_gateway = CClass(component, "API Gateway", stereotype_instances=[gateway, facade])
+    zip_code_service = CClass(component, "Zip Code Service", stereotype_instances=service)
     inventory_service = CClass(component, "Inventory Service", stereotype_instances=service)
     shipping_service = CClass(component, "Shipping Service", stereotype_instances=service)
     web_frontend = CClass(component, "Web Frontend", stereotype_instances=web_ui)
     inventory_db = CClass(component, "Inventory DB", stereotype_instances=database)
     shipping_db = CClass(component, "Shipping DB", stereotype_instances=database)
 
-    add_links({api_gateway: [inventory_service, shipping_service],
-               web_frontend: [inventory_service, shipping_service]},
-              role_name="target", stereotype_instances=restful_http)
+    shipping_service_zip_code_association = \
+        shipping_service.association(zip_code_service, "1 -> 1", derived_from=connectors_relation,
+                                     stereotype_instances=restful_http)
+    for target in [inventory_service, shipping_service, zip_code_service]:
+        api_gateway.association(target, "* -> *", derived_from=connectors_relation, stereotype_instances=restful_http)
+    for target in [inventory_service, shipping_service]:
+        web_frontend.association(target, "1 -> *", derived_from=connectors_relation, stereotype_instances=restful_http)
+    for source, target in {inventory_service: inventory_db, shipping_service: shipping_db}.items():
+        source.association(target, "1 -> *", derived_from=connectors_relation, stereotype_instances=jdbc)
 
-    add_links({inventory_service: inventory_db, shipping_service: shipping_db},
-              role_name="target", stereotype_instances=jdbc)
+Here is the model rendered as an class diagram:
 
-Here is the model rendered as an instance model:
+.. image:: images/microservice_component_model2_class_model.png
 
-.. image:: images/microservice_component_model2.png
+The full code of the example can be found in the
+sample :ref:`microservice_component_model2_class_model`.
+
+
 
 Using stereotype superclasses for extensions
 ============================================
 
-In this example, all stereotypes extend the meta-classes and meta-class associations directly. In our own work,
+So far, all stereotypes extend the meta-classes and meta-class associations directly. In our own work,
 we usually introduce a superclass for each kind of stereotype to better organize meta-models.
 
 For example, the meta-model in the Codeable Models distribution in folder ``metamodels/component_metamodel.py``
@@ -164,15 +194,13 @@ It defines also the following connector types:
 .. thumbnail:: images/Connector_Stereotypes.png
 
 
-The full code of the examples for this part of the tutorial can be found in the
-sample :ref:`microservice_component_model2`.
-
 Tagged values
 =============
 
 As in UML, stereotypes can introduce new attributes only valid for stereotyped instances. Those are called
-tagged values on the instances, i.e. classes or class links. Tagged values can simply be defined as ``attributes``
-on the stereotype. For example, we might want to extend components which are services with host name and port values::
+tagged values on the instances, i.e. classes or their derived associations.
+Tagged values can simply be defined as ``attributes`` on the stereotype. For example, we might want to
+extend components which are services with host name and port values::
 
     service = CStereotype("Service", extended=component, attributes={
         "host_name": str,
@@ -188,9 +216,10 @@ connection::
     })
 
 The property ``tagged_values`` and the methods ``get_tagged_value()``, ``set_tagged_value()``,
-and ``delete_tagged_value()`` can be used on any class or class link that has one of those stereotypes
-as a stereotype instance. Those properties and methods work exactly like the respective
-ordinary operations on ``values``.
+and ``delete_tagged_value()`` can be used on any class or derived association (or link).
+Those properties and methods work exactly like the respective ordinary operations on ``values``.
+The tagged value can be accessed on a class, derived assocation, or link if a stereotype instance
+is derived from a stereotype that has defined the tagged values as attributes.
 
 For example, lets consider we want to set host name and port of the shipping services::
 
@@ -209,13 +238,13 @@ The result is:
     shipping service is running on www.example.com and port 80
 
 Consider we want to change the link between shipping service and zip code service to HTTP. Then we need to
-call ``set_tagged_value()`` on the class link object::
+call ``set_tagged_value()`` on the derived association::
 
     print(f"old protocol shipping service to zip code: " +
-          f"{shipping_service_zip_code_service_link.get_tagged_value('protocol')}")
-    shipping_service_zip_code_service_link.set_tagged_value('protocol', "HTTP")
+          f"{shipping_service_zip_code_association.get_tagged_value('protocol')}")
+    shipping_service_zip_code_association.set_tagged_value('protocol', "HTTP")
     print(f"new protocol shipping service to zip code: " +
-          f"{shipping_service_zip_code_service_link.get_tagged_value('protocol')}")
+          f"{shipping_service_zip_code_association.get_tagged_value('protocol')}")
 
 Here we also print the old and the new tagged value, which yields the following result:
 
@@ -225,11 +254,133 @@ Here we also print the old and the new tagged value, which yields the following 
     new protocol shipping service to zip code: HTTP
 
 
+Here is the model rendered as an class diagram with tagged values on classes and associations displayed:
+
+.. image:: images/microservice_component_model3_class_model.png
+
+Stereotype introspection
+=========================
+
+A meta-class or association can be queried for its stereotypes using the ``stereotypes`` property. For example,
+we could print the stereotypes of the ``component`` and ``connector_relation`` meta-classes::
+
+    print(f"component stereotypes = {component.stereotypes!s}")
+    print(f"connector stereotypes = {connectors_relation.stereotypes!s}")
+
+
+This would print something like:
+
+.. code-block:: none
+
+    component stereotypes = [<codeable_models.cstereotype.CStereotype object at 0x00000229793B8608>: Component Type, <codeable_models.cstereotype.CStereotype object at 0x000002297945A708>: Service, <codeable_models.cstereotype.CStereotype object at 0x000002297945AE88>: Database, <codeable_models.cstereotype.CStereotype object at 0x000002297945E0C8>: Facade, <codeable_models.cstereotype.CStereotype object at 0x000002297945E208>: Gateway]
+    connector stereotypes = [<codeable_models.cstereotype.CStereotype object at 0x00000229793B8C88>: Connector Type, <codeable_models.cstereotype.CStereotype object at 0x000002297945E548>: JDBC, <codeable_models.cstereotype.CStereotype object at 0x0000022979464DC8>: RESTful HTTP]
+
+In addition, ``get_stereotypes(name)`` can find all stereotypes with a given name, and
+``get_stereotype(name)`` the first stereotype with a name, respectively.
+
+On the stereotype we can introspect the same relation using the ``extended`` property returning all extended
+meta-classes or associations. For example, we could print this information for two of the stereotypes::
+
+    print(f"facade extended = {facade.extended!s}")
+    print(f"restful_http extended = {restful_http.extended!s}")
+
+This would print something like:
+
+.. code-block:: none
+
+    facade extended = [<codeable_models.cmetaclass.CMetaclass object at 0x000001F4E8C27448>: Component]
+    restful_http extended = [CAssociation name = connected to, source = Component -> target = Component]
+
+
+Stereotype instance introspection on class models
+=================================================
+
+With the ``stereotype_instances`` property we can get the stereotype instances defined on a class or a derived
+association. For example, we can print the stereotype instances for one of the database classes and
+one of the Restful HTTP links::
+
+    print(f"Shipping DB stereotype instances: {shipping_db.stereotype_instances!s}")
+    print(f"Shipping service to zip code association stereotype instances: " +
+          f"{shipping_service_zip_code_association.stereotype_instances!s}")
+
+
+This would print something like:
+
+.. code-block:: none
+
+    Shipping DB stereotype instances: [<codeable_models.cstereotype.CStereotype object at 0x0000024FA3B37F08>: Database]
+    Shipping service to zip code association stereotype instances: [<codeable_models.cstereotype.CStereotype object at 0x0000024FA3B72DC8>: RESTful HTTP]
+
+The extended instances of a stereotype can be introspected with ``extended_instances``. It gets the
+extended instances, i.e. the classes or derived associations (and/or class links)
+extended by the stereotype. ``all_extended_instances``
+is a getter to get all the extended instances, i.e. the classes or class links
+extended by a stereotype, including those on subclasses. For example, we can print extended instances
+for a few stereotypes::
+
+    print(f"extended instances of database: {database.extended_instances!s}")
+    print(f"all extended instances of component: {service.extended_instances!s}")
+    print(f"extended instances of restful_http: {restful_http.extended_instances!s}")
+
+
+This would print something like:
+
+.. code-block:: none
+
+    extended instances of database: [<codeable_models.cclass.CClass object at 0x0000024285F83FC8>: Inventory DB, <codeable_models.cclass.CClass object at 0x0000024285F83E08>: Shipping DB]
+    all extended instances of component: [<codeable_models.cclass.CClass object at 0x0000024285F80E08>: Inventory Service, <codeable_models.cclass.CClass object at 0x0000024285F83908>: Shipping Service]
+    extended instances of restful_http: [CAssociation name = , source = Shipping Service -> target = Zip Code Service, CAssociation name = , source = API Gateway -> target = Inventory Service, CAssociation name = , source = API Gateway -> target = Shipping Service, CAssociation name = , source = API Gateway -> target = Zip Code Service, CAssociation name = , source = Web Frontend -> target = Inventory Service, CAssociation name = , source = Web Frontend -> target = Shipping Service]
+
+
+The full code of these examples of class-level models can be found in the
+sample :ref:`microservice_component_model3_class_model`.
+
+Stereotype instances on instance models
+=======================================
+
+Just as explain in :ref:`meta_modelling`, an alternative to deriving as class-level model
+from a meta-model is to provide an instance-level model, which would be depicted as an
+object diagram. Again, the classes can be defined exactly in the same way as for the
+class-level model, only links with the respective stereotype instances need to
+be used::
+
+    api_gateway = CClass(component, "API Gateway", stereotype_instances=[gateway, facade])
+    zip_code_service = CClass(component, "Zip Code Service", stereotype_instances=service)
+    inventory_service = CClass(component, "Inventory Service", stereotype_instances=service)
+    shipping_service = CClass(component, "Shipping Service", stereotype_instances=service)
+    web_frontend = CClass(component, "Web Frontend", stereotype_instances=web_ui)
+    inventory_db = CClass(component, "Inventory DB", stereotype_instances=database)
+    shipping_db = CClass(component, "Shipping DB", stereotype_instances=database)
+
+    add_links({shipping_service: zip_code_service,
+               api_gateway: [inventory_service, shipping_service, zip_code_service],
+               web_frontend: [inventory_service, shipping_service]},
+              role_name="target", stereotype_instances=restful_http)
+    add_links({inventory_service: inventory_db, shipping_service: shipping_db},
+              role_name="target", stereotype_instances=jdbc)
+
+Here is the model rendered as an instance model (object diagram):
+
+.. image:: images/microservice_component_model2_instance_model.png
+
+Stereotype superclasses, tagged values, and stereotype introspection work on instance-level models
+in the same way as explained above for class-level models. For tagged values, the class links must have
+the stereotype instances defined on them, instead of the derived associations used in the examples above.
+
+The full code of these examples for instance level models can be found in the
+sample :ref:`microservice_component_model2_instance_model`.
+
+
 Default values on stereotypes
 =============================
 
+A feature that makes more sense to be used on instance-level models (even though it works in class-level
+models as well) are default values on stereotypes. They enable us to use stereotype default
+values to overwrite those of meta-classes. Among other things, this feature make more sense
+to be used on instance-level models, as object diagrams show these values, whereas class diagrams do not.
+
 Consider we want to build our system from distributed components. For example, for the purpose of
-for selecting the proper code generation and deployment tasks in our tool chain,  it shall be modeled,
+selecting the proper code generation and deployment tasks in our tool chain,  it shall be modeled,
 whether these components are mock components or not, and whether they are stateless or not.
 This can be modelled using a special component class with those attributes::
 
@@ -239,14 +390,15 @@ This can be modelled using a special component class with those attributes::
                                             "mock": False
                                         })
 
-Assuming that the distributed component classes in the class model are
-derived from this meta-class, we could derive a
+Assuming that the distributed component classes are derived from this meta-class, we could derive a
 stateless service stereotype from ``service`` as a subclass. Here, it is undesirable that the default value
-for the ``stateless`` attribute is ``False`` for such stereotyped ``stateless`` components of which we know
-that they are stateless. With the ``default_values`` dict, a stereotype can redefine default values of the
+for the ``stateless`` attribute is ``False`` for such stereotyped ``stateless`` components of which
+we already know that they are stateless, once the stereotype is used.
+With the ``default_values`` dictionary, a stereotype can redefine default values of the
 extended meta-class::
 
-    stateless_service = CStereotype("Stateless Service", extended=distributed_component, superclasses=service,
+    stateless_service = CStereotype("Stateless Service", extended=distributed_component,
+                                    superclasses=service,
                                     default_values={"stateless": True})
 
 Please note that we must specify that ``distributed_component`` is extended, in order
@@ -291,45 +443,17 @@ This prints:
     zip code service values = {'stateless': True, 'mock': False}
 
 
-Stereotype introspection
-=========================
+Here is the model with attributes set from default values shown as an instance model (object diagram).
+The diagram also shows tagged values (assuming exactly the same tagged values are used as in
+the class-level model above).
 
-A meta-class or association can be queried for its stereotypes using the ``stereotypes`` property. For example,
-we could print the stereotypes of the ``component`` and ``connector_relation`` meta-classes::
+.. image:: images/microservice_component_model3_instance_model.png
 
-    print(f"component stereotypes = {component.stereotypes!s}")
-    print(f"connector stereotypes = {connectors_relation.stereotypes!s}")
+Stereotype instance introspection on instance models
+====================================================
 
-
-This would print something like:
-
-.. code-block:: none
-
-    component stereotypes = [<codeable_models.cstereotype.CStereotype object at 0x00000229793B8608>: Component Type, <codeable_models.cstereotype.CStereotype object at 0x000002297945A708>: Service, <codeable_models.cstereotype.CStereotype object at 0x000002297945AE88>: Database, <codeable_models.cstereotype.CStereotype object at 0x000002297945E0C8>: Facade, <codeable_models.cstereotype.CStereotype object at 0x000002297945E208>: Gateway]
-    connector stereotypes = [<codeable_models.cstereotype.CStereotype object at 0x00000229793B8C88>: Connector Type, <codeable_models.cstereotype.CStereotype object at 0x000002297945E548>: JDBC, <codeable_models.cstereotype.CStereotype object at 0x0000022979464DC8>: RESTful HTTP]
-
-In addition, ``get_stereotypes(name)`` can find all stereotypes with a given name, and
-``get_stereotype(name)`` the first stereotype with a name, respectively.
-
-On the stereotype we can introspect the same relation using the ``extended`` property returning all extended
-meta-classes or associations. For example, we could print this information for two of the stereotypes::
-
-    print(f"facade extended = {facade.extended!s}")
-    print(f"restful_http extended = {restful_http.extended!s}")
-
-This would print something like:
-
-.. code-block:: none
-
-    facade extended = [<codeable_models.cmetaclass.CMetaclass object at 0x000001F4E8C27448>: Component]
-    restful_http extended = [CAssociation name = connected to, source = Component -> target = Component]
-
-
-Stereotype instance introspection
-=================================
-
-With the ``stereotype_instances`` property we can get the stereotype instances defined on a class or link. For example,
-we can print the stereotype instances for one of the database classes and one of the Restful HTTP links::
+With the ``stereotype_instances`` property we can get the stereotype instances defined on a link of a class, too.
+For example, we can print the stereotype instances for one of the database classes and one of the Restful HTTP links::
 
     print(f"Shipping DB stereotype instances: {shipping_db.stereotype_instances!s}")
     print(f"Shipping service to zip code link stereotype instances: " +
@@ -344,14 +468,9 @@ This would print something like:
     Shipping service to zip code link stereotype instances: [<codeable_models.cstereotype.CStereotype object at 0x00000242DFAC4E48>: RESTful HTTP]
 
 
-The extended instances of a stereotype can be introspected with ``extended_instances``. It gets the
-extended instances, i.e. the classes or class links extended by the stereotype. ``all_extended_instances``
-is a getter to get all the extended instances, i.e. the classes or class links
-extended by a stereotype, including those on subclasses. For example, we can print extended instances
-for a few stereotypes::
+The extended instances of a stereotype can be introspected with ``extended_instances``, as explained above. For
+the link it would be called as follows::
 
-    print(f"extended instances of database: {database.extended_instances!s}")
-    print(f"all extended instances of component: {service.extended_instances!s}")
     print(f"extended instances of restful_http: {restful_http.extended_instances!s}")
 
 
@@ -359,12 +478,8 @@ This would print something like:
 
 .. code-block:: none
 
-    extended instances of database: [<codeable_models.cclass.CClass object at 0x0000024285F83FC8>: Inventory DB, <codeable_models.cclass.CClass object at 0x0000024285F83E08>: Shipping DB]
-    all extended instances of component: [<codeable_models.cclass.CClass object at 0x0000024285F80E08>: Inventory Service, <codeable_models.cclass.CClass object at 0x0000024285F83908>: Shipping Service]
     extended instances of restful_http: [`CLink <codeable_models.clink.CLink object at 0x0000024285F86908> source = <codeable_models.cobject.CObject object at 0x0000024285F83508>: Shipping Service -> target = <codeable_models.cobject.CObject object at 0x0000024285F80AC8>: Zip Code Service`, `CLink <codeable_models.clink.CLink object at 0x0000024285F86B48> source = <codeable_models.cobject.CObject object at 0x0000024285F800C8>: API Gateway -> target = <codeable_models.cobject.CObject object at 0x0000024285F835C8>: Inventory Service`, `CLink <codeable_models.clink.CLink object at 0x0000024285F86C88> source = <codeable_models.cobject.CObject object at 0x0000024285F800C8>: API Gateway -> target = <codeable_models.cobject.CObject object at 0x0000024285F83508>: Shipping Service`, `CLink <codeable_models.clink.CLink object at 0x0000024285F86B08> source = <codeable_models.cobject.CObject object at 0x0000024285F800C8>: API Gateway -> target = <codeable_models.cobject.CObject object at 0x0000024285F80AC8>: Zip Code Service`, `CLink <codeable_models.clink.CLink object at 0x0000024285F86E88> source = <codeable_models.cobject.CObject object at 0x0000024285F834C8>: Web Frontend -> target = <codeable_models.cobject.CObject object at 0x0000024285F835C8>: Inventory Service`, `CLink <codeable_models.clink.CLink object at 0x0000024285F86F48> source = <codeable_models.cobject.CObject object at 0x0000024285F834C8>: Web Frontend -> target = <codeable_models.cobject.CObject object at 0x0000024285F83508>: Shipping Service`]
 
 
-
-
-The full code of the examples for last part of the tutorial can be found in the
-sample :ref:`microservice_component_model3`.
+The full code of these examples of instance level models can be found in the
+sample :ref:`microservice_component_model3_instance_model`.

@@ -1,5 +1,6 @@
 from codeable_models import CException
-from codeable_models.internal.commons import is_cenum, is_cclassifier, set_keyword_args, is_cstereotype, is_cmetaclass
+from codeable_models.internal.commons import is_cenum, is_cclassifier, set_keyword_args, is_cstereotype, is_cmetaclass, \
+    is_cclass
 from plant_uml_renderer.model_renderer import RenderingContext, ModelRenderer
 
 
@@ -15,21 +16,33 @@ class ClassifierRenderingContext(RenderingContext):
         self.render_extended_relations = True
         self.excluded_extended_classes = []
         self.included_extended_classes = None
+        self.render_metaclass_as_stereotype = False
 
 
 class ClassModelRenderer(ModelRenderer):
     def render_classifier_specification(self, context, cl):
         stereotype_string = ""
+        tagged_value_string = ""
+
         if is_cstereotype(cl):
             stereotype_string = self.render_stereotypes_string("stereotype")
         if is_cmetaclass(cl):
             stereotype_string = self.render_stereotypes_string("metaclass")
+        if is_cclass(cl):
+            stereotype_string = self.render_stereotypes(cl.stereotype_instances)
+            if context.render_tagged_values:
+                tagged_value_string = self.render_tagged_values(cl, cl.stereotype_instances)
+                if len(tagged_value_string) > 0:
+                    tagged_value_string = tagged_value_string + "\\n"
+            if context.render_metaclass_as_stereotype:
+                stereotype_string = self.render_stereotypes_string(cl.metaclass.name) + stereotype_string
+
         if len(stereotype_string) > 0:
             stereotype_string = " " + stereotype_string + " "
-        name_label = '"' + self.pad_and_break_name(cl.name, None, True) + '"'
+        name_label = '"' + tagged_value_string + self.pad_and_break_name(cl.name, None, True) + '"'
         context.add_line(
-            "class " + name_label + " as " + self.get_node_id(context, cl) + stereotype_string + self.render_attributes(
-                context, cl))
+            "class " + name_label + " as " + self.get_node_id(context, cl) +
+            stereotype_string + self.render_attributes(context, cl))
 
     def render_attributes(self, context, cl):
         if not context.render_attributes:
@@ -116,11 +129,26 @@ class ClassModelRenderer(ModelRenderer):
         if extended_by_string != "":
             extended_by_string = extended_by_string + ""
 
+        stereotype_string = self.render_stereotypes(association.stereotype_instances, True)
+        if context.render_tagged_values:
+            tagged_value_string = self.render_tagged_values(association, association.stereotype_instances)
+            if len(tagged_value_string) > 0:
+                stereotype_string += "\\n" + tagged_value_string
+
         label = ""
         if association.name is not None and len(association.name) != 0:
-            label = ": \"" + association.name + extended_by_string + "\" "
-        elif extended_by_string != "":
-            label = ": \"" + extended_by_string + "\" "
+            label = association.name
+        if extended_by_string != "":
+            label = label + extended_by_string
+        if len(label) > 0:
+            label = self.break_name(label)
+        if stereotype_string != "":
+            if len(label) > 0:
+                label = label + '\\n'
+            label = label + stereotype_string
+        if len(label) > 0:
+            label = ': "' + label + '"'
+
         head_label = ""
         if not (association.aggregation or association.composition):
             head_label = " \" " + association.source_multiplicity + " \" "
@@ -170,7 +198,8 @@ class ClassModelRenderer(ModelRenderer):
         set_keyword_args(context,
                          ["render_associations", "render_inheritance", "render_attributes", "excluded_associations",
                           "included_associations", "render_extended_relations",
-                          "excluded_extended_classes", "included_extended_classes"],
+                          "excluded_extended_classes", "included_extended_classes",
+                          "render_metaclass_as_stereotype", "render_tagged_values"],
                          **kwargs)
         self.render_start_graph(context)
         self.render_classes(context, class_list)

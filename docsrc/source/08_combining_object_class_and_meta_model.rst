@@ -4,14 +4,16 @@ Combining object, class, and meta-class model
 *********************************************
 
 Many models are defined as class models. Sometimes object models are derived from class models.
-In other cases, only a meta-model is defined. In some of these cases
+In other cases, a meta-model is defined. In some of these cases
 a class model is derived from it, and used only as an instance model of the
 meta-model, as in the previous meta-modelling examples. For modelling tasks, where a class and
 instance level need to be combined, the decision to model
 with class and object models  or meta-class and class instance models
 depends on the nature of the modelling task at hand.
-It also depends on available modelling means. For example, if stereotype instances are needed at the instance level,
-a meta-model needs to be used at the class level.
+It also depends on available modelling means. For example, if stereotype instances shall be applied,
+the respective stereotypes need to be defined in a meta-model first. As we have seen, we can then
+model classes at the instance-level (depicted as an object diagram) or at the class-model-level
+(depicted as an class diagram).
 
 In some cases, we want to model at all three levels. That is, we derive a meaningful class instance level from a
 meta-model, but also use class features such as class association, inheritance, and attributes at the class
@@ -19,30 +21,45 @@ model level, to be used in a derived object model.
 
 Let us consider such an example. We will base this on the previously introduced shopping activity and shopping cart
 class models. The :ref:`activity_metamodel` was used as a meta-model for the shopping activity class model.
-Consider the shopping activity class model describe a workflow. Then instances of the workflow would be individual
-workflow traces of one customer performing a shopping session. Such as session would create objects of the types used
+Consider the shopping activity class model describes a workflow. Then instances of the workflow would be individual
+workflow traces of one customer performing a shopping session. Such a session would create objects of the types used
 in our shopping cart class model.
 
 To enable this, firstly, we define a superclass for all classes used in our class model, and
-give it the ability to define workflow traces that describe the linear steps take in
+give it the ability to define workflow traces. The traces would describe the linear steps taken in
 one workflow run (i.e., 1:1 relations between nodes)::
 
     workflow_node = CClass(activity_node, "Workflow Node")
-    workflow_trace = workflow_node.association(workflow_node, "next: 1 [from] -> 1 [to]")
+    workflow_trace = workflow_node.association(workflow_node, "next: 1 [from] -> 1 [to]",
+                                               derived_from=edge_relation)
+
+Please note that the ``workflow_trace`` association is derived from the generic association of nodes ``edge_relation``,
+but constrains workflow traces to be ``1 -> 1`` relations (whereas edge relation is ``* -> *``).
 
 Next, to easily extend the previously defined activity class model, we first define how some of the nodes
 in the workflow can link to the elements of the shopping cart domain models by defining classes for viewing a product,
 viewing a cart, accessing an orders, and creating an item. Further, for each of those, we define a relation from
-the workflow node to the respective shopping cart model element::
+the workflow node to the respective shopping cart model element. In order to do this, we first link the two meta-models
+we a new association::
+
+    node_domain_object_relation = \
+        activity_node.association(domain_metaclass, "accessed_objects: [node] * -> [object] *")
+
+The associations linking shopping cart model elements to workflow nodes are then all derived from this meta-class
+association::
 
     view_product_node = CClass(activity_node, "View Product", superclasses=workflow_node)
-    view_product_node.association(product, "product: * -> [product] 1")
+    view_product_node.association(product, "product: * -> [product] 1",
+                                  derived_from=node_domain_object_relation)
     view_cart_node = CClass(activity_node, "View Cart", superclasses=workflow_node)
-    view_product_node.association(cart, "cart: * -> [cart] 1", superclasses=workflow_node)
+    view_product_node.association(cart, "cart: * -> [cart] 1", superclasses=workflow_node,
+                                  derived_from=node_domain_object_relation)
     access_order_node = CClass(activity_node, "Access Order", superclasses=workflow_node)
-    access_order_node.association(order, "order: * -> [order] 1", superclasses=workflow_node)
+    access_order_node.association(order, "order: * -> [order] 1", superclasses=workflow_node,
+                                  derived_from=node_domain_object_relation)
     create_item_node = CClass(activity_node, "Create Item", superclasses=workflow_node)
-    create_item_node.association(item, "item: * -> [item] 1", superclasses=workflow_node)
+    create_item_node.association(item, "item: * -> [item] 1", superclasses=workflow_node,
+                                 derived_from=node_domain_object_relation)
 
 Now we change all of the activity classes in our previous activity model to be subclasses of the workflow class,
 so that they can have traces. Also, we use the special workflow node classes defined above, to give some of
@@ -75,7 +92,7 @@ item activity node a ``search string`` attribute::
 
 Please note that those activity classes have the same links as defined in :ref:`meta_modelling` (not shown here).
 
-Lets define a small helper function to create a trace from a list of nodes::
+Lets further define a small helper function to create a trace from a list of nodes::
 
     def create_trace(node_list):
         trace = []
@@ -88,8 +105,8 @@ Lets define a small helper function to create a trace from a list of nodes::
 
 A trace is a recording of all nodes used during a shopping session in linear order. A trace would likely be
 recorded by a shopping application, e.g. in its log files. Thus it would contain all nodes (also control nodes)
-that have been used. In the function above, we filter out the control nodes to
-only use the meaningful user activities in our trace model. In addition, a shopping session would produce objects
+that have been used. In the function above, we filter out the control nodes (i.e. the nodes without a classifier name)
+to only use the meaningful user activities in our trace model. In addition, a shopping session would produce objects
 such as a cart, items, and an order. As we do not have a shopping application in which we can record such a trace,
 we manually code the trace and the orders created during a shopping session, in which one product is searched,
 viewed, added to a shopping cart, and then bought::

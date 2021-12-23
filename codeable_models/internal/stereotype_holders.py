@@ -1,6 +1,6 @@
 from codeable_models.cexception import CException
 from codeable_models.internal.commons import is_cclass, is_clink, check_is_cstereotype, is_cstereotype, \
-    check_named_element_is_not_deleted
+    check_named_element_is_not_deleted, is_cassociation
 
 
 class CStereotypesHolder:
@@ -89,6 +89,8 @@ class CStereotypeInstancesHolder(CStereotypesHolder):
             return f"'{self.element.name!s}'"
         elif is_clink(self.element):
             return f"link from '{self.element.source!s}' to '{self.element.target!s}'"
+        elif is_cassociation(self.element):
+            return f"association from '{self.element.source!s}' to '{self.element.target!s}'"
         raise CException(f"unexpected element type: {self.element!r}")
 
     def _check_stereotype_can_be_added(self, stereotype):

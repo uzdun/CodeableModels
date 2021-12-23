@@ -27,10 +27,11 @@ class ObjectModelRenderer(ModelRenderer):
         tagged_value_string = ""
         if object_.class_object_class is not None:
             stereotype_string = self.render_stereotypes(object_.class_object_class.stereotype_instances)
-            tagged_value_string = self.render_tagged_values(object_.class_object_class,
-                                                            object_.class_object_class.stereotype_instances)
-            if len(tagged_value_string) > 0:
-                tagged_value_string = tagged_value_string + "\\n"
+            if context.render_tagged_values:
+                tagged_value_string = self.render_tagged_values(object_.class_object_class,
+                                                                object_.class_object_class.stereotype_instances)
+                if len(tagged_value_string) > 0:
+                    tagged_value_string = tagged_value_string + "\\n"
 
         cl_name = object_.classifier.name
         if cl_name is None:
@@ -57,9 +58,10 @@ class ObjectModelRenderer(ModelRenderer):
             arrow = " *-- "
 
         stereotype_string = self.render_stereotypes(link.stereotype_instances, True)
-        tagged_value_string = self.render_tagged_values(link, link.stereotype_instances)
-        if len(tagged_value_string) > 0:
-            stereotype_string += "\\n" + tagged_value_string
+        if context.render_tagged_values:
+            tagged_value_string = self.render_tagged_values(link, link.stereotype_instances)
+            if len(tagged_value_string) > 0:
+                stereotype_string += "\\n" + tagged_value_string
 
         label = ""
         if link.label is not None and len(link.label) != 0:
@@ -117,7 +119,7 @@ class ObjectModelRenderer(ModelRenderer):
         set_keyword_args(context,
                          ["render_attribute_values", "render_empty_attributes",
                           "render_association_names_when_no_label_is_given",
-                          "excluded_links"], **kwargs)
+                          "excluded_links", "render_tagged_values"], **kwargs)
         self.render_start_graph(context)
         self.render_objects(context, object_list)
         self.render_end_graph(context)

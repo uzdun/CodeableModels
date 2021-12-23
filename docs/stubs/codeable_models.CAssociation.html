@@ -331,11 +331,81 @@ a composition,  else it is not. Also, if set to <code class="docutils literal no
 <dl class="py method">
 <dt id="codeable_models.CAssociation.delete">
 <code class="sig-name descname">delete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CAssociation.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deletes this association. Removes the association from all classifiers and links. Removes it from
-all stereotypes, too.  Calls <code class="docutils literal notranslate"><span class="pre">delete()</span></code> on superclass.</p>
+<dd><p>Deletes this association. Removes the association from all classifiers, links, and derived associations.
+Removes it from all stereotypes, too. Removes it from associations it is derived from.
+Calls <code class="docutils literal notranslate"><span class="pre">delete()</span></code> on superclass.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.delete_tagged_value">
+<code class="sig-name descname">delete_tagged_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">stereotype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CAssociation.delete_tagged_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete tagged value of a stereotype attribute with the given <code class="docutils literal notranslate"><span class="pre">name</span></code>.  Optionally the stereotype
+to consider can be specified. This is needed, if one or more attributes of the same name are defined
+on the inheritance hierarchy. Then a shadowed attribute can be accessed by specifying its stereotype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – The name of the attribute.</p></li>
+<li><p><strong>stereotype</strong> – The optional stereotype on which the attribute is defined.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value of the attribute.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Supported Attribute Types</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.derived_associations">
+<em class="property">property </em><code class="sig-name descname">derived_associations</code><a class="headerlink" href="#codeable_models.CAssociation.derived_associations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter for the list of associations this association is derived from.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#codeable_models.CAssociation" title="codeable_models.CAssociation">CAssociation</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.derived_from">
+<em class="property">property </em><code class="sig-name descname">derived_from</code><a class="headerlink" href="#codeable_models.CAssociation.derived_from" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter to get and setter to set a metaclass association this class-level association
+is derived from.</p>
+<p>Please note that parameter has to be a metaclass association, and this association needs to be a
+class-level association. An association can be derived from a metaclass association, if the association
+is of the same type as the metaclass association, i.e., both are
+either <code class="docutils literal notranslate"><span class="pre">association</span></code>, <code class="docutils literal notranslate"><span class="pre">composition</span></code>, or <code class="docutils literal notranslate"><span class="pre">aggregation</span></code>.</p>
+<p>Both for source and target multiplicities,the lower multiplicity must be equal or higher than the
+metaclass association’s lower multiplicity, and the upper multiplicity must be equal or lower than
+the metaclass association’s upper multiplicity.</p>
+<p>For the upper multiplicities (source and target), we need to consider other derived associations of the
+same kind (i.e., same classes or their superclasses are used, derived from the same metaclass association),
+as well. For example, an consider a meta-class association:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">m1</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">m2</span><span class="p">,</span> <span class="s2">&quot;a: [m1] * -&gt; [m2] 1&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If we would derive two associations from it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c1</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">c2</span><span class="p">,</span> <span class="s2">&quot;a1: [c1] * -&gt; [c2] 1&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">association</span><span class="p">(</span><span class="n">c2</span><span class="p">,</span> <span class="s2">&quot;a1: [c1] * -&gt; [c2] 1&quot;</span><span class="p">,</span> <span class="n">derived_from</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>without adding up the multiplicities of all those associations, an upper (target) multiplicity of
+2 could be reached, violating the meta-class target upper multiplicity of 1.</p>
+<p>The stereotype instances must be stereotypes extending an association that this association is derived from.</p>
+<p>The setter takes a CAssociation as argument. Can be <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default value) to remove the
+<code class="docutils literal notranslate"><span class="pre">derived_from</span></code> relation.
+The getter always returns a CAssociation or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#codeable_models.CAssociation" title="codeable_models.CAssociation">CAssociation</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -355,6 +425,28 @@ target, and vice versa. Raises an exception if <code class="docutils literal not
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="codeable_models.CClassifier.html#codeable_models.CClassifier" title="codeable_models.CClassifier">CClassifier</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.get_tagged_value">
+<code class="sig-name descname">get_tagged_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">stereotype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CAssociation.get_tagged_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the tagged value of a stereotype attribute with the given <code class="docutils literal notranslate"><span class="pre">name</span></code>. Optionally the stereotype
+to consider can be specified. This is needed, if one or more attributes of the same name are defined
+on the inheritance hierarchy. Then a shadowed attribute can be accessed by specifying its stereotype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – The name of the attribute.</p></li>
+<li><p><strong>stereotype</strong> – The optional stereotype on which the attribute is defined.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value of the attribute.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Supported Attribute Types</p>
 </dd>
 </dl>
 </dd></dl>
@@ -381,6 +473,26 @@ unbounded higher multiplicity.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="codeable_models.CAssociation.set_tagged_value">
+<code class="sig-name descname">set_tagged_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">stereotype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#codeable_models.CAssociation.set_tagged_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the tagged value of a stereotype attribute with the given <code class="docutils literal notranslate"><span class="pre">name</span></code> to <code class="docutils literal notranslate"><span class="pre">value</span></code>.  Optionally the
+stereotype to consider can be specified. This is needed, if one or more attributes of the same name are defined
+on the inheritance hierarchy. Then a shadowed attribute can be accessed by specifying its stereotype.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – The name of the attribute.</p></li>
+<li><p><strong>value</strong> – The new value.</p></li>
+<li><p><strong>stereotype</strong> – The optional stereotype on which the attribute is defined.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="codeable_models.CAssociation.source_multiplicity">
 <em class="property">property </em><code class="sig-name descname">source_multiplicity</code><a class="headerlink" href="#codeable_models.CAssociation.source_multiplicity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Getter and setter for the source multiplicity of the association. Syntax is equal to the syntax
@@ -388,6 +500,20 @@ defined in the documentation of the <code class="docutils literal notranslate"><
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.stereotype_instances">
+<em class="property">property </em><code class="sig-name descname">stereotype_instances</code><a class="headerlink" href="#codeable_models.CAssociation.stereotype_instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter to get and setter to set the stereotype instances of this association.</p>
+<p>The stereotype instances must be stereotypes extending an association that this association is derived from.</p>
+<p>The setter takes a list of stereotype instances or a single stereotype instance as argument.
+The getter always returns a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype">CStereotype</a>]|CStereotype</p>
 </dd>
 </dl>
 </dd></dl>
@@ -401,6 +527,19 @@ between meta-classes. The getter returns the stereotypes that extend this associ
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>CStereotype|list[<a class="reference internal" href="codeable_models.CStereotype.html#codeable_models.CStereotype" title="codeable_models.CStereotype">CStereotype</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="codeable_models.CAssociation.tagged_values">
+<em class="property">property </em><code class="sig-name descname">tagged_values</code><a class="headerlink" href="#codeable_models.CAssociation.tagged_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getter for getting all tagged values of the association using a dict, and setter of
+setting all tagged values of the association based on a dict. The dict uses key/value pairs.
+The value types must conform to the types defined for the attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict[str, value]</p>
 </dd>
 </dl>
 </dd></dl>

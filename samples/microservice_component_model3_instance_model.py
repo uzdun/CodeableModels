@@ -1,7 +1,8 @@
 """
-*File Name:* samples/microservice_component_model3.py
+*File Name:* samples/microservice_component_model3_instance_model.py
 
-This is a Codeable Models example realizing a sample component model.
+This is a Codeable Models example realizing a sample component model at the
+instance model level (i.e. instances of meta-classes are depicted in an object diagram).
 It is used to explain meta-modelling with stereotypes. In particular, tagged values, introspection options,
 and default values features are used in the example.
 It uses meta-classes from the :ref:`component_metamodel`.
@@ -75,12 +76,17 @@ shipping_service_zip_code_service_link = restful_links[0]
 add_links({inventory_service: inventory_db, shipping_service: shipping_db},
           role_name="target", stereotype_instances=jdbc)
 
-microservice_component_model3 = CBundle("microservice_component_model3",
+microservice_component_model3 = CBundle("microservice_component_model3_instance_model",
                                         elements=api_gateway.class_object.get_connected_elements())
 
-component_meta_model3 = CBundle("component_meta_model2",
-                               elements=(component.get_connected_elements(add_stereotypes=True) +
-                                         [jdbc, restful_http]))
+microservice_component_model3_instance_model_no_attribute_or_tag_values = CBundle(
+    "microservice_component_model3_instance_model_no_attribute_or_tag_values",
+    elements=api_gateway.class_object.get_connected_elements())
+
+
+# component_meta_model3 = CBundle("component_meta_model",
+#                                 elements=(component.get_connected_elements(add_stereotypes=True) +
+#                                           [jdbc, restful_http]))
 
 
 def print_instances_introspection():
@@ -116,7 +122,7 @@ def print_default_values():
 
 
 def run():
-    print("***************** Microservice Component Model 3: Meta-modelling example *****************")
+    print("***************** Microservice Component Model 3: Meta-modelling example (instance model) *****************")
     print("*** Stereotypes and Extended Introspection")
     print_stereotypes_and_extended_introspection()
     print("*** Instances Introspection")
@@ -128,8 +134,12 @@ def run():
     print('*** Plant UML Generation')
     generator = PlantUMLGenerator()
     generator.object_model_renderer.left_to_right = True
-    generator.generate_object_models("microservice_component_model3", [microservice_component_model3, {}])
-    generator.generate_class_models("microservice_component_model3", [component_meta_model3, {}])
+    generator.generate_object_models("microservice_component_model3",
+                                     [microservice_component_model3, {},
+                                      microservice_component_model3_instance_model_no_attribute_or_tag_values,
+                                      {"render_attribute_values": False, "render_tagged_values": False}])
+    # avoid doing this step twice, it is also called in ..._class_model.py
+    # generator.generate_class_models("microservice_component_model3", [component_meta_model3, {}])
     print(f"... Generated models in {generator.directory!s}/microservice_component_model3")
 
 

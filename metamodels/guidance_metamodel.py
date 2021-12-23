@@ -167,3 +167,12 @@ def add_decision_option_link(decision_, design_solution_, option_name=None):
 
 def add_stereotyped_design_solution_link(from_design_solution, to_design_solution, stereotype_instance):
     from_design_solution.add_links(to_design_solution, role_name="to")[0].stereotype_instances = [stereotype_instance]
+
+
+def add_decision_option_association(decision_, design_solution_, option_name=None):
+    association = decision_.association(design_solution_, multiplicity="*", source_multiplicity="1",
+                                        derived_from=decision_solution_relation)
+    association.stereotype_instances = [option]
+    if option_name is not None:
+        association.set_tagged_value("name", option_name)
+    return association

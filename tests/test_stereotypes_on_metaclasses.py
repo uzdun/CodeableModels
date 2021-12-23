@@ -175,7 +175,7 @@ class TestStereotypesOnMetaclasses:
             CStereotype(extended=CClass(self.mcl))
             exception_expected_()
         except CException as e:
-            eq_("extended requires a list or a metaclass as input", e.value)
+            eq_("extended requires a list, a metaclass, an association as input", e.value)
 
     def test_stereotype_extended_append(self):
         m1 = CMetaclass()

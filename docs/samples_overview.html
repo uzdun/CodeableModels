@@ -96,11 +96,15 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-samples.shopping_model4">Shopping Model 4</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-samples.shopping_instances1">Shopping Instances Model 1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-samples.shopping_instances2">Shopping Instances Model 2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-samples.shopping_activity_model1">Shopping Activity Model 1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-samples.shopping_activities1_class_model">Shopping Activity Model 1 as Class Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-samples.shopping_activities1_instance_model">Shopping Activity Model 1 as Instance Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-samples.shopping_activity_model2">Shopping Activity Model 2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-samples.microservice_component_model1">Microservice Component Model 1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-samples.microservice_component_model2">Microservice Component Model 2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-samples.microservice_component_model3">Microservice Component Model 3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-samples.microservice_component_model1_class_model">Microservice Component Model 1 as Class Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-samples.microservice_component_model1_instance_model">Microservice Component Model 1 as Instance Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-samples.microservice_component_model2_class_model">Microservice Component Model 2 as Class Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-samples.microservice_component_model2_instance_model">Microservice Component Model 2 as Instance Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-samples.microservice_component_model3_class_model">Microservice Component Model 3 as Class Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-samples.microservice_component_model3_instance_model">Microservice Component Model 3 as Instance Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-samples.metamodel_rendering">Meta-Model Rendering</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-samples.codeable_models_class_relations">Codeable Models Class Relations</a></li>
 </ul>
@@ -225,10 +229,22 @@ It uses the class model in  <a class="reference internal" href="#shopping-model4
 <a class="reference internal" href="#shopping-instances1"><span class="std std-ref">Shopping Instances Model 1</span></a> it improve the model building through code.</p>
 <p>The example is explained in <a class="reference internal" href="05_improving_the_models_through_code.html#coded-model"><span class="std std-ref">Improving the models through code</span></a>.</p>
 </div>
-<div class="section" id="module-samples.shopping_activity_model1">
-<span id="shopping-activity-model-1"></span><span id="shopping-activity-model1"></span><h2>Shopping Activity Model 1<a class="headerlink" href="#module-samples.shopping_activity_model1" title="Permalink to this headline">¶</a></h2>
-<p><em>File Name:</em> samples/shopping_activity_model1.py</p>
-<p>This is a Codeable Models example realizing a sample shopping activity model.
+<div class="section" id="module-samples.shopping_activities1_class_model">
+<span id="shopping-activity-model-1-as-class-model"></span><span id="shopping-activities1-class-model"></span><h2>Shopping Activity Model 1 as Class Model<a class="headerlink" href="#module-samples.shopping_activities1_class_model" title="Permalink to this headline">¶</a></h2>
+<p><em>File Name:</em> samples/shopping_activities1_class_model.py</p>
+<p>This is a Codeable Models example realizing a sample shopping activity model
+as a class diagram.
+It is used to explain meta-modelling by using meta-classes and their relations
+from the <a class="reference internal" href="metamodels_overview.html#activity-metamodel"><span class="std std-ref">Activity Metamodel</span></a>.</p>
+<p>It is inspired by the model at:
+<a class="reference external" href="https://www.uml-diagrams.org/online-shopping-uml-activity-diagram-example.html">https://www.uml-diagrams.org/online-shopping-uml-activity-diagram-example.html</a></p>
+<p>The example is explained in <a class="reference internal" href="06_first_meta_model.html#meta-modelling"><span class="std std-ref">A first meta-model</span></a>.</p>
+</div>
+<div class="section" id="module-samples.shopping_activities1_instance_model">
+<span id="shopping-activity-model-1-as-instance-model"></span><span id="shopping-activities1-instance-model"></span><h2>Shopping Activity Model 1 as Instance Model<a class="headerlink" href="#module-samples.shopping_activities1_instance_model" title="Permalink to this headline">¶</a></h2>
+<p><em>File Name:</em> samples/shopping_activities1_instance_model.py</p>
+<p>This is a Codeable Models example realizing a sample shopping activity model
+as an object diagram (classes as instances of meta-classes).
 It is used to explain meta-modelling by using meta-classes and their relations
 from the <a class="reference internal" href="metamodels_overview.html#activity-metamodel"><span class="std std-ref">Activity Metamodel</span></a>.</p>
 <p>It is inspired by the model at:
@@ -249,24 +265,53 @@ for workflow traces. The trace objects are linked to domain model elements from 
 <p>The activity model is inspired by the model at:
 <a class="reference external" href="https://www.uml-diagrams.org/online-shopping-uml-activity-diagram-example.html">https://www.uml-diagrams.org/online-shopping-uml-activity-diagram-example.html</a></p>
 </div>
-<div class="section" id="module-samples.microservice_component_model1">
-<span id="microservice-component-model-1"></span><span id="microservice-component-model1"></span><h2>Microservice Component Model 1<a class="headerlink" href="#module-samples.microservice_component_model1" title="Permalink to this headline">¶</a></h2>
-<p><em>File Name:</em> samples/microservice_component_model1.py</p>
-<p>This is a Codeable Models example realizing a sample component model.
+<div class="section" id="module-samples.microservice_component_model1_class_model">
+<span id="microservice-component-model-1-as-class-model"></span><span id="microservice-component-model1-class-model"></span><h2>Microservice Component Model 1 as Class Model<a class="headerlink" href="#module-samples.microservice_component_model1_class_model" title="Permalink to this headline">¶</a></h2>
+<p><em>File Name:</em> samples/microservice_component_model1_class_model.py</p>
+<p>This is a Codeable Models example realizing a sample component model, shown as a class model
+(class diagram).
 It is used to explain meta-modelling. It uses meta-classes from the <a class="reference internal" href="metamodels_overview.html#component-metamodel"><span class="std std-ref">Component Metamodel</span></a>.</p>
 <p>The example is explained in <a class="reference internal" href="07_meta_model_with_stereotypes.html#meta-model-stereotypes"><span class="std std-ref">A meta-model with stereotypes</span></a>.</p>
 </div>
-<div class="section" id="module-samples.microservice_component_model2">
-<span id="microservice-component-model-2"></span><span id="microservice-component-model2"></span><h2>Microservice Component Model 2<a class="headerlink" href="#module-samples.microservice_component_model2" title="Permalink to this headline">¶</a></h2>
-<p><em>File Name:</em> samples/microservice_component_model2.py</p>
-<p>This is a Codeable Models example realizing a sample component model.
+<div class="section" id="module-samples.microservice_component_model1_instance_model">
+<span id="microservice-component-model-1-as-instance-model"></span><span id="microservice-component-model1-instance-model"></span><h2>Microservice Component Model 1 as Instance Model<a class="headerlink" href="#module-samples.microservice_component_model1_instance_model" title="Permalink to this headline">¶</a></h2>
+<p><em>File Name:</em> samples/microservice_component_model1_instance_model.py</p>
+<p>This is a Codeable Models example realizing a sample component model, shown as an instance
+model (object diagram).
+It is used to explain meta-modelling. It uses meta-classes from the <a class="reference internal" href="metamodels_overview.html#component-metamodel"><span class="std std-ref">Component Metamodel</span></a>.</p>
+<p>The example is explained in <a class="reference internal" href="07_meta_model_with_stereotypes.html#meta-model-stereotypes"><span class="std std-ref">A meta-model with stereotypes</span></a>.</p>
+</div>
+<div class="section" id="module-samples.microservice_component_model2_class_model">
+<span id="microservice-component-model-2-as-class-model"></span><span id="microservice-component-model2-class-model"></span><h2>Microservice Component Model 2 as Class Model<a class="headerlink" href="#module-samples.microservice_component_model2_class_model" title="Permalink to this headline">¶</a></h2>
+<p><em>File Name:</em> samples/microservice_component_model2_class_model.py</p>
+<p>This is a Codeable Models example realizing a sample component model, shown as a class model
+(class diagram).
 It is used to explain meta-modelling with stereotypes. It uses meta-classes from the <a class="reference internal" href="metamodels_overview.html#component-metamodel"><span class="std std-ref">Component Metamodel</span></a>.</p>
 <p>The example is explained in <a class="reference internal" href="07_meta_model_with_stereotypes.html#meta-model-stereotypes"><span class="std std-ref">A meta-model with stereotypes</span></a>.</p>
 </div>
-<div class="section" id="module-samples.microservice_component_model3">
-<span id="microservice-component-model-3"></span><span id="microservice-component-model3"></span><h2>Microservice Component Model 3<a class="headerlink" href="#module-samples.microservice_component_model3" title="Permalink to this headline">¶</a></h2>
-<p><em>File Name:</em> samples/microservice_component_model3.py</p>
-<p>This is a Codeable Models example realizing a sample component model.
+<div class="section" id="module-samples.microservice_component_model2_instance_model">
+<span id="microservice-component-model-2-as-instance-model"></span><span id="microservice-component-model2-instance-model"></span><h2>Microservice Component Model 2 as Instance Model<a class="headerlink" href="#module-samples.microservice_component_model2_instance_model" title="Permalink to this headline">¶</a></h2>
+<p><em>File Name:</em> samples/microservice_component_model2_instance_model.py</p>
+<p>This is a Codeable Models example realizing a sample component model, shown as an instance
+model (object diagram).
+It is used to explain meta-modelling with stereotypes. It uses meta-classes from the <a class="reference internal" href="metamodels_overview.html#component-metamodel"><span class="std std-ref">Component Metamodel</span></a>.</p>
+<p>The example is explained in <a class="reference internal" href="07_meta_model_with_stereotypes.html#meta-model-stereotypes"><span class="std std-ref">A meta-model with stereotypes</span></a>.</p>
+</div>
+<div class="section" id="module-samples.microservice_component_model3_class_model">
+<span id="microservice-component-model-3-as-class-model"></span><span id="microservice-component-model3-class-model"></span><h2>Microservice Component Model 3 as Class Model<a class="headerlink" href="#module-samples.microservice_component_model3_class_model" title="Permalink to this headline">¶</a></h2>
+<p><em>File Name:</em> samples/microservice_component_model3_class_model.py</p>
+<p>This is a Codeable Models example realizing a sample component model at the
+class model level.
+It is used to explain meta-modelling with stereotypes. In particular, tagged values, introspection options,
+and default values features are used in the example.
+It uses meta-classes from the <a class="reference internal" href="metamodels_overview.html#component-metamodel"><span class="std std-ref">Component Metamodel</span></a>.</p>
+<p>The example is explained in <a class="reference internal" href="07_meta_model_with_stereotypes.html#meta-model-stereotypes"><span class="std std-ref">A meta-model with stereotypes</span></a>.</p>
+</div>
+<div class="section" id="module-samples.microservice_component_model3_instance_model">
+<span id="microservice-component-model-3-as-instance-model"></span><span id="microservice-component-model3-instance-model"></span><h2>Microservice Component Model 3 as Instance Model<a class="headerlink" href="#module-samples.microservice_component_model3_instance_model" title="Permalink to this headline">¶</a></h2>
+<p><em>File Name:</em> samples/microservice_component_model3_instance_model.py</p>
+<p>This is a Codeable Models example realizing a sample component model at the
+instance model level (i.e. instances of meta-classes are depicted in an object diagram).
 It is used to explain meta-modelling with stereotypes. In particular, tagged values, introspection options,
 and default values features are used in the example.
 It uses meta-classes from the <a class="reference internal" href="metamodels_overview.html#component-metamodel"><span class="std std-ref">Component Metamodel</span></a>.</p>
@@ -281,7 +326,7 @@ predefined meta-del such as <a class="reference internal" href="metamodels_overv
 the documentation.</p>
 </div>
 <div class="section" id="module-samples.codeable_models_class_relations">
-<span id="id5"></span><span id="codeable-models-class-relations"></span><h2>Codeable Models Class Relations<a class="headerlink" href="#module-samples.codeable_models_class_relations" title="Permalink to this headline">¶</a></h2>
+<span id="id6"></span><span id="codeable-models-class-relations"></span><h2>Codeable Models Class Relations<a class="headerlink" href="#module-samples.codeable_models_class_relations" title="Permalink to this headline">¶</a></h2>
 <p><em>File Name:</em> samples/codeable_models_class_relations.py</p>
 <p>This is a Codeable Models example modelling the Codeable Models classes, their attributes, and
 relations as a class model. The resulting views generated from this model are used throughout

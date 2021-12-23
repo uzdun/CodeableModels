@@ -5,7 +5,7 @@ from codeable_models import CMetaclass, CStereotype, CClass, CException, set_lin
 from tests.testing_commons import exception_expected_
 
 
-class TestStereotypeInstancesOnAssociations:
+class TestStereotypeInstancesOnLinks:
     def setup(self):
         self.m1 = CMetaclass("M1")
         self.m2 = CMetaclass("M2")

@@ -39,8 +39,8 @@ sure that the scripts in `tests` are not executable, e.g., run: `chmod -x $(find
 To build the documentation Sphinx and the extensions configured in `docsrc/source/conf.py`
 need to be installed first, e.g. using `pip`.
 
-The documentation is build in the folder `docsrc`. Use `make html` to build the `html` 
-pages into the subfolder `build`, and `make docs` to copy the built into the `docs` folder.
+The documentation is built in the folder `docsrc`. Use `make html` to build the `html` 
+pages into the subfolder `build`, and `make docs` to copy the build into the `docs` folder.
 The distribution contains the latest built of the documentation in the `docs` folder.
 
 The documentation can also be found at:
