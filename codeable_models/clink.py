@@ -78,7 +78,8 @@ class CLink(CObject):
         self._init_keyword_args(**kwargs)
 
     def __str__(self):
-        return f"`CLink source = {self.source_!s} -> target = {self.target_!s}`"
+        #return f"`CLink source = {self.source_!s} -> target = {self.target_!s}`"
+        return f"`{self.source_!s} -> {self.target_!s}`"
 
     def __repr__(self):
         result = super().__repr__()

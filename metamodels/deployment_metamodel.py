@@ -47,7 +47,8 @@ container_env_type = CStereotype("Container", superclasses=execution_environment
 cluster_env_type = CStereotype("Cluster", superclasses=execution_environment_type)
 on_premise_env_type = CStereotype("On-Premises", superclasses=execution_environment_type)
 datacenter_env_type = CStereotype("Datacenter", superclasses=execution_environment_type)
-local_workstation_env_type = CStereotype("Local Workstation", superclasses=execution_environment_type)
+local_env_type = CStereotype("Local Execution", superclasses=execution_environment_type)
+local_workstation_env_type = CStereotype("Local Workstation", superclasses=local_env_type)
 
 #
 # deployment relation types

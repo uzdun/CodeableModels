@@ -15,6 +15,8 @@ from codeable_models import CMetaclass, CBundle
 activity_node = CMetaclass("Activity Node")
 control_node = CMetaclass("Control Node", superclasses=activity_node)
 initial_node = CMetaclass("Initial Node", superclasses=control_node)
+sub_activity_initial_node = CMetaclass("Sub-Activity Initial Node", superclasses=initial_node,
+                                       attributes={"sub-activity name": str})
 final_node = CMetaclass("Final Node", superclasses=control_node)
 activity_final_node = CMetaclass("Activity Final Node", superclasses=final_node)
 fork_node = CMetaclass("Fork Node", superclasses=control_node)
@@ -26,6 +28,8 @@ accept_event_action = CMetaclass("Accept Event Action", superclasses=action)
 accept_time_event_action = CMetaclass("Accept Time Event Action", superclasses=accept_event_action,
                                       attributes={"description": str})
 send_signal_action = CMetaclass("Send Signal Action", superclasses=action)
+call_action = CMetaclass("Call Action", superclasses=action,
+                         attributes={"called activity name": str})
 
 # edges
 edge_relation = activity_node.association(activity_node, "next: [source] * -> [target] *")
